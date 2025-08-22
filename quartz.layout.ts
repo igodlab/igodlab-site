@@ -14,6 +14,20 @@ export const sharedPageComponents: SharedLayout = {
   }),
 }
 
+// HACK: define entire custom component in quarts/components/Homepage.tsx
+// Custom layout for homepage
+import Homepage from "./quartz/components/Homepage"
+export const homepageLayout: PageLayout = {
+  beforeBody: [Homepage()],
+  left: [
+    Component.PageTitle(),
+    Component.MobileOnly(Component.Spacer()),
+    Component.Search(),
+    Component.Darkmode(),
+  ],
+  right: [],
+}
+
 // components for pages that display a single page (e.g. a single note)
 export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
@@ -41,7 +55,7 @@ export const defaultContentPageLayout: PageLayout = {
     Component.Explorer(),
   ],
   right: [
-    Component.Graph(),
+    // Component.Graph(),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(),
   ],

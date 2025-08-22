@@ -41,7 +41,8 @@ export const Latex: QuartzTransformerPlugin<Partial<Options>> = (opts) => {
           return [[rehypeMathjax, { macros, ...(opts?.mathJaxOptions ?? {}) }]]
         }
         default: {
-          return [[rehypeMathjax, { macros, ...(opts?.mathJaxOptions ?? {}) }]]
+          return [[rehypeKatex, { output: "htmlAndMathml", macros, ...(opts?.katexOptions ?? {}) }]]
+          // return [[rehypeMathjax, { macros, ...(opts?.mathJaxOptions ?? {}) }]]
         }
       }
     },
