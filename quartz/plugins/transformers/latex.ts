@@ -37,11 +37,12 @@ export const Latex: QuartzTransformerPlugin<Partial<Options>> = (opts) => {
         case "typst": {
           return [[rehypeTypst, opts?.typstOptions ?? {}]]
         }
-        case "mathjax": {
-          return [[rehypeMathjax, { macros, ...(opts?.mathJaxOptions ?? {}) }]]
-        }
+        // case "mathjax": {
+        //   return [[rehypeMathjax, { macros, ...(opts?.mathJaxOptions ?? {}) }]]
+        // }
         default: {
-          return [[rehypeMathjax, { macros, ...(opts?.mathJaxOptions ?? {}) }]]
+          return [[rehypeKatex, { output: "htmlAndMathml", macros, ...(opts?.katexOptions ?? {}) }]]
+          // return [[rehypeMathjax, { macros, ...(opts?.mathJaxOptions ?? {}) }]]
         }
       }
     },

@@ -8,10 +8,25 @@ export const sharedPageComponents: SharedLayout = {
   afterBody: [],
   footer: Component.Footer({
     links: {
-      GitHub: "https://github.com/jackyzha0/quartz",
-      "Discord Community": "https://discord.gg/cRFFHYye7t",
+      "Github": "https://github.com/igodlab",
+      "LinkedIn": "https://www.linkedin.com/in/igodlab",
+      "X/Twitter": "https://twitter.com/igodlab",
     },
   }),
+}
+
+// HACK: define entire custom component in quarts/components/Homepage.tsx
+// Custom layout for homepage
+import Homepage from "./quartz/components/Homepage"
+export const homepageLayout: PageLayout = {
+  beforeBody: [Homepage()],
+  left: [
+    Component.PageTitle(),
+    Component.MobileOnly(Component.Spacer()),
+    Component.Search(),
+    Component.Darkmode(),
+  ],
+  right: [],
 }
 
 // components for pages that display a single page (e.g. a single note)
@@ -38,10 +53,19 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      mapFn: (node) => {
+        if (! node.isFolder) {
+          node.displayName = "🖹" + node.displayName
+        } 
+        else {
+          node.displayName = "🖿" + node.displayName
+        }
+      },
+    }),
   ],
   right: [
-    Component.Graph(),
+    // Component.Graph(),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(),
   ],
@@ -62,7 +86,16 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      mapFn: (node) => {
+        if (! node.isFolder) {
+          node.displayName = "🖹" + node.displayName
+        } 
+        else {
+          node.displayName = "🖿" + node.displayName
+        }
+      },
+    }),
   ],
   right: [],
 }

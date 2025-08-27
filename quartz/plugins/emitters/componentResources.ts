@@ -7,6 +7,14 @@ import spaRouterScript from "../../components/scripts/spa.inline"
 import popoverScript from "../../components/scripts/popover.inline"
 import styles from "../../styles/custom.scss"
 import popoverStyle from "../../components/styles/popover.scss"
+// @ts-ignore
+import clipboardScript from "../../components/scripts/clipboard.inline"
+import clipboardStyle from "../../components/styles/clipboard.scss"
+
+// @ts-ignore
+import pseudoScript from "../../components/scripts/clipboard-pseudo.inline"
+import pseudoStyle from "../../components/styles/pseudocode.scss"
+
 import { BuildCtx } from "../../util/ctx"
 import { QuartzComponent } from "../../components/types"
 import {
@@ -84,6 +92,9 @@ function addGlobalPageResources(ctx: BuildCtx, componentResources: ComponentReso
     componentResources.afterDOMLoaded.push(popoverScript)
     componentResources.css.push(popoverStyle)
   }
+
+  componentResources.css.push(clipboardStyle, pseudoStyle)
+  componentResources.afterDOMLoaded.push(clipboardScript, pseudoScript)
 
   if (cfg.analytics?.provider === "google") {
     const tagId = cfg.analytics.tagId

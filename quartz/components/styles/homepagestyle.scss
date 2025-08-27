@@ -1,0 +1,211 @@
+.homepage-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  .hero-section {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    align-items: flex-start;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .profile-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 200px;
+
+      .profile-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 1rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .social-links {
+        display: flex;
+        gap: 1rem;
+
+        .social-link {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: var(--gray);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+          text-decoration: none;
+
+          &:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+          }
+
+          .social-icon {
+            width: 20px;
+            height: 20px;
+            fill: var(--darkgray);
+          }
+        }
+      }
+    }
+
+    .bio-content {
+      flex: 1;
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .tagline {
+        font-size: 1.1rem;
+        color: var(--secondary);
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+      }
+
+      p {
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        color: var(--darkgray);
+      }
+    }
+  }
+
+  .timeline {
+    margin-bottom: 3rem;
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 120px 60px 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border-radius: 12px;
+      background: var(--lightgray);
+      transition: all 0.3s ease;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      &.work {
+        border-left: 4px solid #667eea;
+      }
+
+      &.education {
+        border-left: 4px solid #764ba2;
+      }
+
+      .timeline-years {
+        font-weight: bold;
+        color: var(--secondary);
+        font-size: 0.9rem;
+      }
+
+      .timeline-logo {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+        font-size: 0.8rem;
+
+        @media (max-width: 768px) {
+          margin: 0 auto;
+        }
+      }
+
+      .timeline-content {
+        h3 {
+          margin: 0 0 0.5rem 0;
+          font-size: 1.3rem;
+          color: var(--dark);
+        }
+
+        .organization {
+          font-weight: 600;
+          color: var(--secondary);
+          margin-bottom: 0.25rem;
+        }
+
+        .location {
+          font-size: 0.9rem;
+          color: var(--gray);
+          margin-bottom: 1rem;
+        }
+
+        p {
+          line-height: 1.5;
+          color: var(--darkgray);
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .main-navigation {
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+
+      .nav-card {
+        padding: 2rem;
+        border-radius: 12px;
+        background: var(--lightgray);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+          border-color: var(--secondary);
+        }
+
+        h3 {
+          margin: 0 0 0.5rem 0;
+          color: var(--dark);
+          font-size: 1.4rem;
+        }
+
+        p {
+          margin: 0;
+          color: var(--darkgray);
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+}

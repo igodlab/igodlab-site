@@ -2,6 +2,7 @@ import { render } from "preact-render-to-string"
 import { QuartzComponent, QuartzComponentProps } from "./types"
 import HeaderConstructor from "./Header"
 import BodyConstructor from "./Body"
+import Homepage from "./Homepage"
 import { JSResourceToScriptElement, StaticResources } from "../util/resources"
 import { FullSlug, RelativeURL, joinSegments, normalizeHastElement } from "../util/path"
 import { clone } from "../util/clone"
@@ -230,6 +231,8 @@ export function renderPage(
     </div>
   )
 
+  const HomepageComponent = Homepage()
+
   const lang = componentData.fileData.frontmatter?.lang ?? cfg.locale?.split("-")[0] ?? "en"
   const doc = (
     <html lang={lang}>
@@ -237,7 +240,7 @@ export function renderPage(
       <body data-slug={slug}>
         <div id="quartz-root" class="page">
           <Body {...componentData}>
-            {LeftComponent}
+            {LeftComponent}  {/* ← Explorer will be here for ALL pages including homepage */}
             <div class="center">
               <div class="page-header">
                 <Header {...componentData}>
@@ -251,17 +254,16 @@ export function renderPage(
                   ))}
                 </div>
               </div>
-              <Content {...componentData} />
-              <hr />
-              <div class="page-footer">
-                {afterBody.map((BodyComponent) => (
-                  <BodyComponent {...componentData} />
-                ))}
-              </div>
+              {/* Homepage gets special content, other pages get normal content */}
+              {slug === "index" ? (
+                <HomepageComponent {...componentData} />
+              ) : (
+                  <Content {...componentData} />
+                )}
             </div>
             {RightComponent}
-            <Footer {...componentData} />
           </Body>
+          <Footer {...componentData} />
         </div>
       </body>
       {pageResources.js
