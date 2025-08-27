@@ -1,58 +1,46 @@
-# Cryptographic Primitives
-
-### 2.1 Hash functions
+## 2.1 Hash functions
 - So we've seen that in the *gossip protocol* nodes exchange information objects, its essential to label them with a unique identifier
     - Since there is no notion of ordering while the protocol is running we discard counting and also random numbers because we want uniqueness
     - Then we use hashes as unique identifiers: $H:\{0,1\}^\ast\rightarrow\{0,1\}^\kappa$ which take whatever sized string and output a $\kappa$-bits long string
     - *Cryptographic hashes* are great *compression* functions that also are polynomially computable
 - Next on we'll define three key properties around resistance against $\mathcal{A}$: *collision, preimage & 2nd-preimage resistance*
 
-<div style="background-color:rgb(181, 191, 226); padding:10px 0;font-family:monospace; font-family:monospace">
-<font color = "gray"># <strong>Algorithm 3</strong> collision-finding game for a hash function $H$</font><br>
-<strong>function</strong> collision-game$_{H,\mathcal{A}}(\kappa)$<br>
-&nbsp;&nbsp;$x_1,x_2\leftarrow\mathcal{A}(1^{\kappa})$<br>
-&nbsp;&nbsp;<strong>return</strong> $H_\kappa(x_1)=H_\kappa(x_2)\wedge x_1\neq x_2$<br>
-<strong>end function</strong>
-<br>
-<br>
-<font color = "gray"># <strong>Algorithm 5</strong> preimage-finding game for a hash function $H$</font><br>
-<strong>function</strong> preimage-game$_{H,\mathcal{A}}(\kappa)$<br>
-&nbsp;&nbsp;$x\sim P_\text{uniform}\leftarrow^\$\{0,1\}^\kappa$<br>
-&nbsp;&nbsp;$y\leftarrow H_\kappa(x)$<br>
-&nbsp;&nbsp;$x^\prime\leftarrow\mathcal{A}(y)$<br>
-&nbsp;&nbsp;<strong>return</strong> $H_\kappa(x^\prime)=y$<br>
-<strong>end function</strong>
-<br>
-<br>
-<font color = "gray"># <strong>Algorithm 6</strong> 2nd-preimage-finding game for a hash function $H$</font><br>
-<strong>function</strong> 2nd-preimage-game$_{H,\mathcal{A}}(\kappa)$<br>
-&nbsp;&nbsp;$x_1\sim P_\text{uniform}\leftarrow^\$\{0,1\}^{2\kappa+1}$<br>
-&nbsp;&nbsp;$x_2\leftarrow\mathcal{A}(x_1)$<br>
-&nbsp;&nbsp;<strong>return</strong> $H_\kappa(x_1)=H_\kappa(x_2)\wedge x_1\neq x_2$<br>
-<strong>end function</strong>
-</div>
-
-```pseudo
+```pseudo data-title-prefix="Algo"
 \begin{algorithm}
 \caption{Collision-finding game for a hash function $H$}
 \begin{algorithmic}
-\Function{collision-game}{$L$}
-    \State $s \gets ()$
-    \For{$i \gets 1, L$}
-        \State $\alpha \gets \text{LM}(s, \theta)$
-        \State Sample $s \sim \text{Categorical}(\alpha)$
-        \If{$s = \text{EOS}$}
-            \State \textbf{break}
-        \EndIf
-        \State $s \gets \text{append}(s, s)$
-    \EndFor
-    \State \Return $s$
+\Function{collision-game}{$\kappa$}
+    \State $x_1, x_2 \gets \mathcal{A}(1^\kappa)$
+    \State \Return $H_\kappa(x_1)=H_\kappa(x_2)\wedge x_1\neq x_2$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Preimage-finding game for a hash function $H$}
+\begin{algorithmic}
+\Function{preimage-game}{$\kappa$}
+    \State $x \sim P_{\text{uniform}} \gets ^\$ \{0,1\}^\kappa$
+    \State $y \gets H_\kappa(x)$
+    \State $x^\prime \gets \mathcal{A}(y)$
+    \State \Return $H_\kappa(x^\prime)=y$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{2nd-preimage-finding game for a hash function $H$}
+\begin{algorithmic}
+\Function{2nd-preimage-game}{$\kappa$}
+    \State $x_1 \sim P_{\text{uniform}} \gets ^\$ \{0,1\}^{2\kappa + 1}$
+    \State $x_2 \gets \mathcal{A}(x_1)$
+    \State \Return $H_\kappa(x_1)=H_\kappa(x_2)\wedge x_1\neq x_2$
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 ```
 
-#### Collision resistance
+### Collision resistance
 - In short, for $\mathcal{A}$ to break collsion resistance she has to freely chose both inputs $x_1,x_2$ such that: $\forall x_1,x_2:x_1\neq x_2\Rightarrow H(x_1)= H(x_2)$
 - Because of Pigeonhole theorem ie. if the universe of preimage is larger than hash image then collisions will exist
     - **Theorem 2** (Pigeonhole). *Consider a function $f:A\rightarrow B$. If $|A|>|B|$, then there must exist some inputs $x_1, x_2$ such that $f(x_1)=f(x_2)$*
@@ -65,7 +53,7 @@
     - **Definition 5** (Collision Resistance). *A hash function $H:\{0,1\}^\ast\rightarrow\{0,1\}^\kappa$ is collision resistant if:* $\forall\text{PPT}\mathcal{A} : P[\operatorname{collision-game}_{H,\mathcal{A}}(\kappa)=1]\leq\operatorname{negl}(\kappa)$
 
 
-#### Preimage resistance
+### Preimage resistance
 - In preimage resistance $\mathcal{A}$ is provided a hash output and should be unfeasible to find the preimage $x$ that produces such hash
     - **Defintion 6** (Preimage Resistance). *A hash function $H:\{0,1\}^\ast\rightarrow\{0,1\}^\kappa$ is preimage resistant if* $\forall\text{PPT}\mathcal{A}: P[\operatorname{preimage-game}_{H,\mathcal{A}}(\kappa)=1]\leq\operatorname{negl}(\kappa)$
     
@@ -82,7 +70,7 @@
     - Proof of Theorem 4 - a lot more complicated
 
     
-#### Gossiping with hashses
+### Gossiping with hashses
 - Collision resistance ensures that objects are uniquely *content-addressible*
 - Hashes are so useful that allow to advertise unique objects without revealing its contents
 - In the gossiping process, instead of sending the whole object to peers it is more efficient to advertise its hash (*objectid*)
@@ -92,20 +80,21 @@
 <img src="Learning/images/blockchain/ch021-gossiping-hashes.png" width="60%">
 
 
-#### Hash security 
+### Hash security 
 - Because collision resistance is the stronger resistance proof its the only requisite to call a hash function *cryptographically secure*
     - **Definition 8** (Secure Hash Function). *A hash function $\{0,1\}^\ast\rightarrow\{0,1\}^\kappa$ is secure if there is a negligible function $\operatorname{negl}$ such that:* $\forall\text{PPT}\mathcal{A}: P[\text{collision-game}_{H,\mathcal{A}}=1]\leq\operatorname{negl}(\kappa)$
     
-### 2.2 Signatures
+## 2.2 Signatures
 - Signatures are used to prove to the rest of the network that a balance transfer was really authorized by the sender. Signatures are part of a *cryptographic scheme*, which is a protocol used to achieve certain security objectives
-#### Public key cryptograpy
+
+### Public key cryptograpy
 - Lets state the distinction between identity in legacy and blockchain systems
     - *Legacy* - identity is tied to a person as info in the government's database and has a correspondent physical card (passport) that is accepted
     - *Blockchain* - identity can be *pseudonymous* and an actor can have multiple ones. Idenity is a tuple of a private $sk$ and public key $pk$
         - for any identity there is a tuple of uniquely related $sk$ and $pk$ 
         - given a private key, it is easy to get the respective public key. Given a public key, it is hard to get the respective private key
 
-#### Unforgeability
+### Unforgeability
 - A special algorithm $\operatorname{Gen}(1^\kappa)$ creates the key pair $(sk,pk)$ which are $\kappa$-bits long strings each
 - A function $\operatorname{Sig}(sk, m)=\sigma$ can create unique signatures from a private key $sk$: a particular signature $\sigma$ is related to a particular message $m$ (a different message $m^\prime$ is associated w/ a different signature $\sigma^\prime$)
     - A receiver of message $m$ can invoke a boolean function $\operatorname{Ver}(pk, m, \sigma)$ to check the veracity of the message and if was truly produced by the sender (whose pub key is $pk$)
@@ -115,24 +104,29 @@
     - Inspect previous messages $m$ signed by $(pk, sk)$ to try to decipher $sk^\mathcal{A}=sk$
     - Make the honest party sign adversary-produced-messages $m^\mathcal{A}$ in conjunction to the two above to try to decipher $sk^\mathcal{A}=sk$
 
-<div style="background-color:rgb(181, 191, 226); padding:10px 0;font-family:monospace; font-family:monospace">
-<font color = "gray"># <strong>Algorithm 9</strong> Existential forgery game for signature scheme $(\operatorname{Gen},\operatorname{Sig}, \operatorname{Ver})$</font><br>
-<strong>function</strong> existential-forgery-game$_{\operatorname{Gen},\operatorname{Sig}, \operatorname{Ver},\mathcal{A}}(\kappa)$<br>
-&nbsp;&nbsp;$(pk, sk)\leftarrow \operatorname{Gen}(1^\kappa)$<br>
-&nbsp;&nbsp;$M\leftarrow \emptyset$<br>
-&nbsp;&nbsp;<strong>function</strong> $\mathcal{O}(m)$<br>
-&nbsp;&nbsp;&nbsp;&nbsp;$M\leftarrow M\cup\{m\}$<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<strong>return</strong> $\operatorname{Sig}(sk,m)$<br>
-&nbsp;&nbsp;<strong>end function</strong><br>
-&nbsp;&nbsp;$m\notin M,\sigma\leftarrow\mathcal{A}^\mathcal{O}(pk)$<br>
-&nbsp;&nbsp;<strong>return</strong> $\operatorname{Ver}(pk,\sigma,m)\wedge m\notin M$<br>
-<strong>end function</strong><br>
-</div>
+```pseudo
+\begin{algorithm}
+\caption{Existential forgery game for signature scheme $(\operatorname{Gen},\operatorname{Sig}, \operatorname{Ver})$}
+\begin{algorithmic}
+\Function{existential-forgery-game}{$\kappa$}
+    \State $(pk, sk) \gets \operatorname{Gen}(1^\kappa)$
+    \State $M \gets \emptyset$
+    \Function{O}{$m$}
+        \State $M \gets M\cup\{m\}$
+        \State \Return $\operatorname{Sig}(sk,m)$
+    \EndFunction
+    \State $m \notin M,\sigma \gets \mathcal{A}^\mathcal{O}(pk)$
+    \State \Return $\operatorname{Ver}(pk,\sigma,m)\wedge m\notin M$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+```
+
 
 - Algo 9 shows the game that $\mathcal{A}$ needs to run in order to achieve forgery. a pair of keys are created upon invoking $\operatorname{Gen}$, then the (appendable) message set is initiated as empty. The closure function $\mathcal{O}$ is defined from within which appends messages to the message set $M$ and returns just a signature associated to a particular $m$. Next on, the adversary is initialized by having access only to the pub-key $pk$ and can query signatures (of messages but NOT the messages) from the oracle function $\mathcal{O}$ as many times as she wishes. When she thinks she is ready to give a shot at deciphering $m$ she can then check her try via $\operatorname{Ver}=\text{true}\mid \text{false}$
     - **Definition 10** (Secure signature scemes). *A signature scheme $(\operatorname{Gen}, \operatorname{Sig}, \operatorname{Ver})$ is called secure if there exists a negligible function $\operatorname{negl}$ such that*: $\forall\text{PPT}\mathcal{A}: P[\operatorname{existential-forgery}_{\operatorname{Gen},\operatorname{Sig}, \operatorname{Ver},\mathcal{A}}(\kappa)=1]< \operatorname{negl}(\kappa)$ 
     
-#### Applied signatures
+### Applied signatures
 - Signing the hash of a message is sufficient (rather than signing the entire message)
 - One of the most used signature schemes is based in **elliptic curves** which define how public keys are structured and guarantees that is hard to calculate a private key based on its pub key
     - ie: `ECDSA`, `secp256k1`, `ed25519`

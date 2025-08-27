@@ -167,7 +167,7 @@ $p(\mathcal{D}\mid{\theta}) = \prod_n^N\theta^{y_n}(1-\theta)^{1-y_n}=\theta^{N_
 #### 3.3.4.4 Example: FIM for the univariate Gaussian
 - FIM for eg. the univariate Gaussian $p(x\mid\boldsymbol{\theta}) = \mathcal{N}(x\mid\mu,\sigma^2)$ w/ log-likelihood $l(\boldsymbol{\theta})$ is:
 
-
+$$
 \begin{align*}
 \mathbf{F}(\boldsymbol{\theta})=\left(\begin{array}{cc} 
 \mathbb{E}\left[-\frac{\partial^2 l}{\partial\mu^2}\right] & \mathbb{E}\left[-\frac{\partial^2 l}{\partial\mu\partial(\sigma^2)}\right] \\
@@ -177,7 +177,7 @@ $p(\mathcal{D}\mid{\theta}) = \prod_n^N\theta^{y_n}(1-\theta)^{1-y_n}=\theta^{N_
 0 & \frac{1}{2 \sigma^4}
 \end{array}\right)
 \end{align*}
-
+$$
 
 #### 3.3.4.5 Example: FIM for Logistic Regression
 - By the same token as before, for eg. the $l_2$-regularized binary log reg w/ negative log joint $\mathcal{E}(\boldsymbol{w})=-\log[p(\boldsymbol{y}\mid\mathbf{X},\boldsymbol{w}) p(\boldsymbol{w}\mid\lambda)]$

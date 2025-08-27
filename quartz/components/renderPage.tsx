@@ -238,31 +238,33 @@ export function renderPage(
     <html lang={lang}>
       <Head {...componentData} />
       <body data-slug={slug}>
-        {slug === "index" && <HomepageComponent {...componentData} />}
-        {slug !== "index" && (
-          <div id="quartz-root" class="page">
-            <Body {...componentData}>
-              {LeftComponent}
-              <div class="center">
-                <div class="page-header">
-                  <Header {...componentData}>
-                    {header.map((HeaderComponent) => (
-                      <HeaderComponent {...componentData} />
-                    ))}
-                  </Header>
-                  <div class="popover-hint">
-                    {beforeBody.map((BodyComponent) => (
-                      <BodyComponent {...componentData} />
-                    ))}
-                  </div>
+        <div id="quartz-root" class="page">
+          <Body {...componentData}>
+            {LeftComponent}  {/* ← Explorer will be here for ALL pages including homepage */}
+            <div class="center">
+              <div class="page-header">
+                <Header {...componentData}>
+                  {header.map((HeaderComponent) => (
+                    <HeaderComponent {...componentData} />
+                  ))}
+                </Header>
+                <div class="popover-hint">
+                  {beforeBody.map((BodyComponent) => (
+                    <BodyComponent {...componentData} />
+                  ))}
                 </div>
-                <Content {...componentData} />
               </div>
-              {RightComponent}
-            </Body>
-            <Footer {...componentData} />
-          </div>
-        )}
+              {/* Homepage gets special content, other pages get normal content */}
+              {slug === "index" ? (
+                <HomepageComponent {...componentData} />
+              ) : (
+                  <Content {...componentData} />
+                )}
+            </div>
+            {RightComponent}
+          </Body>
+          <Footer {...componentData} />
+        </div>
       </body>
       {pageResources.js
         .filter((resource) => resource.loadTime === "afterDOMReady")

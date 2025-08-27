@@ -8,7 +8,7 @@ import * as Plugin from "./quartz/plugins"
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "@igodlab",
+    pageTitle: "igodlab",
     pageTitleSuffix: "",
     enableSPA: true,
     enablePopovers: true,
@@ -16,7 +16,7 @@ const config: QuartzConfig = {
       provider: "plausible",
     },
     locale: "en-US",
-    baseUrl: "igodlab.xyz",
+    baseUrl: "igodlab.com",
     ignorePatterns: [
       "private", 
       "templates", 
@@ -70,18 +70,18 @@ const config: QuartzConfig = {
       Plugin.SyntaxHighlighting({
         theme: {
           light: "catppuccin-latte",
-          dark: "catppuccin-frappe",
+          dark: "tokyo-night",
         },
         keepBackground: false,
       }),
       Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: true }),
       Plugin.GitHubFlavoredMarkdown(),
-      Plugin.Pseudocode(),
       Plugin.TableOfContents(),
       Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }),
       Plugin.Description(),
       // HACK: enable custom Latex plugins for codeblock renders in *.md
       Plugin.Latex({ renderEngine: "katex" }),
+      Plugin.Pseudocode(),
     ],
     filters: [Plugin.RemoveDrafts()],
     emitters: [

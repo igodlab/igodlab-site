@@ -8,8 +8,9 @@ export const sharedPageComponents: SharedLayout = {
   afterBody: [],
   footer: Component.Footer({
     links: {
-      GitHub: "https://github.com/jackyzha0/quartz",
-      "Discord Community": "https://discord.gg/cRFFHYye7t",
+      "Github": "https://github.com/igodlab",
+      "LinkedIn": "https://www.linkedin.com/in/igodlab",
+      "X/Twitter": "https://twitter.com/igodlab",
     },
   }),
 }
@@ -52,7 +53,16 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      mapFn: (node) => {
+        if (! node.isFolder) {
+          node.displayName = "🖹" + node.displayName
+        } 
+        else {
+          node.displayName = "🖿" + node.displayName
+        }
+      },
+    }),
   ],
   right: [
     // Component.Graph(),
@@ -76,7 +86,16 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      mapFn: (node) => {
+        if (! node.isFolder) {
+          node.displayName = "🖹" + node.displayName
+        } 
+        else {
+          node.displayName = "🖿" + node.displayName
+        }
+      },
+    }),
   ],
   right: [],
 }
