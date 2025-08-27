@@ -39,6 +39,16 @@ export const defaultContentPageLayout: PageLayout = {
     Component.ArticleTitle(),
     Component.ContentMeta(),
     Component.TagList(),
+    Component.Explorer({
+      mapFn: (node) => {
+        if (! node.isFolder) {
+          node.displayName = "🖹" + node.displayName
+        }
+        else {
+          node.displayName = "🖿" + node.displayName
+        }
+      },
+    }),
   ],
   left: [
     Component.PageTitle(),
