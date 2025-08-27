@@ -25,6 +25,26 @@ export const homepageLayout: PageLayout = {
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
+    Component.Flex({
+      components: [
+        {
+          Component: Component.Search(),
+          grow: true,
+        },
+        { Component: Component.Darkmode() },
+        { Component: Component.ReaderMode() },
+      ],
+    }),
+    Component.Explorer({
+      mapFn: (node) => {
+        if (! node.isFolder) {
+          node.displayName = "🖹" + node.displayName
+        } 
+        else {
+          node.displayName = "🖿" + node.displayName
+        }
+      },
+    }),
   ],
   right: [],
 }
@@ -39,16 +59,6 @@ export const defaultContentPageLayout: PageLayout = {
     Component.ArticleTitle(),
     Component.ContentMeta(),
     Component.TagList(),
-    Component.Explorer({
-      mapFn: (node) => {
-        if (! node.isFolder) {
-          node.displayName = "🖹" + node.displayName
-        }
-        else {
-          node.displayName = "🖿" + node.displayName
-        }
-      },
-    }),
   ],
   left: [
     Component.PageTitle(),
