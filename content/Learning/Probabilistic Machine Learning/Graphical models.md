@@ -1,4 +1,7 @@
-# 4 Graphical Models
+---
+title: 4. Graphical models
+date: 2025-08-13
+---
 
 ## 4.1 Introduction
 - Two key principles for building learning models are: *modularity* & *abstraction*, and probability theory brings both under an aligned approach

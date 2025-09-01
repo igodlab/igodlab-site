@@ -1,4 +1,7 @@
-# 3 Statistics
+---
+title: 3. Statistics
+date: 2025-07-28
+---
 
 ## 3.1 Introduction
 - Probability theory (Chapter 2) is all about modeling a distribution over observed data outcomes $\mathcal{D}$ (knowing the parameters $\boldsymbol{\theta}$) by computing $p(\mathcal{D}| \boldsymbol{\theta})$
@@ -592,26 +595,3 @@ Therefore $H_0$ is probably false
 - An alternative to cross-validation for model selection is to score models based on the negative log-likelihood (NLL) PLUS some criteria (represented as complexity terms $C(m)$): $\mathcal{L}(m)=-\log{p(\mathcal{D}\mid\hat{\boldsymbol{\theta}},m)}+C(m)$
     - see more [[GHV14](https://arxiv.org/pdf/1307.5928.pdf)]
 
-
-#### 3.8.7.1 Minimum description length (MDL)
-
-
-
-#### 3.8.7.2 Bayesian information criterion (BIC)
-
-
-
-#### 3.8.7.3 Akaike information criterion
-
-
-
-#### 3.8.7.4  Widely applicable information criterion (WAIC)
-
-
-
-
-
-
-```python
-## 3.9 
-```

@@ -1,6 +1,9 @@
-# Blocks
+---
+title: 4. Blocks
+date: 2024-10-14
+---
 
-### 4.1 The Network Delay
+## 4.1 The Network Delay
 - Let's recap the core concepts up to Chapter 3, we have:
     - Created a monetary system that allows participants to transfer money between one another
     - Ensured that participants can ony spend their own money by using an *unforgeable crypto signature scheme* to authenticate transactions
@@ -10,28 +13,28 @@
     - **Definition 13** (Network delay). *The network delay parameter $\Delta$ measures the maximum time it takes for a message to travel from one honest party to every other one on the network*
     - Gossiping ensures that even adversarial messages make it accross the network within $\Delta$, thus can be caught
 
-### 4.2 Double Spending
+## 4.2 Double Spending
 - In a nutshell it is when two transactions $\text{tx}_2,\text{tx}_2^\prime$ consume the same legitimate output from previous $\text{tx}_1$ and the gossiping of $\text{tx}_2,\text{tx}_2^\prime$ occurs in different order for different honest nodes. Causing a split truth scenario:
     - some honest nodes accept $\text{tx}_2$ because it came first, these nodes removed the output from $\text{tx}_1$ from their UTXO set then updated it with the new unspent outputs from $\text{tx}_2$ and then rejected $\text{tx}_2^\prime$ because it came by second trying to spend outputs that are not there anymore BUT the reverse scenario plays out for other nodes - accepting $\text{tx}_2^\prime$ and taking its outputs as their latest UTXO set version and rejecting $\text{tx}_2$
     - This is bad because there is no consensus on the same UTXO set so we've lost agreement on *who owns what*
 
-### 4.3 Simple Ideas Don't Work
+## 4.3 Simple Ideas Don't Work
 - We'll list some simple ideas that come natural to solve double spending and then dismantle them one by one:
     - *Idea 1*.- Reject double spends altogether $\rightarrow$ doesn't work because $\mathcal{A}$ now only as to withold $\text{tx}_2^\prime$ for a bit (see Fig.4.2)
     - *Idea 2*.- Accept the first transaction seen $\rightarrow$ makes it easy for $\mathcal{A}$ to provoke split truth, she just has to spam Charlie and David with $\text{tx}_2, \text{tx}_2^\prime$ in different order (see Fig.4.3)
     - *Idea 3*.- Reject double spends within time $u\geq\Delta$, after $u$ accept first transaction seen $\rightarrow$ still easy for $\mathcal{A}$ to break consensus, she just has to spam Charlie with $\text{tx}_2^\prime$ within $u$ and $\Delta$ and spam Dave with $\text{tx}_2^\prime$ after $u$ but within $\Delta$, the former rejects both double spends & the latter just takes $\text{tx}_2$  as it came first
 - The double spending problem is not trivial so we'll spend the next many sections accumulating weapons to tackle it
 
-<img src="images/ch043-simple-ideas.png" width="85%">
+<img src="/Learning/images/blockchain/ch043-simple-ideas.png" width="85%">
 
-### 4.4 Ledgers
+## 4.4 Ledgers
 - Since honest parties receive transactions in different order we can demand them to construct & report a **Ledger** which orders transactions sequentially
     - If reading a reported Ledger by some honest party that allows the reconstruction of the transaction graph we can land to the latest UTXO set and if other honest parties agree on the reported Ledger $\Rightarrow$ we've recovered consensus on *who owns what* against double spending
 - To construct a Ledger we'll need a more sophisticated system, including more elements: 
     - *(i) The Full Node*: a piece of code identically executed by all honest parties and is in charge of **peer discovery** & **gossiping** messages. Moreover, it exposes two functionalities *read* & *write* which returns the Ledger of transactions & accepts, broadcasts and gossips new transactions, respectively
     - *(ii) The Wallet*: is the intermediary element between a human user and the full node, it can invoke *read* & *write* functionalities from the full node
     
-<img src="images/ch044-ledgers.png" width="60%">
+<img src="/Learning/images/blockchain/ch044-ledgers.png" width="60%">
 
 - The following definitinos are ideals (but poses a dilemma):
     - **Definition 14** (Ledger). *A ledger of an honest party $P$ reported at time $r$, denoted $L^P_r$ is a finite sequence of transactions returned wen the honest party $P$ invokes the read functionality of its honest protocol $\Pi$*
@@ -43,12 +46,12 @@
     - If we max liveness (*live but not safe protocol*) we'll have the *write* functionality immediately appending a transaction in the local Ledger of some $P$ party and any incoming gossiped-transaction is also appended into the local Ledger. When the *read* functionality is invoked the local Ledeger is returned. We maxed liveness at the expense of safety because not all Ledgers will have the same order of transactions (since local ledgers immediately append transactions)
     - **Definition 17** (Security). *A protocol $\Pi$ is secure if it produces Ledgers that are both safe and live (balanced trafe-off)*
 
-### 4.5 Rare Events
+## 4.5 Rare Events
 - To combat double spending we can introduce a rare-event parameter in the protocol: granting a ticket that acts as a knob to tune security on who can issue a transaction to the network & at which frequency
     - if we enforce participants to get a ticket at least every $\Delta$ time appart $\Rightarrow$ we guarantee that $\mathcal{A}$ cannot spam with sequential transactions in shorter times than $\Delta$
     - the notion of issuing tickets is: if these are issued far spread appart ($\gg \Delta$) we guarantee safety but deteriorate liveness; if issued at $<\Delta$ safety is in risk because if double spending; if issued slightly more than $\Delta$ we can get good liveness and safety
 
-### 4.6 Proof-of-Work
+## 4.6 Proof-of-Work
 - A system to issue tickets with *tunable frequency* that grant autorization to send transactions to full nodes can be based on many different ideas
     - **Proof of Work (PoW)** - is Bitcoin's mechanism to accomplish this. Inspired in algo 4 from chapter 2 (brute force exponential `preimage-search`), but modified to make it slighty easier:
         - Recall that finding a preimage means finding $B$ from a $\kappa$-bit long hash $H(B)=h$
@@ -82,14 +85,14 @@
 <strong>end function</strong>
 </div>
 
-### 4.7 The Block
+## 4.7 The Block
 - We've removed the double spending problem demanding winning proof-of-work to get a ticket (at a max frequency of $\Delta$). We can now establish the relationship of tickets wrt issuing transactions, what does winning a ticket allow a participant to do?
     - *Tie one ticket to one transaction* - If we tie our random $\text{ctr}$ num and the transaction id, then the hash of $B=\text{txid} \| \text{ctr}$ ($\|$ means concatenation) is committing to a particular transaction and ensures that $\mathcal{A}$ cannot trick the system by attempting to issue a (corrupted) transaction other than the one she committed to, otherwise she will waste energy playing the incorrect guessing game searching for the wrong hash inequality
     - *Tie one ticket to a payload* - The previous point deteriorates *liveness*, to improve this we can bundle a sequence of transactions into a **block payload** $\vec{x}=(\text{tx}_1\ldots,\text{tx}_n)$ and then tie $B=\vec{x}\| \text{ctr}$ to the ticket aka **block**
     - *Double spending in the bundle?* - One might think that when bundling transactions the double spending problem resurfaces (again we allow more than one transaction to occur within $\Delta$). However, inside a block payload we have full view of each transaction's outpoints thus we can use our *simple ideas* (from Sec.4.3) to prevent double spending
     - *Tickets ensure that block payloads are spread $\Delta$ appart* - Double spend attempts can occur in different blocks of the network but still are $\Delta$ appart (plus other custom protocol security designs)
 
-### 4.8 The Mempool
+## 4.8 The Mempool
 - The solution to double spending - mining blocks, comes with one main problem: we tie the liveness to a particular honest party's coputational power. This creates a race to get a ticket where large computational power gets the advantage, magnifying the computational power imbalance among honest parties. 
 - In the less optimistic case at least we'd like to design our system such that it doesn't favor this diparity. So we introduce the concept of the **mempool** (sort of a waiting room for transactions before being bundled into a block)
     - **Definition 18** (Mempool). *The mempool $\vec{x}$ of an honest party $P$ at a time $r$ is the sequence of transactions that have been received and validated, but have not yet been included in a block*
@@ -99,7 +102,7 @@
 - Note that with the mempool, liveness is not severely affected becasue all inflow of transactions will eventually be confirmed by the PoW honest party winner, and this occurs every $\Delta$ which also ensures we're safe against double spending
 - Moreover, when wallets ask for the *read* functionality ONLY confirmed transactions are reported in the transaction DAG + UTXO set
 
-### 4.9 Chain of Blocks
+## 4.9 Chain of Blocks
 - While PoW ensures that $\mathcal{A}$ gets a block in spaced out time intervals. She may take advantage of a couple of *stale blocks*, witholding them to then issue them in close $\Delta$ succession.
     - We can solve this easily by enforcing some notion of *freshness* in blocks ie. requiring only freshly packaged blocks to be issued $B=s\|\vec{x}\|\text{ctr}$ so we include the pointer to the previous blockid $s$
     - Similar to transactions a block $B$ also has a unique identifier: *blockid* $H(B)$ which typically is a convolution of hashes of its contents
@@ -120,13 +123,13 @@
 <strong>end function</strong>
 </div>
 
-### 4.10 Genesis
+## 4.10 Genesis
 - In the previous section we made blocks attest about their freshness by pointing to the *previd*. But what about with the first *genesis block*? It cannot point to anything before it
     - $\mathcal{A}$ might take advantage of this by anticipating in (secretely) producing blocks before the protocol actually launched (*premining* attacks)
     - To prevent these type of attacks the genesis block must contain in its metadata an anchor to unpredictable timestamped events (such as the frontpage of the next day newspaper eg. Bitcoin's The Times 03/Jan/2009 Chancellor on brink of second bailout for banks)
     - This anchor come into play conditioning the first PoW inequality, thus, only the protocol developer(s) can ensure which is the genesis block
     
-### 4.11 Mining
+## 4.11 Mining
 - The basic operational state that miners are stuck into (at least in first gen blockchains like Bitcoin) is the following, miners are constantly:
     - Maintaining a consistent local mempool $\vec{x}$ of transactions
     - Attempt to mine a block $B=s\|\vec{x}\|\text{ctr}$ by findning $\text{ctr}$ that satisfies $H(B)\leq T$
