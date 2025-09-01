@@ -48,9 +48,6 @@ export default (() => {
               Three years of experience in Blockchain Developer Relations, maximizing value from bridging communities and engineering teams. Experienced programmer on ML/Data Science and Physical modeling with a record of academic journal publications.
             </p>
             <p>
-              Currently Content Strategist at Wolfram Blockchain Labs, where I lead the UTXO Alliance and author educational resources that break down complex blockchain concepts. Previously Developer Relations at Input Output Global, working on Cardano Smart Contracts and developer experience.
-            </p>
-            <p>
               My background spans from Complex Systems and Neural Networks to Molecular Physics and Biophysics, with published research in scientific journals. I'm passionate about making cutting-edge technology accessible and building bridges between technical communities.
             </p>
           </div>
