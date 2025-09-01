@@ -1,30 +1,33 @@
-# The Transaction
+---
+title: 3. Transactions
+date: 2024-09-30
+---
 
-### 3.1 Coins
+## 3.1 Coins
 - Now that we have covered the basics - money is a social construct and we agreed on our ctypto primitives $\rightarrow$ we can create our own money:
     - As long as it is difficult to forge and everyone agrees on *who owns what*
 - We'll refer to transactions as coins passing from hand-to-hand
     - Transactions are boxes were transitions occur and arrows represent value moving ie. returning/changing owner
     - Illustrations put names on owners but in reality these are pub-key hashes not legal identities
 
-### 3.2 Multiple outputs
+## 3.2 Multiple outputs
 - Dangling arrows are **Unspent Transaction Outputs (UTXOs)** any other arrow that points to a transaction block is already spent
 - Similarly to the cash system, if one has a 1000 bill and wants to spend only 50 to buy a book but keep the other 950, then they must split the physical bill into 50 bucks + change. *UTXO*s function in the same way
 
 
-### 3.3 Multiple inputs
+## 3.3 Multiple inputs
 - Multiple inputs can converge into a transaction block to aggregate for making larger payments
 
-### 3.4 Conservation law
+## 3.4 Conservation law
 - With the exception of minting new tokens (which have a genesis where everything gets created in one transtaction) all other transactions must obey a *conservation law*:
     - value comming from all inputs must equal the value comming from all outputs (minus a tx fee): 
     - **Definition 11** (Conservation law). *Given a transaction $\text{tx}$, we say that it obeys the Conservation Law if*: $\sum_{\text{in}\in\text{tx.ins}}\text{in.v}=\sum_{\text{out}\in\text{tx.outs}}\text{out.v}+\text{fees}$
     
-### 3.5 Outpoints
+## 3.5 Outpoints
 - All transactions have a unique identifier $\text{txid}$, obtained by hashing all of its transaction data ie. I/Os
     - All inputs are just outputs being spent, thus we can reference ouputs with a tuple containing $(\text{txid}, \text{idx})$ ie. from which previous transaction block $\text{txid}$ does its input number $\text{idx}$ come from?
     
-### 3.6 The UTXO Set
+## 3.6 The UTXO Set
 - The whole history of payments forms a transaction **(DAG) Directed Acyclic Graph** (an append-only graph)
     - The diagram is simplified for conciseness (not showing owners or values)
     - Key thing is to highlight that UTXOs are the current state of the Ledger, all UTXO's form the **UTXO set** in the Ledger at a particular time
@@ -32,18 +35,18 @@
     - Each node in the network appends new transtactions and stores the whole transaction graph ie. everyone knows *who owns what* by looking at their local UTXO set
     - To know *how much* a particular party has, he must collect and sum the value of all of the UTXOs (from the current UTXO set) marked with a pub-key whose respective private-key is in his possesion 
 
-<img src="images/ch036-dag-utxo-set.png" width="60%">
+<img src="/Learning/images/blockchain/ch036-dag-utxo-set.png" width="60%">
 
 
-### 3.7 Transaction signatures
+## 3.7 Transaction signatures
 - For a transaction to be valid, its inputs must point to outputs whose spending has been authorized by their rightful owner. 
     - This can be done by signing the new transaction data using the secret key that corresponds to the public key annotated on the previous output being spent.
     - Upon creation, a transaction must have each of its inputs $\text{in}_1,\ldots,\text{in}_n$ signed by his owner's private-keys $\sigma_1, \ldots, \sigma_n$ (created by $sk_1,\ldots,sk_n$ and verifiable by $pk_1,\ldots,pk_n$), respectively
     
-### 3.8 Transaction creation
+## 3.8 Transaction creation
 - The general chronological order to create a new transaction is: *(i)* sender request the receiver his pub key through some off-chain means. *(ii)* sender picks his UTXO outpoints to spend from then signs everything ($\sigma=sk+pk$ for each) and creates a new transaction with the outputs containing receiver's pub key and value being trasferred. *(iii)* collects all data in previous step into a message. *(iv)* for each UTXO outpoint sender signs with private key and *(v)* broadcasts the transaction to the network.
 
-### 3.9 Transaction format
+## 3.9 Transaction format
 - A concrete example of a transaction block (shown below) is a collection of 
     - 1. List of inputs $(\text{txid, idx})$ - each element is an outpoint: tuple of an existing UTXO hash $\text{txid}$ and its output number $\text{idx}$
     - 2. List of outputs- each element is a pair of pub key (receiver/owner of the output) and value amount (integer w/ comma shifted to avoid floating point operations)
@@ -62,7 +65,7 @@
 }
 </div>
 
-### 3.10 Transaction validation
+## 3.10 Transaction validation
 - Validating an incoming transaction means that nodes update their transaction history graph. The process goes as follows:
     - *Transaction validation* ie. checking that a particular transaction is rightfully spending the crypto that it is claiming.
         - 1. Tx arrives at the door of a receiver for the 1st time, for each input he resolves the respective outpoint
