@@ -1,6 +1,7 @@
-# 2 Probability
-
-WIP $\ldots$
+---
+title: 2. Probability
+date: 2025-07-16
+---
 
 ## 2.5 Transformations of random variables
 
