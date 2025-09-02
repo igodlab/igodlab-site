@@ -16,7 +16,7 @@ const config: QuartzConfig = {
       provider: "plausible",
     },
     locale: "en-US",
-    baseUrl: "igodlab.com",
+    baseUrl: "/content/",
     ignorePatterns: [
       "private", 
       "templates", 
