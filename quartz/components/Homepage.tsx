@@ -11,7 +11,7 @@ export default (() => {
         <section className="hero-section">
           <div className="profile-section">
             <div className="profile-photo">
-              IC
+              <img src="/assets/homesite/igodlab-site-colombia.jpeg" alt="Ignacio Calderon de la Barca"/>
             </div>
             <div className="social-links">
               <a href="mailto:igodlab@gmail.com" className="social-link" title="Email">
@@ -57,7 +57,9 @@ export default (() => {
         <section className="timeline">
           <div className="timeline-item work">
             <div className="timeline-years">2024 - present</div>
-            <div className="timeline-logo">WBL</div>
+            <div className="timeline-logo">
+              <img src="/assets/homesite/wbl-logo.png" alt="Wolfram Blockchain Labs"/>
+            </div>
             <div className="timeline-content">
               <h3>Content Strategist</h3>
               <div className="organization">Wolfram Blockchain Labs</div>
@@ -68,7 +70,9 @@ export default (() => {
 
           <div className="timeline-item work">
             <div className="timeline-years">2022 - 2024</div>
-            <div className="timeline-logo">IOG</div>
+            <div className="timeline-logo">
+              <img src="/assets/homesite/iohk-logo.png" alt="Input Output Global"/>
+            </div>
             <div className="timeline-content">
               <h3>Developer Relations</h3>
               <div className="organization">Input Output Global</div>
@@ -79,7 +83,9 @@ export default (() => {
 
           <div className="timeline-item work">
             <div className="timeline-years">2021 - 2021</div>
-            <div className="timeline-logo">IOG</div>
+            <div className="timeline-logo">
+              <img src="/assets/homesite/iohk-logo.png" alt="Input Output Global"/>
+            </div>
             <div className="timeline-content">
               <h3>Software Test Engineer</h3>
               <div className="organization">Input Output Global</div>
@@ -90,7 +96,9 @@ export default (() => {
 
           <div className="timeline-item education">
             <div className="timeline-years">2018 - 2020</div>
-            <div className="timeline-logo">SFU</div>
+            <div className="timeline-logo">
+              <img src="/assets/homesite/SFU_block_colour_rgb.png" alt="Simon Fraser University"/>
+            </div>
             <div className="timeline-content">
               <h3>Research Assistant Physics</h3>
               <div className="organization">Simon Fraser University</div>
