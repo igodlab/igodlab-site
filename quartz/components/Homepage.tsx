@@ -82,7 +82,7 @@ export default (() => {
           </div>
 
           <div className="timeline-item work">
-            <div className="timeline-years">2021 - 2021</div>
+            <div className="timeline-years">2020 - 2021</div>
             <div className="timeline-logo">
               <img src="/assets/homesite/iohk-logo.png" alt="Input Output Global"/>
             </div>
