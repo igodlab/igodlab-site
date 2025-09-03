@@ -89,7 +89,7 @@ sequences given inputs, such as mapping one language to another, or an image to 
 - A simple initial solution to the sparsity problem is to use the *Dirichlet prior* $\mathbf{A}_{j:}\sim \text{Dir}[\alpha\mathbf{1}]$
 - The Maximum a Posteriori MAP estimate for transition states is $\hat{A}_{jk}=\frac{N_{jk}+\alpha}{N_j+K\alpha}$ (if $\alpha=1$ is called **add-one-smoothing**)
     - The problem with add-one-smoothing is that it assumes that all n-grams are equally likely (not realistic)
-    - More sophisticated approach in Sec.3.7.3, hierarchichal Bayes
+    - More sophisticated approach in [[learning/probml/03-statistics#373-eb-for-markov-models-n-gram-smoothing|Sec.3.7.3]], hierarchichal Bayes
 
 ### 2.6.4 Stationary distribution of a Markov chain
 - Stationary distribution = prob dist that remains unchanged over time
@@ -151,7 +151,7 @@ balance equations wrt distribution $\pi$, then $\pi$ is a stationary distributio
 ### 2.7.2 Integral probability metrics (IMP)
 - **Integral Prob Metric (IPM)** compares density differences. It is defined as the supremum of a certain $\mathcal{F}$ (called generating class of functions) and are a set of functions $f$ that satisfy certain properties (Lipschitz continuous, bounded)
 $D_{\mathcal{F}}(P, Q) \triangleq \sup _{f \in \mathcal{F}}\left|\mathbb{E}_{p(\boldsymbol{x})}[f(\boldsymbol{x})]- \mathbb{E}_{q\left(\boldsymbol{x}^{\prime}\right)}\left[f\left(\boldsymbol{x}^{\prime}\right)\right]\right|$
-- the choice of $f\in\mathcal{F}$ depends on the application, eg. kernel mean embedding as we'll see in (Sec.2.7.3.1) 
+- the choice of $f\in\mathcal{F}$ depends on the application, eg. kernel mean embedding as we'll see in ([[learning/probml/02-probability#2731-mmd-as-ipm|Sec.2.7.3.1]]) 
 
 ### 2.7.3 Maximum mean discrepancy (MMD)
 - This section compares dists using *positive definite kernels* (see Sec.18.2) on samples of the two dists
