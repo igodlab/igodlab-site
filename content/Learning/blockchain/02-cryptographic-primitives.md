@@ -62,7 +62,7 @@ date: 2024-09-22
 - In preimage resistance $\mathcal{A}$ is provided a hash output and should be unfeasible to find the preimage $x$ that produces such hash
     - **Defintion 6** (Preimage Resistance). *A hash function $H:\{0,1\}^\ast\rightarrow\{0,1\}^\kappa$ is preimage resistant if* $\forall\text{PPT}\mathcal{A}: P[\operatorname{preimage-game}_{H,\mathcal{A}}(\kappa)=1]\leq\operatorname{negl}(\kappa)$
     
-#### Second preimage resistance
+### Second preimage resistance
 - In second preimage resistance $\mathcal{A}$ is handed a preimage $x_1$ and its image $H(x_1)$ and should be unfeasible to find another input $x_2$ that produces the same image
     - **Definition 7** (2nd-Preimage Resistance) *A hash function $H:\{0,1\}^\ast\rightarrow\{0,1\}^\kappa$ is 2nd-preimage resistant if* $\forall\text{PPT}\mathcal{A}: P[\operatorname{2nd-preimage-game}_{H,\mathcal{A}}(\kappa)=1]\leq\operatorname{negl}(\kappa)$
 

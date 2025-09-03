@@ -102,7 +102,7 @@ Participants are nodes on a computer network, each run software and communicate 
     - To avoid denial-of-service attacks some safety-guardrails are implemented (eg. validating messages before spreading them)
     - **Definition 3** (Non-eclipsing assumption). *Between every two honest parties on the network, there exists a path consisting only of honest nodes*
 
-<img src="../assets/learning/blockchain/ch014-eclipsed-network.png" width="60%">
+<img src="../assets/learning/blockchain/ch014-eclipsed-network.png" width="75%">
 
 
 ### The sybil attack
@@ -110,7 +110,7 @@ Participants are nodes on a computer network, each run software and communicate 
     - **Definition 4** (Sybil Attack). *In a Sybil attackable network model, the adversary may create as many identities as she desires. The honest parties cannot distinguish which identities have been created by the adversary in this manner*
         - It is possible that the adversasry controls all the connections of an honest node except for one connection w/ another honest party
 
-<img src="../assets/learning/blockchain/ch014-sybil-attack.png" width="60%">
+<img src="../assets/learning/blockchain/ch014-sybil-attack.png" width="75%">
 
 ### Peer discovery
 - *Peer discovery* refers to the process of connecting to other nodes, attempting to ensure at least one honest connection. Briefly the sequence of steps are
