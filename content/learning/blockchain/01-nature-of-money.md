@@ -102,7 +102,7 @@ Participants are nodes on a computer network, each run software and communicate 
     - To avoid denial-of-service attacks some safety-guardrails are implemented (eg. validating messages before spreading them)
     - **Definition 3** (Non-eclipsing assumption). *Between every two honest parties on the network, there exists a path consisting only of honest nodes*
 
-<img src="../assets/learning/blockchain/ch014-eclipsed-network.png" width="60%">
+<img src="../assets/learning/blockchain/ch014-eclipsed-network.png" width="75%">
 
 
 ### The sybil attack
@@ -110,47 +110,9 @@ Participants are nodes on a computer network, each run software and communicate 
     - **Definition 4** (Sybil Attack). *In a Sybil attackable network model, the adversary may create as many identities as she desires. The honest parties cannot distinguish which identities have been created by the adversary in this manner*
         - It is possible that the adversasry controls all the connections of an honest node except for one connection w/ another honest party
 
-<img src="../assets/learning/blockchain/ch014-sybil-attack.png" width="60%">
+<img src="../assets/learning/blockchain/ch014-sybil-attack.png" width="75%">
 
 ### Peer discovery
 - *Peer discovery* refers to the process of connecting to other nodes, attempting to ensure at least one honest connection. Briefly the sequence of steps are
     - *network boostrapping* phase - a P2P node at first boot must connect to a list of hard-coded IP addresses and at least get one honest node connection. 
     - Once connected it can ask the peer to share a list of other node's IPs (which depending on the protocol may be partially shareable to avoid censorship or compromising the entire list)
-
-
-### Supplementary
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-x = np.arange(1, 10, .1)
-y = lambda xi: 1 / xi
-
-plt.scatter(x, y(x))
-# plt.scatter(, color="red")
-plt.xlabel(r"$x\in\mathbb{N}$")
-plt.ylabel(r"$\frac{1}{x}$")
-```
-
-    Text(0, 0.5, '$\\frac{1}{x}$')
-    
-![png](chapter01_files/chapter01_5_1.png)
-    
-
-
-
-```python
-x = np.arange(1, 2, .01)
-plt.scatter(x, F(x))
-plt.scatter(x, Finv(x), color="red")
-plt.xlabel(r"$x\in\mathbb{N}$")
-plt.ylabel(r"$\frac{1}{x}$")
-plt.lenge
-```
-
-    Text(0, 0.5, '$\\frac{1}{x}$')
-    
-![png](chapter01_files/chapter01_6_1.png)
-    
-

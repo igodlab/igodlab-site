@@ -6,13 +6,13 @@ title: Learning
 
 <div class="grid-container">
 
-<a href="/Learning/Probabilistic-Machine-Learning/" class="grid-item type-1">
+<a href="/learning/probml/" class="grid-item type-1">
 <div class="icon"><img src="/../assets/learning/probml/probml_book2.jpg" alt="gatekeepers" style="width: 100px; height: 125px;"></div>
 <div class="title">Prob ML</div>
 <div class="description">Probabilistic Machine Learning Advanced Topics</div>
 </a>
 
-<a href="/Learning/Fundamentals-of-Blockchain/" class="grid-item type-2">
+<a href="/learning/blockchain/" class="grid-item type-2">
 <div class="icon"><img src="/../assets/learning/blockchain/utxo-icon.png" alt="gatekeepers" style="width: 100px; height: 125px;"></div>
 <div class="title">UTXO Blockchains</div>
 <div class="description">Blockchain technology and the UTXO model</div>

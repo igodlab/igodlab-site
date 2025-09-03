@@ -33,7 +33,7 @@ date: 2024-11-13
     - **Definition 22** (Common Prefix). *A system is said to satisfy* Common Prefix *with parameter $k\in\mathbb{N}$ if for all honset parties $P_1,P_2$, and for all times $r_1\leq r_2$, the chains adopted by the honest parties satisfy the property that:* $C_{r_1}^{P_1}[:-k]\preccurlyeq C_{r_2}^{P_2}$
     - **Theorem 7** (Common Prefix $\Rightarrow$ Safety (informal)). *If the blocktree satisfies Common Prefix with parameter $k$, then the longest chain protocol with the $k$-confirmation rule is safe* 
         - *$k$ is another tunable parameter* - If we chose a small $k$, then *liveness* is high but we risk violating Common Prefix & thus risking safety. If we choose a large $k$ then we are certain that we'll never have conflicts with Ledger versions at the expense of hurting *liveness*
-- We can update algo 12 from [[Learning/Fundamentals-of-Blockchain/Chain.md#52-The-Arrow-of-Time|Sec.5.2]] to read a chain with Common Prefix
+- We can update algo 12 from [[learning/blockchain/05-chain.md#5.2-the-arrow-of-time|Sec.5.2]] to read a chain with Common Prefix
 
 ```pseudo
 \begin{algorithm}
@@ -67,7 +67,7 @@ date: 2024-11-13
 <img src="../assets/learning/blockchain/ch065-nakamoto-race.png" width="75%">
     
 ## 6.6 The Fan Out
-- Fan-out is when situation (2) plays out in [[Learning/Fundamentals-of-Blockchain/Chain-virtues.md#65-The-Nakamoto-Race|Sec.6.5]]. Despite honest nodes having larger mining power (which translates into more speed capacity) it is allocated in a non-coordinated way, contributing to fragmented speed accross many 'racing lanes' / honest forks. Whereas $\mathcal{A}$ is a pueptmaster who can control all her minions to allocate all mining power on the corrupted fork and, w/ less combined mining power, can still BEAT the honest nodes in the *Nakamoto Race*
+- Fan-out is when situation (2) plays out in [[learning/blockchain/06-chain-virtues.md#6.5-the-nakamoto-race|Sec.6.5]]. Despite honest nodes having larger mining power (which translates into more speed capacity) it is allocated in a non-coordinated way, contributing to fragmented speed accross many 'racing lanes' / honest forks. Whereas $\mathcal{A}$ is a pueptmaster who can control all her minions to allocate all mining power on the corrupted fork and, w/ less combined mining power, can still BEAT the honest nodes in the *Nakamoto Race*
 
 ## 6.7 Chain Quality & Chain Growth
 - In summary **chain virtues** give rise to **Ledger virtues**. *Safety* follows from Common Prefix and *liveness* follows from Chain Growth & Chain Quality, lets define these last two:
