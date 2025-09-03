@@ -1,6 +1,6 @@
 ---
 title: Blockchains and the Unspent Transaction Output model
-date: 2025-09-10
+date: 2024-09-10
 ---
 
 <img src="../assets/learning/blockchain/utxo-icon.png" width="75%">
