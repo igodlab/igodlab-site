@@ -139,7 +139,7 @@ $p(\mathcal{D}\mid{\theta}) = \prod_n^N\theta^{y_n}(1-\theta)^{1-y_n}=\theta^{N_
     - fact: the number of unique datapoints in a bootstrap sample is $(1-(1-1/N)^N)\sim 1 - e^{-1}\approx 0.632$, for large $N$
 - From Fig.3.4 how is parametric boostrap estimate $\hat{\boldsymbol{\theta}}^s = \delta\left(\mathcal{D} \right)$ (a-b) different from posterior sampling $\boldsymbol{\theta}^s\sim p(\cdot \mid \mathcal{D})$ (c-d)? Ans. very different conceptually but not so different if frequentist estimator is MLE and bayes prior is weak
     
-<img src="Learning/images/probml/ch0332-bootstrap-vs-bayes.png" width="70%">
+<img src="../assets/learning/probml/ch0332-bootstrap-vs-bayes.png" width="70%">
 
 
 ### 3.3.3 Assymptotic normality of the sampling distribution of the MLE
@@ -470,7 +470,7 @@ Therefore $H_0$ is probably false
 - A standard solution is to re-wirte the model following a **non-centered parameterization**: $\theta_j=\mu+\tau\eta_j$, where $\eta\sim\mathcal{N}(0,1)$
     - This accomplishes that we can have less variance that approximates us to a value for $\theta$
 
-    <img src="Learning/images/probml/ch03622-non-centered-parameterization.png" width="75%">
+    <img src="../assets/learning/probml/ch03622-non-centered-parameterization.png" width="75%">
 
 ### 3.6.3 Hierarchical conditional models
 - 

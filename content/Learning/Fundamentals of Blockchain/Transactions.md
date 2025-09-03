@@ -35,7 +35,7 @@ date: 2024-09-30
     - Each node in the network appends new transtactions and stores the whole transaction graph ie. everyone knows *who owns what* by looking at their local UTXO set
     - To know *how much* a particular party has, he must collect and sum the value of all of the UTXOs (from the current UTXO set) marked with a pub-key whose respective private-key is in his possesion 
 
-<img src="/Learning/images/blockchain/ch036-dag-utxo-set.png" width="60%">
+<img src="../assets/learning/blockchain/ch036-dag-utxo-set.png" width="60%">
 
 
 ## 3.7 Transaction signatures
@@ -51,19 +51,17 @@ date: 2024-09-30
     - 1. List of inputs $(\text{txid, idx})$ - each element is an outpoint: tuple of an existing UTXO hash $\text{txid}$ and its output number $\text{idx}$
     - 2. List of outputs- each element is a pair of pub key (receiver/owner of the output) and value amount (integer w/ comma shifted to avoid floating point operations)
 
-<div style="background-color:rgb(181, 191, 226); padding:10px 0;font-family:monospace; font-family:monospace">
-{<br>
-&nbsp;&nbsp;inputs: [<br>
-&nbsp;&nbsp;&nbsp;&nbsp;{ outpoint: ( "cc6a...d169", 0 ), sig: "13f1...bc79...8c0b" }<br>
-&nbsp;&nbsp;&nbsp;&nbsp;{ outpoint: ( "3a64...58a0", 3 ), sig: "680b...ac27...eae8" }<br>
-&nbsp;&nbsp;],<br>
-&nbsp;&nbsp;outputs: [<br>
-&nbsp;&nbsp;&nbsp;&nbsp;{ pk: "36de...6a69", amount: 7400900000000 }<br>
-&nbsp;&nbsp;&nbsp;&nbsp;{ pk: "f71c...6630", amount: 2710200000000 }<br>
-&nbsp;&nbsp;&nbsp;&nbsp;{ pk: "d916...e467", amount: 1535700000000 }<br>
-&nbsp;&nbsp;]<br>
-}
-</div>
+```json
+inputs: [
+    { outpoint: ( "cc6a...d169", 0 ), sig: "13f1...bc79...8c0b" }
+    { outpoint: ( "3a64...58a0", 3 ), sig: "680b...ac27...eae8" }
+],
+outputs: [
+    { pk: "36de...6a69", amount: 7400900000000 }
+    { pk: "f71c...6630", amount: 2710200000000 }
+    { pk: "d916...e467", amount: 1535700000000 }
+]
+```
 
 ## 3.10 Transaction validation
 - Validating an incoming transaction means that nodes update their transaction history graph. The process goes as follows:
