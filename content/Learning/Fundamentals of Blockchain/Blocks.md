@@ -25,7 +25,7 @@ date: 2024-10-14
     - *Idea 3*.- Reject double spends within time $u\geq\Delta$, after $u$ accept first transaction seen $\rightarrow$ still easy for $\mathcal{A}$ to break consensus, she just has to spam Charlie with $\text{tx}_2^\prime$ within $u$ and $\Delta$ and spam Dave with $\text{tx}_2^\prime$ after $u$ but within $\Delta$, the former rejects both double spends & the latter just takes $\text{tx}_2$  as it came first
 - The double spending problem is not trivial so we'll spend the next many sections accumulating weapons to tackle it
 
-<img src="/Learning/images/blockchain/ch043-simple-ideas.png" width="85%">
+<img src="../assets/learning/blockchain/ch043-simple-ideas.png" width="100%">
 
 ## 4.4 Ledgers
 - Since honest parties receive transactions in different order we can demand them to construct & report a **Ledger** which orders transactions sequentially
@@ -34,7 +34,7 @@ date: 2024-10-14
     - *(i) The Full Node*: a piece of code identically executed by all honest parties and is in charge of **peer discovery** & **gossiping** messages. Moreover, it exposes two functionalities *read* & *write* which returns the Ledger of transactions & accepts, broadcasts and gossips new transactions, respectively
     - *(ii) The Wallet*: is the intermediary element between a human user and the full node, it can invoke *read* & *write* functionalities from the full node
     
-<img src="/Learning/images/blockchain/ch044-ledgers.png" width="60%">
+<img src="../assets/learning/blockchain/ch044-ledgers.png" width="60%">
 
 - The following definitinos are ideals (but poses a dilemma):
     - **Definition 14** (Ledger). *A ledger of an honest party $P$ reported at time $r$, denoted $L^P_r$ is a finite sequence of transactions returned wen the honest party $P$ invokes the read functionality of its honest protocol $\Pi$*
@@ -59,31 +59,39 @@ date: 2024-10-14
         - Thus by modifying the *difficulty* $1/T$ (how hard it is to brute-force-guess the PoW inequality) we can tune the frequency at which our system grants tickets
             - Large $T$ makes tickets highly frequent, small $T$ spaces tickets further appart. At $T=2^\kappa$ we make proof-of-work trivial because any value $B$ satisfies $H(B)\leq 2^\kappa$, whereas at $T=0$ we make proof-of-work the same as finding a preimage (impossible & needs EXPONENTIAL TIME) 
 
-<div style="background-color:rgb(181, 191, 226); padding:10px 0;font-family:monospace; font-family:monospace">
-<font color = "gray"># <strong>Algorithm 4</strong> An exponential search for a preimage that <i>certainly</i> finds the preimage</font><br>
-<strong>function</strong> preimage-search$_{H}(h)$<br>
-&nbsp;&nbsp;ctr $\leftarrow 0$<br>
-&nbsp;&nbsp;<strong>while</strong> true <strong>do</strong><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<strong>if</strong> $H($ctr$)=h$ <strong>then</strong><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>return</strong> ctr<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<strong>end if</strong><br>
-&nbsp;&nbsp;&nbsp;&nbsp;ctr $\leftarrow$ ctr $+ 1$<br>
-&nbsp;&nbsp;<strong>end while</strong><br>
-<strong>end function</strong>
-<br>
-<br>
-<font color = "gray"># <strong>Algorithm 10</strong> PoW algorithm (Proof-of-Work)</font><br>
-<strong>function</strong> $\operatorname{PoW}_{H,T}$<br>
-&nbsp;&nbsp;ctr $\leftarrow^\$ \{0,1\}^\kappa$<br>
-&nbsp;&nbsp;<strong>while</strong> true <strong>do</strong><br>
-&nbsp;&nbsp;&nbsp;&nbsp;$B\leftarrow$ ctr<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<strong>if</strong> $H(B)\leq T$ <strong>then</strong><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>return</strong> $B$<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<strong>end if</strong><br>
-&nbsp;&nbsp;&nbsp;&nbsp;ctr $\leftarrow$ ctr $+ 1$<br>
-&nbsp;&nbsp;<strong>end while</strong><br>
-<strong>end function</strong>
-</div>
+```pseudo data-title-prefix="Algo"
+\begin{algorithm}
+\caption{An exponential search for a preimage that certainly finds the preimage}
+\begin{algorithmic}
+\Function{preimage-search}{$h$}
+    \State $\text{ctr} \gets 0$
+    \While{true}
+        \If{$H(\text{ctr})=h$}
+        \Return ctr
+        \EndIf
+    \State $\text{ctr}\gets \text{ctr} +1$
+    \EndWhile
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{PoW (Proof-of-Work) algorithm}
+\begin{algorithmic}
+\Function{PoW}{$h$}
+    \State $\text{ctr} \gets^\$ \{0,1\}^\kappa$
+    \While{true}
+        \State $B \gets \text{ctr}$
+        \If{$H(B)\leq T$}
+            \Return $B$
+        \EndIf
+        \State $\text{ctr} \gets \text{ctr}+1$
+    \EndWhile
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+```
+
 
 ## 4.7 The Block
 - We've removed the double spending problem demanding winning proof-of-work to get a ticket (at a max frequency of $\Delta$). We can now establish the relationship of tickets wrt issuing transactions, what does winning a ticket allow a participant to do?
@@ -109,19 +117,23 @@ date: 2024-10-14
         - In PoW, blockids are small (many initial $0$s) because they satisfy the PoW inequality
 - The **blockchain** is a chain-of-blocks which are discrete and sequential in time where the newer one points to the previous blockid aka *previd*
 
-<div style="background-color:rgb(181, 191, 226); padding:10px 0;font-family:monospace; font-family:monospace">
-<font color = "gray"># <strong>Algorithm 10</strong> PoW mining algorithm associated with multiple tranasctions $\vec{x}$ and previous blockid $s$</font><br>
-<strong>function</strong> $\operatorname{PoW}_{H,T}(s,\vec{x})$<br>
-&nbsp;&nbsp;ctr $\leftarrow^\$ \{0,1\}^\kappa$<br>
-&nbsp;&nbsp;<strong>while</strong> true <strong>do</strong><br>
-&nbsp;&nbsp;&nbsp;&nbsp;$B\leftarrow s \| \vec{x} \| $ctr<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<strong>if</strong> $H(B)\leq T$ <strong>then</strong><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>return</strong> $B$<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<strong>end if</strong><br>
-&nbsp;&nbsp;&nbsp;&nbsp;ctr $\leftarrow$ ctr $+ 1$<br>
-&nbsp;&nbsp;<strong>end while</strong><br>
-<strong>end function</strong>
-</div>
+```pseudo
+\begin{algorithm}
+\caption{PoW mining algorithm associated with multiple transactions $\vec{x}$ and previous blokid $s$}
+\begin{algorithmic}
+\Function{PoW}{$s,\vec{x}$}
+\State $\text{ctr}\gets^\$ \{0,1\}^\kappa$
+\While{true}
+    \State $B\gets s\|\vec{x}\|\text{ctr}$
+    \If{$H(B)\leq T$}
+        \Return $B$
+    \EndIf
+    \State $\text{ctr}\gets\text{ctr} + 1$
+\EndWhile
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+```
 
 ## 4.10 Genesis
 - In the previous section we made blocks attest about their freshness by pointing to the *previd*. But what about with the first *genesis block*? It cannot point to anything before it
