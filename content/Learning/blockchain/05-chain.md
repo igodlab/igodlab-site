@@ -3,7 +3,7 @@ title: 5. The Chain
 date: 2024-10-26
 ---
 
-- In the [[Learning/Fundamentals-of-Blockchain/Blocks.md|Blocks]] write-up we've introduced a way for preventing double spends by enforcing periods of silence via a ticketing system that occurs at tunable frequency and its earned by mining Proof of Work
+- In the [[Learning/blockchain/04-blocks.md|Blocks]] write-up we've introduced a way for preventing double spends by enforcing periods of silence via a ticketing system that occurs at tunable frequency and its earned by mining Proof of Work
 - We also required a notion of freshness from block to block to avoid tricking the system by withholding and spamming blocks at will
 
 ## 5.1 The Target
@@ -23,6 +23,7 @@ date: 2024-10-26
         - A chunk of the chain from the $i$-th (incluse) to the $j$-th (exclusive) element is $\mathcal{C}[i:j]=(B_i,\ldots,B_{j-1})$ 
 - Now lets elaborate on how a block is *validated* and which other security notions against adversarial attacks are needed
     - Analogously to *simple ideas* do not work ([[Learning/blockchain/04-blocks.md#4.3-simple-ideas-dont-work|Sec.4.3]]) for avoiding double spending in transactions, simple ideas for validating blocks also don't work eg. the idea of *"A fresh block  must extend the most recent block we’ve seen. If we receive a fresh block, we accept it. Otherwise we reject it as unfresh"* will easily fail, creating blocktrees
+
     - *Blocktrees* - An adversary can still create split truth scenarios eg. from Fig.5.1 party-5 could hold a block (red) just enoguh time $t_A$ before a new party-6 broadcasts his (actually legitimate) next freshest block. Then if party-7 receives the red block (paty-5's) before party-6's block at $t_B$ (because $t_B-t_A=\Delta$, theres enough spacing to traverse the network) he would split the chain, and even worse yet reject party-6's block afterwards (Fig.5.2)
     
     <img src="../assets/learning/blockchain/ch052-blocktree.png" width="75%">
