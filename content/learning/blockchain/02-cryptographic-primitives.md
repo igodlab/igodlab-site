@@ -135,16 +135,18 @@ date: 2024-09-22
 - Signing the hash of a message is sufficient (rather than signing the entire message)
 - One of the most used signature schemes is based in **elliptic curves** which define how public keys are structured and guarantees that is hard to calculate a private key based on its pub key
     - ie: `ECDSA`, `secp256k1`, `ed25519`
-    - *note.-* we'll abbreviate keys/hashes as a 4 letter head and tail sepparated by lower dots and a full signature as head + middle chunk + tail, eg: 
-        - private key $sk$: `1498...7d93`
-        - pub key $pk$: `b7a3...4cde`
-        - full signature $\sigma$: `6dd3...babf...4e08`
+
+> [!note] Nomenclature note
+>
+> We'll abbreviate **keys/hashes** as two, three or four characters representing the head (beginning) and tail (end) of the hash string. These chunks are connected by lower dots that represent the characters ommited as in the following format: *"head* + $\ldots$ + *tail"*. Coverseley, a **full signature** will be written as: *"head* + $\ldots$ + *middle-chunk* + $\ldots$ + *tail"*, eg: 
+>   - private key $sk$`= 1498...7d93 = 14..93`
+>   - pub key $pk$`= b7a3...4cde = b7..de`
+>   - full signature $\sigma$`= 6dd3...babf...4e08 = 6d..ab..08`
 
 > [!important] Example of `ed25519` signature scheme
 > 
-> - `Private key (32 bytes): b'1498b5467a63dffa2dc9d9e069caf075d16fc33fdd4c3b01bfadae6433767d93'`
-> - `Public key (32 bytes):  b'b7a3c12dc0c8c748ab07525b701122b88bd78f600c76342d27f25e5f92444cde'`
-> - `Signature (64 bytes): b'6dd355667fae4eb43c6e0ab92e870edb2de0a88cae12dbd8591507f584fe4912babff497f1b8edf9567d2483d54ddc6459bea7855281b7a246a609e3001a4e08'`
+> - Private key $pk$ (32 bytes): `b'1498b5467a63dffa2dc9d9e069caf075d16fc33fdd4c3b01bfadae6433767d93'`
+> - Public key $sk$ (32 bytes):  `b'b7a3c12dc0c8c748ab07525b701122b88bd78f600c76342d27f25e5f92444cde'`
+> - Signature $\sigma$ (64 bytes): `b'6dd355667fae4eb43c6e0ab92e870edb2de0a88cae12dbd8591507f584fe4912babff497f1b8edf9567d2483d54ddc6459bea7855281b7a246a609e3001a4e08'`
 
 - A seminal paper on cryptography: [Cryptographic hash-function basics: Definitions, implications, and separations for preimage resistance, second-preimage resistance, and collision resistance](https://eprint.iacr.org/2004/035.pdf).
-
