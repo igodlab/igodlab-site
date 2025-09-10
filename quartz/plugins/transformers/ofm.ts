@@ -3,10 +3,10 @@ import {
   Root,
   Html,
   BlockContent,
-  PhrasingContent,
   DefinitionContent,
   Paragraph,
   Code,
+  PhrasingContent,
 } from "mdast"
 import { Element, Literal, Root as HtmlRoot } from "hast"
 import { ReplaceFunction, findAndReplace as mdastFindReplace } from "mdast-util-find-and-replace"
@@ -14,19 +14,19 @@ import rehypeRaw from "rehype-raw"
 import { SKIP, visit } from "unist-util-visit"
 import path from "path"
 import { splitAnchor } from "../../util/path"
-import { JSResource, CSSResource } from "../../util/resources"
+import { CSSResource, JSResource } from "../../util/resources"
 // @ts-ignore
-import calloutScript from "../../components/scripts/callout.inline"
-// @ts-ignore
-import checkboxScript from "../../components/scripts/checkbox.inline"
-// @ts-ignore
-import mermaidScript from "../../components/scripts/mermaid.inline"
-import mermaidStyle from "../../components/styles/mermaid.inline.scss"
+import calloutScript from "../../components/scripts/callout.inline.ts"
 import { FilePath, pathToRoot, slugTag, slugifyFilePath } from "../../util/path"
 import { toHast } from "mdast-util-to-hast"
 import { toHtml } from "hast-util-to-html"
+import { toString } from "mdast-util-to-string"
 import { capitalize } from "../../util/lang"
 import { PluggableList } from "unified"
+import { h, s } from "hastscript"
+import { whitespace } from "hast-util-whitespace"
+import { remove } from "unist-util-remove"
+import { svgOptions } from "../../components/svg"
 
 export interface Options {
   comments: boolean
@@ -40,8 +40,9 @@ export interface Options {
   enableInHtmlEmbed: boolean
   enableYouTubeEmbed: boolean
   enableVideoEmbed: boolean
-  enableCheckbox: boolean
-  disableBrokenWikilinks: boolean
+  enableInlineFootnotes: boolean
+  enableImageGrid: boolean
+  enableBrokenWikilinks: boolean
 }
 
 const defaultOptions: Options = {
@@ -56,8 +57,9 @@ const defaultOptions: Options = {
   enableInHtmlEmbed: false,
   enableYouTubeEmbed: true,
   enableVideoEmbed: true,
-  enableCheckbox: false,
-  disableBrokenWikilinks: false,
+  enableInlineFootnotes: true,
+  enableImageGrid: true,
+  enableBrokenWikilinks: false,
 }
 
 const calloutMapping = {
@@ -120,6 +122,8 @@ export const wikilinkRegex = new RegExp(
   /!?\[\[([^\[\]\|\#\\]+)?(#+[^\[\]\|\#\\]+)?(\\?\|[^\[\]\#]*)?\]\]/g,
 )
 
+export const inlineFootnoteRegex = /\^\[((?:[^\[\]]|\[(?:[^\[\]]|\[[^\[\]]*\])*\])*)\]/g
+
 // ^\|([^\n])+\|\n(\|) -> matches the header row
 // ( ?:?-{3,}:? ?\|)+  -> matches the header row separator
 // (\|([^\n])+\|\n)+   -> matches the body rows
@@ -148,17 +152,57 @@ const wikilinkImageEmbedRegex = new RegExp(
   /^(?<alt>(?!^\d*x?\d*$).*?)?(\|?\s*?(?<width>\d+)(x(?<height>\d+))?)?$/,
 )
 
+export const checkMermaidCode = ({ tagName, properties }: Element) =>
+  tagName === "code" &&
+  Boolean(properties.className) &&
+  (properties.className as string[]).includes("mermaid")
+
+export const wikiTextTransform = (src: string) => {
+  // replace all wikilinks inside a table first
+  src = src.replace(tableRegex, (value) => {
+    // escape all aliases and headers in wikilinks inside a table
+    return value.replace(tableWikilinkRegex, (_value, raw) => {
+      // const [raw]: (string | undefined)[] = capture
+      let escaped = raw ?? ""
+      escaped = escaped.replace("#", "\\#")
+      // escape pipe characters if they are not already escaped
+      escaped = escaped.replace(/((^|[^\\])(\\\\)*)\|/g, "$1\\|")
+
+      return escaped
+    })
+  })
+
+  // replace all other wikilinks
+  src = src.replace(wikilinkRegex, (value, ...capture) => {
+    const [rawFp, rawHeader, rawAlias]: (string | undefined)[] = capture
+
+    const [fp, anchor] = splitAnchor(`${rawFp ?? ""}${rawHeader ?? ""}`)
+    const blockRef = Boolean(rawHeader?.startsWith("#^")) ? "^" : ""
+    const displayAnchor = anchor ? `#${blockRef}${anchor.trim().replace(/^#+/, "")}` : ""
+    const displayAlias = rawAlias ?? rawHeader?.replace("#", "|") ?? ""
+    const embedDisplay = value.startsWith("!") ? "!" : ""
+
+    if (rawFp?.match(externalLinkRegex)) {
+      return `${embedDisplay}[${displayAlias.replace(/^\|/, "")}](${rawFp})`
+    }
+
+    return `${embedDisplay}[[${fp}${displayAnchor}${displayAlias}]]`
+  })
+  return src
+}
+
 export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>> = (userOpts) => {
   const opts = { ...defaultOptions, ...userOpts }
+  const allowDangerousHtml = true
 
   const mdastToHtml = (ast: PhrasingContent | Paragraph) => {
-    const hast = toHast(ast, { allowDangerousHtml: true })!
-    return toHtml(hast, { allowDangerousHtml: true })
+    const hast = toHast(ast, { allowDangerousHtml })!
+    return toHtml(hast, { allowDangerousHtml })
   }
 
   return {
     name: "ObsidianFlavoredMarkdown",
-    textTransform(_ctx, src) {
+    textTransform(_, src: any) {
       // do comments at text level
       if (opts.comments) {
         src = src.replace(commentRegex, "")
@@ -166,7 +210,7 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
 
       // pre-transform blockquotes
       if (opts.callouts) {
-        src = src.replace(calloutLineRegex, (value) => {
+        src = src.replace(calloutLineRegex, (value: string) => {
           // force newline after title of callout
           return value + "\n> "
         })
@@ -174,36 +218,33 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
 
       // pre-transform wikilinks (fix anchors to things that may contain illegal syntax e.g. codeblocks, latex)
       if (opts.wikilinks) {
-        // replace all wikilinks inside a table first
-        src = src.replace(tableRegex, (value) => {
-          // escape all aliases and headers in wikilinks inside a table
-          return value.replace(tableWikilinkRegex, (_value, raw) => {
-            // const [raw]: (string | undefined)[] = capture
-            let escaped = raw ?? ""
-            escaped = escaped.replace("#", "\\#")
-            // escape pipe characters if they are not already escaped
-            escaped = escaped.replace(/((^|[^\\])(\\\\)*)\|/g, "$1\\|")
+        src = wikiTextTransform(src)
+      }
 
-            return escaped
-          })
+      if (opts.enableInlineFootnotes) {
+        // Replaces ^[inline] footnotes with regular footnotes [^1]:
+        const footnotes: Record<string, string> = {}
+        let counter = 0
+
+        // Replace inline footnotes with references and collect definitions
+        const result = src.replace(inlineFootnoteRegex, (_match: string, content: string) => {
+          counter++
+          const id = `generated-inline-footnote-${counter}`
+          footnotes[id] = content.trim()
+          return `[^${id}]`
         })
 
-        // replace all other wikilinks
-        src = src.replace(wikilinkRegex, (value, ...capture) => {
-          const [rawFp, rawHeader, rawAlias]: (string | undefined)[] = capture
-
-          const [fp, anchor] = splitAnchor(`${rawFp ?? ""}${rawHeader ?? ""}`)
-          const blockRef = Boolean(rawHeader?.startsWith("#^")) ? "^" : ""
-          const displayAnchor = anchor ? `#${blockRef}${anchor.trim().replace(/^#+/, "")}` : ""
-          const displayAlias = rawAlias ?? rawHeader?.replace("#", "|") ?? ""
-          const embedDisplay = value.startsWith("!") ? "!" : ""
-
-          if (rawFp?.match(externalLinkRegex)) {
-            return `${embedDisplay}[${displayAlias.replace(/^\|/, "")}](${rawFp})`
-          }
-
-          return `${embedDisplay}[[${fp}${displayAnchor}${displayAlias}]]`
-        })
+        // Append footnote definitions if any are found
+        if (Object.keys(footnotes).length > 0) {
+          return (
+            result +
+            "\n\n" +
+            Object.entries(footnotes)
+              .map(([id, content]) => `[^${id}]: ${content}`)
+              .join("\n") +
+            "\n"
+          )
+        }
       }
 
       return src
@@ -230,67 +271,109 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
                 if (value.startsWith("!")) {
                   const ext: string = path.extname(fp).toLowerCase()
                   const url = slugifyFilePath(fp as FilePath)
-                  if ([".png", ".jpg", ".jpeg", ".gif", ".bmp", ".svg", ".webp"].includes(ext)) {
-                    const match = wikilinkImageEmbedRegex.exec(alias ?? "")
-                    const alt = match?.groups?.alt ?? ""
-                    const width = match?.groups?.width ?? "auto"
-                    const height = match?.groups?.height ?? "auto"
-                    return {
-                      type: "image",
-                      url,
-                      data: {
-                        hProperties: {
-                          width,
-                          height,
-                          alt,
+                  switch (ext) {
+                    // images
+                    case ".png":
+                    case ".jpg":
+                    case ".jpeg":
+                    case ".gif":
+                    case ".bmp":
+                    case ".svg":
+                    case ".webp": {
+                      const match = wikilinkImageEmbedRegex.exec(alias ?? "")
+                      const alt = match?.groups?.alt ?? ""
+                      const width = match?.groups?.width ?? "auto"
+                      const height = match?.groups?.height ?? "auto"
+                      return {
+                        type: "image",
+                        url,
+                        data: {
+                          hProperties: {
+                            width,
+                            height,
+                            alt,
+                          },
                         },
-                      },
+                      }
                     }
-                  } else if ([".mp4", ".webm", ".ogv", ".mov", ".mkv"].includes(ext)) {
-                    return {
-                      type: "html",
-                      value: `<video src="${url}" controls></video>`,
+                    // videos
+                    case ".mp4":
+                    case ".webm":
+                    case ".ogv":
+                    case ".mov":
+                    case ".mkv": {
+                      return {
+                        type: "html",
+                        value: `<video src="${url}" controls loop></video>`,
+                      }
                     }
-                  } else if (
-                    [".mp3", ".webm", ".wav", ".m4a", ".ogg", ".3gp", ".flac"].includes(ext)
-                  ) {
-                    return {
-                      type: "html",
-                      value: `<audio src="${url}" controls></audio>`,
+                    // audio
+                    case ".mp3":
+                    case ".wav":
+                    case ".m4a":
+                    case ".ogg":
+                    case ".3gp":
+                    case ".flac": {
+                      return {
+                        type: "html",
+                        value: `<audio src="${url}" controls></audio>`,
+                      }
                     }
-                  } else if ([".pdf"].includes(ext)) {
-                    return {
-                      type: "html",
-                      value: `<iframe src="${url}" class="pdf"></iframe>`,
+                    // documents
+                    case ".pdf": {
+                      return {
+                        type: "html",
+                        value: `<iframe src="${url}" class="pdf"></iframe>`,
+                      }
                     }
-                  } else {
-                    const block = anchor
-                    return {
-                      type: "html",
-                      data: { hProperties: { transclude: true } },
-                      value: `<blockquote class="transclude" data-url="${url}" data-block="${block}" data-embed-alias="${alias}"><a href="${
-                        url + anchor
-                      }" class="transclude-inner">Transclude of ${url}${block}</a></blockquote>`,
+                    // default: transclude block
+                    default: {
+                      const block = anchor
+                      return {
+                        type: "html",
+                        data: { hProperties: { transclude: true } },
+                        value: toHtml(
+                          h(
+                            "blockquote.transclude",
+                            { "data-url": url, "data-block": block, "data-embed-alias": alias },
+                            h("a.transclude-inner", { href: url + anchor }, [
+                              { type: "text", value: `Transclude of ${url} ${block}` },
+                            ]),
+                          ),
+                          { allowDangerousHtml },
+                        ),
+                      }
                     }
                   }
 
                   // otherwise, fall through to regular link
                 }
 
+                // internal link
+                const url = fp + anchor
+
                 // treat as broken link if slug not in ctx.allSlugs
-                if (opts.disableBrokenWikilinks) {
+                if (opts.enableBrokenWikilinks) {
                   const slug = slugifyFilePath(fp as FilePath)
                   const exists = ctx.allSlugs && ctx.allSlugs.includes(slug)
                   if (!exists) {
                     return {
-                      type: "html",
-                      value: `<a class=\"internal broken\">${alias ?? fp}</a>`,
+                      type: "link",
+                      url,
+                      data: {
+                        hProperties: {
+                          className: ["broken"],
+                        },
+                      },
+                      children: [
+                        {
+                          type: "text",
+                          value: alias ?? fp,
+                        },
+                      ],
                     }
                   }
                 }
-
-                // internal link
-                const url = fp + anchor
 
                 return {
                   type: "link",
@@ -311,10 +394,7 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
               highlightRegex,
               (_value: string, ...capture: string[]) => {
                 const [inner] = capture
-                return {
-                  type: "html",
-                  value: `<span class="text-highlight">${inner}</span>`,
-                }
+                return { type: "html", value: `<mark>${inner}</mark>` }
               },
             ])
           }
@@ -368,7 +448,7 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
           }
 
           if (opts.enableInHtmlEmbed) {
-            visit(tree, "html", (node: Html) => {
+            visit(tree, "html", (node) => {
               for (const [regex, replace] of replacements) {
                 if (typeof replace === "string") {
                   node.value = node.value.replace(regex, replace)
@@ -450,19 +530,15 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
                     ...restOfTitle,
                   ],
                 }
-                const title = mdastToHtml(titleNode)
-
-                const toggleIcon = `<div class="fold-callout-icon"></div>`
+                const titleChildren = [
+                  h(".callout-icon"),
+                  h(".callout-title-inner", toHast(titleNode, { allowDangerousHtml })),
+                ]
+                if (collapse) titleChildren.push(h(".fold-callout-icon"))
 
                 const titleHtml: Html = {
                   type: "html",
-                  value: `<div
-                  class="callout-title"
-                >
-                  <div class="callout-icon"></div>
-                  <div class="callout-title-inner">${title}</div>
-                  ${collapse ? toggleIcon : ""}
-                </div>`,
+                  value: toHtml(h(".callout-title", titleChildren), { allowDangerousHtml }),
                 }
 
                 const blockquoteContent: (BlockContent | DefinitionContent)[] = [titleHtml]
@@ -476,30 +552,6 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
                       },
                     ],
                   })
-                }
-
-                // For the rest of the MD callout elements other than the title, wrap them with
-                // two nested HTML <div>s (use some hacked mdhast component to achieve this) of
-                // class `callout-content` and `callout-content-inner` respectively for
-                // grid-based collapsible animation.
-                if (calloutContent.length > 0) {
-                  node.children = [
-                    node.children[0],
-                    {
-                      data: { hProperties: { className: ["callout-content"] }, hName: "div" },
-                      type: "blockquote",
-                      children: [
-                        {
-                          data: {
-                            hProperties: { className: ["callout-content-inner"] },
-                            hName: "div",
-                          },
-                          type: "blockquote",
-                          children: [...calloutContent],
-                        },
-                      ],
-                    },
-                  ]
                 }
 
                 // replace first line of blockquote with title and rest of the paragraph text
@@ -523,6 +575,21 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
                     "data-callout-metadata": calloutMetaData,
                   },
                 }
+
+                // Add callout-content class to callout body if it has one.
+                if (calloutContent.length > 0) {
+                  const contentData: BlockContent | DefinitionContent = {
+                    data: {
+                      hProperties: {
+                        className: "callout-content",
+                      },
+                      hName: "div",
+                    },
+                    type: "blockquote",
+                    children: [...calloutContent],
+                  }
+                  node.children = [node.children[0], contentData]
+                }
               }
             })
           }
@@ -531,16 +598,46 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
 
       if (opts.mermaid) {
         plugins.push(() => {
-          return (tree: Root, file) => {
+          return (tree) => {
             visit(tree, "code", (node: Code) => {
               if (node.lang === "mermaid") {
-                file.data.hasMermaidDiagram = true
                 node.data = {
                   hProperties: {
                     className: ["mermaid"],
-                    "data-clipboard": JSON.stringify(node.value),
+                    "data-clipboard": toString(node),
                   },
                 }
+              }
+            })
+          }
+        })
+      }
+
+      if (opts.enableImageGrid) {
+        plugins.push(() => {
+          return (tree: Root) => {
+            visit(tree, "paragraph", (node: Paragraph, index: number | undefined, parent) => {
+              if (index === undefined || parent === undefined) return
+
+              const isOnlyImages = node.children.every((child) => {
+                if (child.type === "image") return true
+                if (child.type === "text") return (child.value as string).trim() === ""
+                return false
+              })
+
+              const imageNodes = node.children.filter((c) => c.type === "image")
+              if (isOnlyImages && imageNodes.length >= 2) {
+                const htmlContent = node.children
+                  .filter((c) => c.type === "image")
+                  .map((img) => mdastToHtml(img))
+                  .join("\n")
+
+                const gridNode: Html = {
+                  type: "html",
+                  value: `<div class="image-grid">\n${htmlContent}\n</div>`,
+                }
+
+                parent.children.splice(index, 1, gridNode)
               }
             })
           }
@@ -628,54 +725,107 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
         })
       }
 
-      if (opts.enableYouTubeEmbed) {
+      if (opts.highlight) {
         plugins.push(() => {
-          return (tree: HtmlRoot) => {
-            visit(tree, "element", (node) => {
-              if (node.tagName === "img" && typeof node.properties.src === "string") {
-                const match = node.properties.src.match(ytLinkRegex)
-                const videoId = match && match[2].length == 11 ? match[2] : null
-                const playlistId = node.properties.src.match(ytPlaylistLinkRegex)?.[1]
-                if (videoId) {
-                  // YouTube video (with optional playlist)
-                  node.tagName = "iframe"
-                  node.properties = {
-                    class: "external-embed youtube",
-                    allow: "fullscreen",
-                    frameborder: 0,
-                    width: "600px",
-                    src: playlistId
-                      ? `https://www.youtube.com/embed/${videoId}?list=${playlistId}`
-                      : `https://www.youtube.com/embed/${videoId}`,
-                  }
-                } else if (playlistId) {
-                  // YouTube playlist only.
-                  node.tagName = "iframe"
-                  node.properties = {
-                    class: "external-embed youtube",
-                    allow: "fullscreen",
-                    frameborder: 0,
-                    width: "600px",
-                    src: `https://www.youtube.com/embed/videoseries?list=${playlistId}`,
+          return (tree) => {
+            visit(tree, { tagName: "p" }, (node) => {
+              const stack: number[] = []
+              const highlights: [number, number][] = []
+              const children = [...node.children]
+
+              for (let i = 0; i < children.length; i++) {
+                const child = children[i]
+                if (child.type === "text" && child.value.includes("==")) {
+                  // Split text node if it contains == marker
+                  const parts: string[] = child.value.split("==")
+
+                  if (parts.length > 1) {
+                    // Replace original node with split parts
+                    const newNodes: (typeof child)[] = []
+
+                    parts.forEach((part, idx) => {
+                      if (part) {
+                        newNodes.push({ type: "text", value: part })
+                      }
+                      // Add marker position except for last part
+                      if (idx < parts.length - 1) {
+                        if (stack.length === 0) {
+                          stack.push(i + newNodes.length)
+                        } else {
+                          const start = stack.pop()!
+                          highlights.push([start, i + newNodes.length])
+                        }
+                      }
+                    })
+
+                    children.splice(i, 1, ...newNodes)
+                    i += newNodes.length - 1
                   }
                 }
               }
+
+              // Apply highlights in reverse to maintain indices
+              for (const [start, end] of highlights.reverse()) {
+                const highlightSpan: Element = {
+                  type: "element",
+                  tagName: "mark",
+                  properties: {},
+                  children: children.slice(start, end + 1),
+                }
+                children.splice(start, end - start + 1, highlightSpan)
+              }
+
+              node.children = children
             })
           }
         })
       }
 
-      if (opts.enableCheckbox) {
+      if (opts.enableYouTubeEmbed) {
+        const checkEmbed = ({ tagName, properties }: Element) =>
+          tagName === "img" && Boolean(properties.src) && typeof properties.src === "string"
+
         plugins.push(() => {
-          return (tree: HtmlRoot, _file) => {
-            visit(tree, "element", (node) => {
-              if (node.tagName === "input" && node.properties.type === "checkbox") {
-                const isChecked = node.properties?.checked ?? false
-                node.properties = {
-                  type: "checkbox",
-                  disabled: false,
-                  checked: isChecked,
-                  class: "checkbox-toggle",
+          return (tree) => {
+            visit(tree, (node: Element) => {
+              if (checkEmbed(node)) {
+                const src = (node as Element).properties.src as string
+                const match = src.match(ytLinkRegex)
+                const videoId = match && match[2].length == 11 ? match[2] : null
+                const playlistId = src.match(ytPlaylistLinkRegex)?.[1]
+
+                const baseProperties = {
+                  class: "external-embed youtube",
+                  allow: "fullscreen",
+                  frameborder: 0,
+                  width: "600px",
+                }
+
+                switch (true) {
+                  case Boolean(videoId && playlistId):
+                    // Video with playlist
+                    node.tagName = "iframe"
+                    node.properties = {
+                      ...baseProperties,
+                      src: `https://www.youtube.com/embed/${videoId}?list=${playlistId}`,
+                    }
+                    break
+                  case Boolean(videoId):
+                    // Single video
+                    node.tagName = "iframe"
+                    node.properties = {
+                      ...baseProperties,
+                      src: `https://www.youtube.com/embed/${videoId}`,
+                    }
+                    break
+                  case Boolean(playlistId):
+                    // Playlist only
+                    node.tagName = "iframe"
+                    node.properties = {
+                      ...baseProperties,
+                      src: `https://www.youtube.com/embed/videoseries?list=${playlistId}`,
+                    }
+                    break
                 }
               }
             })
@@ -685,72 +835,101 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
 
       if (opts.mermaid) {
         plugins.push(() => {
-          return (tree: HtmlRoot, _file) => {
-            visit(tree, "element", (node: Element, _idx, parent) => {
-              if (
-                node.tagName === "code" &&
-                ((node.properties?.className ?? []) as string[])?.includes("mermaid")
-              ) {
-                parent!.children = [
-                  {
-                    type: "element",
-                    tagName: "button",
-                    properties: {
-                      className: ["expand-button"],
-                      "aria-label": "Expand mermaid diagram",
+          return (tree) => {
+            visit(
+              tree,
+              (node) => checkMermaidCode(node as Element),
+              (node: Element, _, parent: HtmlRoot) => {
+                parent.children = [
+                  h(
+                    "span.expand-button",
+                    {
+                      type: "button",
+                      ariaLabel: "Expand mermaid diagram",
+                      tabindex: -1,
                       "data-view-component": true,
                     },
-                    children: [
-                      {
-                        type: "element",
-                        tagName: "svg",
-                        properties: {
-                          width: 16,
-                          height: 16,
-                          viewBox: "0 0 16 16",
-                          fill: "currentColor",
-                        },
-                        children: [
-                          {
-                            type: "element",
-                            tagName: "path",
-                            properties: {
-                              fillRule: "evenodd",
-                              d: "M3.72 3.72a.75.75 0 011.06 1.06L2.56 7h10.88l-2.22-2.22a.75.75 0 011.06-1.06l3.5 3.5a.75.75 0 010 1.06l-3.5 3.5a.75.75 0 11-1.06-1.06l2.22-2.22H2.56l2.22 2.22a.75.75 0 11-1.06 1.06l-3.5-3.5a.75.75 0 010-1.06l3.5-3.5z",
-                            },
-                            children: [],
-                          },
-                        ],
-                      },
+                    [
+                      s("svg", { ...svgOptions, viewbox: "0 -8 24 24", tabindex: -1 }, [
+                        s("use", { href: "#expand-e-w" }),
+                      ]),
                     ],
-                  },
+                  ),
+                  h(
+                    "span.clipboard-button",
+                    {
+                      type: "button",
+                      ariaLabel: "copy source",
+                    },
+                    [
+                      s("svg", { ...svgOptions, viewbox: "0 -8 24 24", class: "copy-icon" }, [
+                        s("use", { href: "#github-copy" }),
+                      ]),
+                      s("svg", { ...svgOptions, viewbox: "0 -8 24 24", class: "check-icon" }, [
+                        s("use", { href: "#github-check" }),
+                      ]),
+                    ],
+                  ),
                   node,
-                  {
-                    type: "element",
-                    tagName: "div",
-                    properties: { id: "mermaid-container", role: "dialog" },
-                    children: [
-                      {
-                        type: "element",
-                        tagName: "div",
-                        properties: { id: "mermaid-space" },
-                        children: [
-                          {
-                            type: "element",
-                            tagName: "div",
-                            properties: { className: ["mermaid-content"] },
-                            children: [],
-                          },
-                        ],
-                      },
-                    ],
-                  },
+                  h("#mermaid-container", { role: "dialog" }, [
+                    h("#mermaid-space", [h(".mermaid-content")]),
+                  ]),
                 ]
-              }
-            })
+              },
+            )
           }
         })
       }
+
+      plugins.push(() => {
+        return (tree, file) => {
+          const onlyImage = ({ children }: Element) =>
+            children.every((child) => (child as Element).tagName === "img" || whitespace(child))
+          const withAlt = ({ tagName, properties }: Element) =>
+            tagName === "img" && Boolean(properties.alt) && Boolean(properties.src)
+          const withCaption = ({ tagName, children }: Element) => {
+            return (
+              tagName === "figure" &&
+              children.some((child) => (child as Element).tagName === "figcaption")
+            )
+          }
+
+          // support better image captions
+          visit(tree, { tagName: "p" }, (node, idx, parent) => {
+            if (!onlyImage(node)) return
+            remove(node, "text")
+            parent?.children.splice(idx!, 1, ...node.children)
+            return idx
+          })
+
+          file.data.images = {}
+          let counter = 0
+
+          visit(
+            tree,
+            (node) => withAlt(node as Element),
+            (node, idx, parent) => {
+              if (withCaption(parent as Element) || (parent as Element)!.tagName === "a") {
+                return
+              }
+
+              counter++
+              parent?.children.splice(
+                idx!,
+                1,
+                h("figure", { "data-img-w-caption": true }, [
+                  h("img", { ...(node as Element).properties }),
+                  h("figcaption", [
+                    h("span", { class: "figure-prefix", style: "margin-right: 0.2em;" }, `figure`),
+                    h("span", { class: "figure-number" }, `${counter}`),
+                    h("span", { class: "figure-caption" }, `: ${(node as Element).properties.alt}`),
+                  ]),
+                ]),
+              )
+            },
+          )
+        }
+      })
 
       return plugins
     },
@@ -758,33 +937,11 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
       const js: JSResource[] = []
       const css: CSSResource[] = []
 
-      if (opts.enableCheckbox) {
-        js.push({
-          script: checkboxScript,
-          loadTime: "afterDOMReady",
-          contentType: "inline",
-        })
-      }
-
       if (opts.callouts) {
         js.push({
           script: calloutScript,
           loadTime: "afterDOMReady",
           contentType: "inline",
-        })
-      }
-
-      if (opts.mermaid) {
-        js.push({
-          script: mermaidScript,
-          loadTime: "afterDOMReady",
-          contentType: "inline",
-          moduleType: "module",
-        })
-
-        css.push({
-          content: mermaidStyle,
-          inline: true,
         })
       }
 
@@ -795,8 +952,8 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
 
 declare module "vfile" {
   interface DataMap {
+    images: Record<string, { count: number; el: Element }>
     blocks: Record<string, Element>
     htmlAst: HtmlRoot
-    hasMermaidDiagram: boolean | undefined
   }
 }

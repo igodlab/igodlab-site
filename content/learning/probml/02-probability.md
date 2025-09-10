@@ -183,6 +183,7 @@ $D_{\mathcal{F}}(P, Q) \triangleq \sup _{f \in \mathcal{F}}\left|\mathbb{E}_{p(\
 - Moreover, the MMD is differentiable wrt the kernel parameters, so we can choose the optimal $\boldsymbol{\sigma}^2$ so as to maximize the power of the test
     - [@sutherland2016generative]
     - bayesian version of the above [@flaxman2016bayesian]
+    - another: https://arxiv.org/abs/1704.03331
     
     
 ### 2.7.4 Total variation distance (TV)

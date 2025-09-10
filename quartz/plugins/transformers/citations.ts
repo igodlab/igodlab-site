@@ -249,7 +249,7 @@ async function ensureBibEntry(
 }
 
 export const Citations: QuartzTransformerPlugin<Options> = (opts?: Options) => {
-  const bibliography = opts?.bibliography ?? "content/References.bib"
+  const bibliography = opts?.bibliography ?? "./bibliography.bib"
   return {
     name: "Citations",
     markdownPlugins: () => [
