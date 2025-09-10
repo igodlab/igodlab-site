@@ -82,6 +82,8 @@ const config: QuartzConfig = {
       // HACK: enable custom Latex plugins for rendering pseudocode blocks in *.md
       Plugin.Latex({ renderEngine: "katex" }),
       Plugin.Pseudocode(),
+      // HACK: enable nice bibtex-style citations (and hoover over papers)
+      Plugin.Citations()
     ],
     filters: [Plugin.RemoveDrafts()],
     emitters: [
