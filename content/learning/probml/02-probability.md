@@ -1,6 +1,7 @@
 ---
 title: 2. Probability
 date: 2025-07-16
+modified: 2025-9-10
 ---
 
 ## 2.5 Transformations of random variables
@@ -184,6 +185,7 @@ $D_{\mathcal{F}}(P, Q) \triangleq \sup _{f \in \mathcal{F}}\left|\mathbb{E}_{p(\
     - [@sutherland2016generative]
     - bayesian version of the above [@flaxman2016bayesian]
     - another: https://arxiv.org/abs/1704.03331
+    - circuits: [@elhage2021mathematical]
     
     
 ### 2.7.4 Total variation distance (TV)
