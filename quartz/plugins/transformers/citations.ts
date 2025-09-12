@@ -12,9 +12,9 @@ export interface Options {
 
 const defaultOptions: Options = {
   bibliographyFile: "./bibliography.bib",
-  suppressBibliography: true,
+  suppressBibliography: false,
   linkCitations: true,
-  csl: "apa",
+  csl: "alpha",
 }
 
 export const Citations: QuartzTransformerPlugin<Partial<Options>> = (userOpts) => {

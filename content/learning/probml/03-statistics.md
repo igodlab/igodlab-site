@@ -97,7 +97,7 @@ $p(\mathcal{D}\mid{\theta}) = \prod_n^N\theta^{y_n}(1-\theta)^{1-y_n}=\theta^{N_
         - Bayes approach accounts for *epistemic uncertainty*, useful for Bayesian lin reg (Sec.15.2), optimization (Sec.6.6),risk-sensitive decision making (Sec.34.1.3) & active learning (Sec.34.7) 
         - moreover Bayesian methods are great for non-linear models such as NNs (Sec.17.1) & Generative models (Part-IV)
 
-### 3.3.3 Selecting the prior
+### 3.2.3 Selecting the prior
 - A challenge w/ Bayes approach is that it requires us to choose the prior $\rightarrow$ can be difficult in large models, eg. NNs
 - In later sections we'll discuss prior selection
     - *conjugate priors* (Sec.3.4)
@@ -106,7 +106,7 @@ $p(\mathcal{D}\mid{\theta}) = \prod_n^N\theta^{y_n}(1-\theta)^{1-y_n}=\theta^{N_
     - *empirical priors* (Sec.3.7)
 
 ### 3.2.4 Computational issues
-- Computing posteriors / predictives is expensive in Bayesian approach. Full discussion about this in (Part-II) and a good historical manuscript is [[MFR20](https://arxiv.org/pdf/2004.06425)]
+- Computing posteriors / predictives is expensive in Bayesian approach. Full discussion about this in (Part-II) and a good historical manuscript is [@martin2020computingbayesbayesiancomputation]
 
 ### 3.2.5 Exchangeability and de Finetti's Theorem
 - De Finetti's Theorem is a result of the philosophical question: where do priors come from? Priors $p(\boldsymbol{\theta})$ are abstract, non-directly measurable quantities. 
@@ -130,7 +130,7 @@ $p(\mathcal{D}\mid{\theta}) = \prod_n^N\theta^{y_n}(1-\theta)^{1-y_n}=\theta^{N_
     - this can be approximated by *Monte Carlo* (Sec.3.3.2) and rarely computed analytically (Sec.3.3.3)
 
 ### 3.3.2 Bootstrap approximation of the sampling distribution
-- When data is small or the estimator is a complex function of the data $\rightarrow$ Monte Carlo method known as **Bootstrap** is very powerful [[ET93](https://books.google.com/books?hl=en&lr=&id=gLlpIUxRntoC&oi=fnd&pg=PR14&dq=an+introduction+to+the+bootstrap&ots=AaCyV2LeD2&sig=CjNPLqpdtSj-f96GU8thaG8B7kg)]
+- When data is small or the estimator is a complex function of the data $\rightarrow$ Monte Carlo method known as **Bootstrap** is very powerful [@efron1994introduction]
     - The premise is simple: if we knew the true params $\boldsymbol{\theta}^\ast$ we could generate $S$ "fake" samples (each of size $N$) that are observables $\tilde{\mathcal{D}}^{(s)} = \left\{ \boldsymbol{x}_n\sim p(\boldsymbol{x}_n\mid\boldsymbol{\theta}^\ast):n=1:N\right\}$
     - then compute each sample estimates $\hat{\boldsymbol\theta}^{s} = \hat{\Theta}\left(\tilde{\mathcal{D}}^{(s)}\right)$ and then use the empirical estimate of this dist
     
@@ -595,3 +595,6 @@ Therefore $H_0$ is probably false
 - An alternative to cross-validation for model selection is to score models based on the negative log-likelihood (NLL) PLUS some criteria (represented as complexity terms $C(m)$): $\mathcal{L}(m)=-\log{p(\mathcal{D}\mid\hat{\boldsymbol{\theta}},m)}+C(m)$
     - see more [[GHV14](https://arxiv.org/pdf/1307.5928.pdf)]
 
+---
+
+# References

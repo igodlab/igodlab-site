@@ -172,7 +172,7 @@ $D_{\mathcal{F}}(P, Q) \triangleq \sup _{f \in \mathcal{F}}\left|\mathbb{E}_{p(\
 
 #### 2.7.3.3 Linear time computation
 - MMD takes $O(N^2)$ time to compute
-- great alternative is the **Unormalized Mean Embedding (UME)** [@chwialkowski2015fast] that takes only $O(N)$.
+- great alternative is the **Unormalized Mean Embedding (UME)** [@chwialkowski2015fasttwosampletestinganalytic] that takes only $O(N)$.
     - the idea is that evaluating a set of locations $\{ \boldsymbol{v}_j \}_j^J$ is enough to detect the difference between $P$ and $Q$
     - $\operatorname{UME}^2(P,Q)=\frac{1}{N}\sum_j\left[\boldsymbol{\mu}_P(\boldsymbol{v}_j) - \boldsymbol{\mu}_Q(\boldsymbol{v}_j)\right]^2$
     - where $\boldsymbol{\mu}_P(\boldsymbol{v})=\mathbb{E}_{p(x)}[\mathcal{K}(\boldsymbol{x},\boldsymbol{v})]$
@@ -181,8 +181,8 @@ $D_{\mathcal{F}}(P, Q) \triangleq \sup _{f \in \mathcal{F}}\left|\mathbb{E}_{p(\
 #### 2.7.3.4 Choosing the right kernel
 - The effectiveness of MMD, and UME, depends on the choice of the kernel. For example a *Gaussian kernel* $\mathcal{K}_\sigma(\boldsymbol{x},\boldsymbol{x}^\prime)=\exp\left(\frac{1}{2\boldsymbol{\sigma}^2}\left\| \boldsymbol{x}-\boldsymbol{x}^\prime \right\|^2\right)$
 - Moreover, the MMD is differentiable wrt the kernel parameters, so we can choose the optimal $\boldsymbol{\sigma}^2$ so as to maximize the power of the test
-    - [@sutherland2016generative]
-    - bayesian version of the above [@flaxman2016bayesian]
+    - [@sutherland2021generativemodelsmodelcriticism]
+    - bayesian version of the above [@flaxman2016bayesianlearningkernelembeddings]
     
     
 ### 2.7.4 Total variation distance (TV)
