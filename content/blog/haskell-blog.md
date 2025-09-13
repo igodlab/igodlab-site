@@ -1,5 +1,5 @@
 ---
-Title: A Journey from Haskell to CAtegory Theory
+Title: A Journey from Haskell to Category Theory
 date: 2024-06-03
 ---
 
