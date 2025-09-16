@@ -84,7 +84,7 @@ const config: QuartzConfig = {
       Plugin.Pseudocode(),
       // HACK: enable nice bibtex-style citations (and hoover over papers)
       // Plugin.Citations()
-      Plugin.setupAlphaCitations()
+      Plugin.AlphaCitations()
     ],
     filters: [Plugin.RemoveDrafts()],
     emitters: [

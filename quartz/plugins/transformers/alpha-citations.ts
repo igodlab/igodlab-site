@@ -1,8 +1,12 @@
-import Cite from '@citation-js/core'
+// quartz/plugins/transformers/alpha-citations.ts
+import { QuartzTransformerPlugin, QuartzTransformerPluginInstance } from "../types"
+import { Root } from "mdast"
+import { visit } from "unist-util-visit"
+import { toString } from "mdast-util-to-string"
+import { Cite } from '@citation-js/core'
 import '@citation-js/plugin-bibtex'
-
-// If you need to register the plugin explicitly:
-// plugins.input.add('@bibtex/text', ...)
+import path from "path"
+import fs from "fs"
 
 interface BibEntry {
   id: string;
@@ -23,34 +27,33 @@ interface BibEntry {
   [key: string]: any; // for additional fields
 }
 
+interface AlphaCitationsOptions {
+  bibFile?: string; // Path to .bib file relative to content root
+  generateBibliographyPage?: boolean; // Whether to generate a dedicated bibliography page
+  bibliographyTitle?: string; // Title for the bibliography page
+  linkCitations?: boolean; // Whether to automatically link citations to bibliography
+}
+
 class AlphaStyleGenerator {
   private etAlCharUsed = false;
+  private citationCache: Map<string, string> = new Map();
+  private bibliographyEntries: Array<{label: string, formatted: string, sortKey: string, originalId: string}> = [];
   
-  constructor() {
-    // Initialize citation-js if needed
-  }
+  constructor() {}
 
   // Parse .bib file using citation-js
-  async parseBibFile(bibContent: string): Promise<BibEntry[]> {
+  parseBibFile(bibContent: string): BibEntry[] {
     try {
       const cite = new Cite(bibContent, { forceType: '@bibtex/text' });
       const entries = cite.data as BibEntry[];
       
       console.log('Parsed entries:', entries.length);
-      console.log('Sample entry:', entries[0]); // Debug: see the structure
       
       return entries;
     } catch (error) {
       console.error('Error parsing BibTeX file:', error);
       throw error;
     }
-  }
-
-  // Alternative: load from file path (Node.js)
-  async parseBibFromFile(filePath: string): Promise<BibEntry[]> {
-    const fs = await import('fs/promises');
-    const bibContent = await fs.readFile(filePath, 'utf-8');
-    return this.parseBibFile(bibContent);
   }
 
   // Generate alpha-style label (e.g., "Knu79")
@@ -161,38 +164,27 @@ class AlphaStyleGenerator {
     return year.toString();
   }
 
-  // Format pages with proper en-dashes
-  formatPages(pages?: string): string {
-    if (!pages) return "";
-    
-    const hasRange = /[-–—]/.test(pages) || /,/.test(pages) || /\+/.test(pages);
-    const label = hasRange ? "pages" : "page";
-    const formattedPages = pages.replace(/-+/g, "–"); // Convert to en-dash
-    
-    return `${label} ${formattedPages}`;
-  }
-
-  // Generate bibliography entry for different types
-  formatEntry(entry: BibEntry, label: string): string {
+  // Format entry for bibliography
+  formatEntry(entry: BibEntry): string {
     const type = entry.type.toLowerCase();
     
     switch (type) {
       case 'article':
-        return this.formatArticle(entry, label);
+        return this.formatArticle(entry);
       case 'book':
-        return this.formatBook(entry, label);
+        return this.formatBook(entry);
       case 'inproceedings':
       case 'conference':
-        return this.formatInProceedings(entry, label);
+        return this.formatInProceedings(entry);
       case 'incollection':
-        return this.formatInCollection(entry, label);
+        return this.formatInCollection(entry);
       default:
         console.warn(`Unsupported entry type: ${type}, falling back to article format`);
-        return this.formatArticle(entry, label);
+        return this.formatArticle(entry);
     }
   }
 
-  private formatArticle(entry: BibEntry, label: string): string {
+  private formatArticle(entry: BibEntry): string {
     const parts: string[] = [];
     
     // Authors
@@ -233,7 +225,7 @@ class AlphaStyleGenerator {
     return parts.join(", ") + ".";
   }
 
-  private formatBook(entry: BibEntry, label: string): string {
+  private formatBook(entry: BibEntry): string {
     const parts: string[] = [];
     
     // Authors or editors
@@ -270,7 +262,7 @@ class AlphaStyleGenerator {
     return parts.join(", ") + ".";
   }
 
-  private formatInProceedings(entry: BibEntry, label: string): string {
+  private formatInProceedings(entry: BibEntry): string {
     const parts: string[] = [];
     
     // Authors
@@ -303,41 +295,48 @@ class AlphaStyleGenerator {
     return parts.join(", ") + ".";
   }
 
-  private formatInCollection(entry: BibEntry, label: string): string {
+  private formatInCollection(entry: BibEntry): string {
     // Similar to inproceedings but for book chapters
-    return this.formatInProceedings(entry, label);
+    return this.formatInProceedings(entry);
   }
 
   // Generate complete bibliography
-  generateBibliography(entries: BibEntry[]): Array<{label: string, formatted: string, sortKey: string}> {
+  processBibliography(entries: BibEntry[]): Array<{label: string, formatted: string, sortKey: string, originalId: string}> {
     const formattedEntries = entries.map(entry => {
       const label = this.generateAlphaLabel(entry);
-      const formatted = this.formatEntry(entry, label);
+      const formatted = this.formatEntry(entry);
       const sortKey = this.generateSortKey(entry, label);
       
-      return { label, formatted, sortKey, entry };
+      return { label, formatted, sortKey, originalId: entry.id, entry };
     });
 
     // Handle duplicate labels (add 'a', 'b', etc.)
     const labelCounts: {[key: string]: number} = {};
-    const finalEntries = formattedEntries.map(({label, formatted, sortKey, entry}) => {
+    const finalEntries = formattedEntries.map(({label, formatted, sortKey, originalId, entry}) => {
       if (labelCounts[label]) {
         labelCounts[label]++;
         const suffix = String.fromCharCode(96 + labelCounts[label]); // 'a', 'b', 'c'...
         return {
           label: label + suffix,
           formatted,
-          sortKey: sortKey + suffix
+          sortKey: sortKey + suffix,
+          originalId
         };
       } else {
         labelCounts[label] = 1;
-        return { label, formatted, sortKey };
+        return { label, formatted, sortKey, originalId };
       }
     });
 
     // Sort by sort key
     finalEntries.sort((a, b) => a.sortKey.localeCompare(b.sortKey));
     
+    // Cache citations
+    for (const entry of finalEntries) {
+      this.citationCache.set(entry.originalId, entry.label);
+    }
+    
+    this.bibliographyEntries = finalEntries;
     return finalEntries;
   }
 
@@ -353,14 +352,16 @@ class AlphaStyleGenerator {
     return `${label}_${authorSort}_${year}_${title}`;
   }
 
-  // Generate Markdown output suitable for Quartz
-  generateMarkdownBibliography(entries: BibEntry[]): string {
-    const bibliography = this.generateBibliography(entries);
+  // Get citation label for a given cite key
+  getCitationLabel(citeKey: string): string | undefined {
+    return this.citationCache.get(citeKey);
+  }
+
+  // Generate bibliography page content
+  generateBibliographyMarkdown(title: string = "Bibliography"): string {
+    let output = `# ${title}\n\n`;
     
-    let output = "## Bibliography\n\n";
-    
-    for (const {label, formatted} of bibliography) {
-      // Use label as anchor for citations
+    for (const {label, formatted} of this.bibliographyEntries) {
       output += `<div id="${label.toLowerCase()}" class="bib-entry">\n`;
       output += `**[${label}]** ${formatted}\n`;
       output += `</div>\n\n`;
@@ -368,50 +369,126 @@ class AlphaStyleGenerator {
     
     return output;
   }
+}
 
-  // Generate citation links for use in text
-  generateCitations(entries: BibEntry[]): {[key: string]: string} {
-    const bibliography = this.generateBibliography(entries);
-    const citations: {[key: string]: string} = {};
-    
-    for (const {label, entry} of bibliography as any[]) {
-      // Map original cite key to alpha label
-      citations[entry.entry.id] = `[${label}](#${label.toLowerCase()})`;
+export const AlphaCitations: QuartzTransformerPlugin<AlphaCitationsOptions | undefined> = (userOpts) => {
+  const opts: AlphaCitationsOptions = {
+    bibFile: "references.bib",
+    generateBibliographyPage: true,
+    bibliographyTitle: "Bibliography",
+    linkCitations: true,
+    ...userOpts,
+  }
+
+  return {
+    name: "AlphaCitations",
+    markdownPlugins() {
+      return []
+    },
+    htmlPlugins() {
+      return []
+    },
+    externalResources() {
+      return {}
+    },
+    async process(processor, ctx) {
+      const alphaGen = new AlphaStyleGenerator();
+      let bibEntries: BibEntry[] = [];
+      
+      // Try to load and parse the bibliography file
+      if (opts.bibFile) {
+        try {
+          const bibPath = path.join(ctx.cfg.configuration.contentDir || "content", opts.bibFile);
+          if (fs.existsSync(bibPath)) {
+            const bibContent = fs.readFileSync(bibPath, 'utf-8');
+            bibEntries = alphaGen.parseBibFile(bibContent);
+            alphaGen.processBibliography(bibEntries);
+            console.log(`Loaded ${bibEntries.length} bibliography entries for alpha citations`);
+            
+            // Generate bibliography page if requested
+            if (opts.generateBibliographyPage) {
+              const bibliographyMarkdown = alphaGen.generateBibliographyMarkdown(opts.bibliographyTitle);
+              const bibliographyPath = path.join(ctx.cfg.configuration.contentDir || "content", "bibliography.md");
+              fs.writeFileSync(bibliographyPath, bibliographyMarkdown);
+              console.log(`Generated bibliography page at ${bibliographyPath}`);
+            }
+          } else {
+            console.warn(`Bibliography file not found: ${bibPath}`);
+          }
+        } catch (error) {
+          console.error(`Error loading bibliography file: ${error}`);
+        }
+      }
+
+      // Return a remark plugin that processes citations in markdown
+      return () => {
+        return (tree: Root, file) => {
+          if (bibEntries.length === 0) return;
+
+          // Process citation patterns like [@citekey] or [citekey]
+          visit(tree, 'text', (node: any) => {
+            if (!node.value) return;
+            
+            // Match patterns like [@citekey], [citekey], or [@citekey1; citekey2]
+            const citationRegex = /\[(@?)([^\]]+)\]/g;
+            
+            node.value = node.value.replace(citationRegex, (match: string, at: string, keys: string) => {
+              const citeKeys = keys.split(/[;,]/).map(k => k.trim().replace(/^@/, ''));
+              
+              if (opts.linkCitations) {
+                const links = citeKeys.map(key => {
+                  const label = alphaGen.getCitationLabel(key);
+                  if (label) {
+                    return `[${label}](#${label.toLowerCase()})`;
+                  } else {
+                    console.warn(`Citation not found: ${key}`);
+                    return `[${key}]`;
+                  }
+                });
+                return `[${links.join(', ')}]`;
+              } else {
+                const labels = citeKeys.map(key => {
+                  const label = alphaGen.getCitationLabel(key);
+                  return label || key;
+                });
+                return `[${labels.join(', ')}]`;
+              }
+            });
+          });
+
+          // Also process paragraph nodes
+          visit(tree, 'paragraph', (node: any) => {
+            visit(node, 'text', (textNode: any) => {
+              if (!textNode.value) return;
+              
+              const citationRegex = /\[(@?)([^\]]+)\]/g;
+              
+              textNode.value = textNode.value.replace(citationRegex, (match: string, at: string, keys: string) => {
+                const citeKeys = keys.split(/[;,]/).map(k => k.trim().replace(/^@/, ''));
+                
+                if (opts.linkCitations) {
+                  const links = citeKeys.map(key => {
+                    const label = alphaGen.getCitationLabel(key);
+                    if (label) {
+                      return `[${label}](#${label.toLowerCase()})`;
+                    } else {
+                      console.warn(`Citation not found: ${key}`);
+                      return `[${key}]`;
+                    }
+                  });
+                  return `[${links.join(', ')}]`;
+                } else {
+                  const labels = citeKeys.map(key => {
+                    const label = alphaGen.getCitationLabel(key);
+                    return label || key;
+                  });
+                  return `[${labels.join(', ')}]`;
+                }
+              });
+            });
+          });
+        }
+      }
     }
-    
-    return citations;
-  }
-}
-
-// Example usage for your Quartz site
-export async function setupAlphaCitations(bibFilePath: string) {
-  const alphaGen = new AlphaStyleGenerator();
-  
-  try {
-    // Parse your .bib file
-    const entries = await alphaGen.parseBibFromFile(bibFilePath);
-    console.log(`Loaded ${entries.length} bibliography entries`);
-    
-    // Generate bibliography
-    const markdown = alphaGen.generateMarkdownBibliography(entries);
-    
-    // Generate citation lookup
-    const citations = alphaGen.generateCitations(entries);
-    
-    return { markdown, citations, entries };
-  } catch (error) {
-    console.error('Failed to setup alpha citations:', error);
-    throw error;
-  }
-}
-
-// For browser usage (if loading .bib content directly)
-export async function setupAlphaCitationsFromContent(bibContent: string) {
-  const alphaGen = new AlphaStyleGenerator();
-  
-  const entries = await alphaGen.parseBibFile(bibContent);
-  const markdown = alphaGen.generateMarkdownBibliography(entries);
-  const citations = alphaGen.generateCitations(entries);
-  
-  return { markdown, citations, entries };
+  } satisfies QuartzTransformerPluginInstance<AlphaCitationsOptions | undefined>
 }
