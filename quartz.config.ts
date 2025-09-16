@@ -83,7 +83,8 @@ const config: QuartzConfig = {
       Plugin.Latex({ renderEngine: "katex" }),
       Plugin.Pseudocode(),
       // HACK: enable nice bibtex-style citations (and hoover over papers)
-      Plugin.Citations()
+      // Plugin.Citations()
+      Plugin.setupAlphaCitations()
     ],
     filters: [Plugin.RemoveDrafts()],
     emitters: [
