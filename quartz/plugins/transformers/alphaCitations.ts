@@ -204,9 +204,9 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
         function alphaLabelProcessor() {
           return async (tree: Root, file: VFile) => {
             try {
-              // Parse bibliography to generate alpha labels
+              // Parse bibliography to generate alpha labels and get entry data
               const labelGenerator = new AlphaLabelGenerator()
-              const alphaLabels = await generateAlphaLabelsFromBib(opts, labelGenerator)
+              const { alphaLabels, entryData } = await generateAlphaLabelsFromBib(opts, labelGenerator)
               
               // Replace citation labels in the HTML tree
               visit(tree, 'element', (node: Element) => {
@@ -217,7 +217,7 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
                 
                 // Replace bibliography entries
                 if (isBibliographyEntry(node)) {
-                  replaceBibliographyLabels(node, alphaLabels)
+                  replaceBibliographyLabels(node, alphaLabels, entryData)
                 }
               })
             } catch (error) {
@@ -254,6 +254,33 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
               padding-left: 1rem;
               text-indent: -1rem;
             }
+            
+            .bibliography-url {
+              display: inline-block;
+              margin-left: 0.5rem;
+              padding: 0.25rem 0.5rem;
+              background-color: var(--bg-secondary, #f3f4f6);
+              color: var(--primary-color, #2563eb);
+              text-decoration: none;
+              border-radius: 0.25rem;
+              font-size: 0.875rem;
+              font-weight: 500;
+              border: 1px solid var(--border-color, #e5e7eb);
+              transition: all 0.15s ease-in-out;
+            }
+            
+            .bibliography-url:hover {
+              background-color: var(--primary-color, #2563eb);
+              color: white;
+              text-decoration: none;
+              transform: translateY(-1px);
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            
+            .bibliography-url:active {
+              transform: translateY(0);
+              box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            }
           `
         }]
       }
@@ -266,7 +293,7 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
 async function generateAlphaLabelsFromBib(
   opts: AlphaCitationOptions, 
   generator: AlphaLabelGenerator
-): Promise<Map<string, string>> {
+): Promise<{ alphaLabels: Map<string, string>, entryData: Map<string, any> }> {
   try {
     // Read and parse bibliography file(s)
     const bibliographies = Array.isArray(opts.bibliography) ? opts.bibliography : [opts.bibliography]
@@ -286,10 +313,20 @@ async function generateAlphaLabelsFromBib(
       allEntries = allEntries.concat(entries)
     }
     
-    return generator.generateLabels(allEntries)
+    const alphaLabels = generator.generateLabels(allEntries)
+    
+    // Create entry data map for easy lookup
+    const entryData = new Map<string, any>()
+    allEntries.forEach(entry => {
+      if (entry.id) {
+        entryData.set(entry.id, entry)
+      }
+    })
+    
+    return { alphaLabels, entryData }
   } catch (error) {
     console.error("Error generating alpha labels:", error)
-    return new Map()
+    return { alphaLabels: new Map(), entryData: new Map() }
   }
 }
 
@@ -334,7 +371,7 @@ function replaceCitationLabels(node: Element, alphaLabels: Map<string, string>) 
   })
 }
 
-function replaceBibliographyLabels(node: Element, alphaLabels: Map<string, string>) {
+function replaceBibliographyLabels(node: Element, alphaLabels: Map<string, string>, entryData: Map<string, any>) {
   // Extract citation key from id (e.g., bib-smith2020 -> smith2020)
   if (node.properties?.id) {
     const id = String(node.properties.id)
@@ -343,6 +380,7 @@ function replaceBibliographyLabels(node: Element, alphaLabels: Map<string, strin
     if (match && match[1]) {
       const citationKey = match[1]
       const alphaLabel = alphaLabels.get(citationKey)
+      const entry = entryData.get(citationKey)
       
       if (alphaLabel) {
         // Prepend alpha label to bibliography entry
@@ -354,7 +392,69 @@ function replaceBibliographyLabels(node: Element, alphaLabels: Map<string, strin
         }
         
         node.children.unshift(labelElement, { type: 'text', value: ' ' })
+        
+        // Add URL link if available
+        if (entry) {
+          addUrlLinkToBibEntry(node, entry)
+        }
       }
     }
   }
+}
+
+function addUrlLinkToBibEntry(node: Element, entry: any) {
+  // Extract URL from various possible fields
+  const url = extractUrl(entry)
+  
+  if (url) {
+    // Create URL link element
+    const linkElement: Element = {
+      type: 'element',
+      tagName: 'a',
+      properties: {
+        href: url,
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        className: ['bibliography-url']
+      },
+      children: [{ type: 'text', value: ' ' }]
+    }
+    
+    // Add spacing and the link at the end of the bibliography entry
+    node.children.push(
+      { type: 'text', value: ' ' },
+      linkElement
+    )
+  }
+}
+
+function extractUrl(entry: any): string | null {
+  // Check for URL field first
+  if (entry.URL && typeof entry.URL === 'string') {
+    return entry.URL
+  }
+  
+  if (entry.url && typeof entry.url === 'string') {
+    return entry.url
+  }
+  
+  // Check for DOI and convert to URL
+  if (entry.DOI && typeof entry.DOI === 'string') {
+    return `https://doi.org/${entry.DOI}`
+  }
+  
+  if (entry.doi && typeof entry.doi === 'string') {
+    return `https://doi.org/${entry.doi}`
+  }
+  
+  // Check for arXiv ID and convert to URL
+  if (entry.archivePrefix === 'arXiv' && entry.eprint) {
+    return `https://arxiv.org/abs/${entry.eprint}`
+  }
+  
+  if (entry.eprint && typeof entry.eprint === 'string' && entry.eprint.match(/^\d{4}\.\d{4,5}$/)) {
+    return `https://arxiv.org/abs/${entry.eprint}`
+  }
+  
+  return null
 }
