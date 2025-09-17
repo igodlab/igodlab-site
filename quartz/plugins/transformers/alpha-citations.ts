@@ -110,17 +110,21 @@ class AlphaLabelGenerator {
     if (numAuthors === 0) return "UNK"
     
     if (numAuthors === 1) {
-      return this.extractSurname(authors[0]).substring(0, 3).toUpperCase()
+      // Single author: [Knu79] - first letter caps, rest lowercase
+      const surname = this.extractSurname(authors[0])
+      return surname.charAt(0).toUpperCase() + surname.substring(1, 3).toLowerCase()
     }
     
     if (numAuthors >= 2 && numAuthors <= 4) {
+      // 2-4 authors: [FSJC16] - all caps first letters
       return authors.map(name => 
         this.extractSurname(name).charAt(0).toUpperCase()
       ).join('')
     }
     
-    // 5+ authors
-    return this.extractSurname(authors[0]).substring(0, 3).toUpperCase() + '+'
+    // 5+ authors: [Sut+17] - first letter caps, rest lowercase
+    const surname = this.extractSurname(authors[0])
+    return surname.charAt(0).toUpperCase() + surname.substring(1, 3).toLowerCase() + '+'
   }
 
   private extractSurname(fullName: string): string {
