@@ -1,494 +1,356 @@
-// quartz/plugins/transformers/alpha-citations.ts
 import { QuartzTransformerPlugin, QuartzTransformerPluginInstance } from "../types"
-import { Root } from "mdast"
 import { visit } from "unist-util-visit"
-import { toString } from "mdast-util-to-string"
-import { Cite } from '@citation-js/core'
-import '@citation-js/plugin-bibtex'
+import { Element, Root } from "hast"
+import { VFile } from "vfile"
+import { BuildCtx } from "../../cfg"
 import path from "path"
 import fs from "fs"
 
-interface BibEntry {
-  id: string;
-  type: string;
-  author?: Array<{given: string, family: string, literal?: string}>;
-  editor?: Array<{given: string, family: string, literal?: string}>;
-  title?: string;
-  'container-title'?: string; // journal, booktitle
-  volume?: string | number;
-  issue?: string | number; // number field in BibTeX
-  page?: string;
-  'page-first'?: string;
-  issued?: {['date-parts']: number[][]}; // year, month
-  publisher?: string;
-  'publisher-place'?: string; // address
-  note?: string;
-  keyword?: string; // key field
-  [key: string]: any; // for additional fields
+// Import citation processing dependencies
+import { Cite } from "@citation-js/core"
+import "@citation-js/plugin-bibtex"
+import "@citation-js/plugin-csl"
+import rehypeCitation from "rehype-citation"
+
+interface AlphaCitationOptions {
+  bibliography: string | string[]
+  path?: string
+  linkCitations?: boolean
+  suppressBibliography?: boolean
+  locale?: string
 }
 
-interface AlphaCitationsOptions {
-  bibFile?: string; // Path to .bib file relative to content root
-  generateBibliographyPage?: boolean; // Whether to generate a dedicated bibliography page
-  bibliographyTitle?: string; // Title for the bibliography page
-  linkCitations?: boolean; // Whether to automatically link citations to bibliography
+interface AlphaLabel {
+  id: string
+  label: string
+  baseLabel: string
+  entry: any
 }
 
-class AlphaStyleGenerator {
-  private etAlCharUsed = false;
-  private citationCache: Map<string, string> = new Map();
-  private bibliographyEntries: Array<{label: string, formatted: string, sortKey: string, originalId: string}> = [];
-  
-  constructor() {}
+class AlphaLabelGenerator {
+  private labelCounts = new Map<string, number>()
+  private resolvedLabels = new Map<string, string>()
 
-  // Parse .bib file using citation-js
-  parseBibFile(bibContent: string): BibEntry[] {
-    try {
-      const cite = new Cite(bibContent, { forceType: '@bibtex/text' });
-      const entries = cite.data as BibEntry[];
-      
-      console.log('Parsed entries:', entries.length);
-      
-      return entries;
-    } catch (error) {
-      console.error('Error parsing BibTeX file:', error);
-      throw error;
-    }
-  }
+  generateLabels(entries: any[]): Map<string, string> {
+    // Step 1: Generate base labels
+    const baseLabels: AlphaLabel[] = entries.map(entry => ({
+      id: entry.id,
+      label: this.generateBaseLabel(entry),
+      baseLabel: this.generateBaseLabel(entry),
+      entry
+    }))
 
-  // Generate alpha-style label (e.g., "Knu79")
-  generateAlphaLabel(entry: BibEntry): string {
-    let authorPart = "";
+    // Step 2: Sort by base label for consistent ordering
+    baseLabels.sort((a, b) => a.baseLabel.localeCompare(b.baseLabel))
+
+    // Step 3: Resolve duplicates
+    const labelMap = new Map<string, string>()
     
-    // Handle different author/editor scenarios
-    if (entry.author && entry.author.length > 0) {
-      authorPart = this.formatLabNames(entry.author);
-    } else if (entry.editor && entry.editor.length > 0) {
-      authorPart = this.formatLabNames(entry.editor);
-    } else if (entry.keyword) {
-      // Use 'key' field if available
-      authorPart = entry.keyword.substring(0, 3).toUpperCase();
-    } else {
-      // Fallback to cite key
-      authorPart = entry.id.substring(0, 3).toUpperCase();
-    }
+    baseLabels.forEach(item => {
+      const finalLabel = this.resolveLabel(item.baseLabel, item.id)
+      labelMap.set(item.id, finalLabel)
+    })
 
-    // Extract year (last 2 digits)
-    let yearPart = "";
-    if (entry.issued && entry.issued['date-parts'] && entry.issued['date-parts'][0]) {
-      const year = entry.issued['date-parts'][0][0];
-      yearPart = year.toString().slice(-2);
-    }
-
-    return authorPart + yearPart;
+    return labelMap
   }
 
-  // Format author names for label generation
-  private formatLabNames(authors: Array<{given: string, family: string, literal?: string}>): string {
-    const numAuthors = authors.length;
+  private generateBaseLabel(entry: any): string {
+    const authors = this.extractAuthors(entry)
+    const year = this.extractYear(entry)
+    
+    const namepart = this.formatNames(authors)
+    const yearpart = year.toString().slice(-2).padStart(2, '0')
+    
+    return namepart + yearpart
+  }
+
+  private extractAuthors(entry: any): string[] {
+    if (entry.author && Array.isArray(entry.author)) {
+      return entry.author.map((author: any) => {
+        if (typeof author === 'string') return author
+        if (author.family) return author.family
+        if (author.literal) return author.literal
+        return String(author)
+      })
+    }
+    
+    if (entry.editor && Array.isArray(entry.editor)) {
+      return entry.editor.map((editor: any) => {
+        if (typeof editor === 'string') return editor
+        if (editor.family) return editor.family
+        if (editor.literal) return editor.literal
+        return String(editor)
+      })
+    }
+
+    // Fallback to title or entry id
+    if (entry.title) {
+      return [entry.title.substring(0, 3)]
+    }
+    
+    return [entry.id || 'UNK']
+  }
+
+  private extractYear(entry: any): number {
+    if (entry.issued && entry.issued['date-parts'] && entry.issued['date-parts'][0]) {
+      return entry.issued['date-parts'][0][0] || new Date().getFullYear()
+    }
+    
+    if (entry.year) {
+      const yearMatch = String(entry.year).match(/\d{4}/)
+      if (yearMatch) return parseInt(yearMatch[0])
+    }
+    
+    return new Date().getFullYear()
+  }
+
+  private formatNames(authors: string[]): string {
+    const numAuthors = authors.length
+    
+    if (numAuthors === 0) return "UNK"
     
     if (numAuthors === 1) {
-      const surname = authors[0].family || authors[0].literal || "";
-      return surname.length >= 3 ? surname.substring(0, 3).toUpperCase() : surname.toUpperCase();
+      return this.extractSurname(authors[0]).substring(0, 3).toUpperCase()
     }
     
-    if (numAuthors <= 3) {
-      // Use first letter of each surname
-      return authors
-        .map(author => (author.family || author.literal || "").charAt(0).toUpperCase())
-        .join("");
+    if (numAuthors >= 2 && numAuthors <= 4) {
+      return authors.map(name => 
+        this.extractSurname(name).charAt(0).toUpperCase()
+      ).join('')
     }
     
-    if (numAuthors === 4) {
-      // All four first letters
-      return authors
-        .map(author => (author.family || author.literal || "").charAt(0).toUpperCase())
-        .join("");
-    }
-    
-    // More than 4 authors: first 3 + "+"
-    const first3 = authors.slice(0, 3)
-      .map(author => (author.family || author.literal || "").charAt(0).toUpperCase())
-      .join("");
-    
-    this.etAlCharUsed = true;
-    return first3 + "+";
+    // 5+ authors
+    return this.extractSurname(authors[0]).substring(0, 3).toUpperCase() + '+'
   }
 
-  // Format author names for bibliography
-  formatAuthors(authors: Array<{given: string, family: string, literal?: string}>): string {
-    if (!authors || authors.length === 0) return "";
+  private extractSurname(fullName: string): string {
+    if (!fullName) return 'UNK'
     
-    const formatName = (author: {given: string, family: string, literal?: string}) => {
-      if (author.literal) return author.literal;
-      const given = author.given || "";
-      const family = author.family || "";
-      return given ? `${given} ${family}` : family;
-    };
-
-    if (authors.length === 1) {
-      return formatName(authors[0]);
-    } else if (authors.length === 2) {
-      return `${formatName(authors[0])} and ${formatName(authors[1])}`;
-    } else {
-      const allButLast = authors.slice(0, -1).map(formatName).join(", ");
-      return `${allButLast}, and ${formatName(authors[authors.length - 1])}`;
+    // Handle "Last, First" format
+    if (fullName.includes(',')) {
+      return fullName.split(',')[0].trim()
     }
+    
+    // Handle "First Last" format - get last word
+    const parts = fullName.trim().split(/\s+/)
+    return parts[parts.length - 1] || fullName
   }
 
-  // Format title with proper capitalization
-  formatTitle(title: string): string {
-    if (!title) return "";
-    // Basic title case - you might want more sophisticated handling
-    return title.replace(/\{([^}]*)\}/g, '$1'); // Remove BibTeX braces
+  private resolveLabel(baseLabel: string, entryId: string): string {
+    const count = this.labelCounts.get(baseLabel) || 0
+    this.labelCounts.set(baseLabel, count + 1)
+    
+    if (count === 0) {
+      this.resolvedLabels.set(entryId, baseLabel)
+      return baseLabel
+    }
+    
+    // Generate suffix: a, b, c, ... z, aa, ab, etc.
+    const suffix = this.generateSuffix(count)
+    const finalLabel = baseLabel + suffix
+    this.resolvedLabels.set(entryId, finalLabel)
+    
+    return finalLabel
   }
 
-  // Format date from citation-js date structure
-  formatDate(issued?: {['date-parts']: number[][]}): string {
-    if (!issued || !issued['date-parts'] || !issued['date-parts'][0]) {
-      return "";
+  private generateSuffix(count: number): string {
+    if (count < 26) {
+      return String.fromCharCode(97 + count - 1) // a-z
     }
     
-    const dateParts = issued['date-parts'][0];
-    const year = dateParts[0];
-    const month = dateParts[1];
-    
-    if (month) {
-      const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-      ];
-      return `${monthNames[month - 1]} ${year}`;
-    }
-    
-    return year.toString();
-  }
-
-  // Format entry for bibliography
-  formatEntry(entry: BibEntry): string {
-    const type = entry.type.toLowerCase();
-    
-    switch (type) {
-      case 'article':
-        return this.formatArticle(entry);
-      case 'book':
-        return this.formatBook(entry);
-      case 'inproceedings':
-      case 'conference':
-        return this.formatInProceedings(entry);
-      case 'incollection':
-        return this.formatInCollection(entry);
-      default:
-        console.warn(`Unsupported entry type: ${type}, falling back to article format`);
-        return this.formatArticle(entry);
-    }
-  }
-
-  private formatArticle(entry: BibEntry): string {
-    const parts: string[] = [];
-    
-    // Authors
-    if (entry.author) {
-      parts.push(this.formatAuthors(entry.author));
-    }
-    
-    // Title
-    if (entry.title) {
-      parts.push(this.formatTitle(entry.title));
-    }
-    
-    // Journal info
-    if (entry['container-title']) {
-      let journalPart = `*${entry['container-title']}*`; // Markdown emphasis
-      
-      // Volume and issue
-      if (entry.volume) {
-        journalPart += ` ${entry.volume}`;
-        if (entry.issue) {
-          journalPart += `(${entry.issue})`;
-        }
-      }
-      
-      // Pages
-      if (entry.page) {
-        journalPart += `:${entry.page.replace(/-+/g, "–")}`;
-      }
-      
-      parts.push(journalPart);
-    }
-    
-    // Date
-    if (entry.issued) {
-      parts.push(this.formatDate(entry.issued));
-    }
-    
-    return parts.join(", ") + ".";
-  }
-
-  private formatBook(entry: BibEntry): string {
-    const parts: string[] = [];
-    
-    // Authors or editors
-    if (entry.author) {
-      parts.push(this.formatAuthors(entry.author));
-    } else if (entry.editor) {
-      const editors = this.formatAuthors(entry.editor);
-      const suffix = entry.editor.length > 1 ? "editors" : "editor";
-      parts.push(`${editors}, ${suffix}`);
-    }
-    
-    // Title (emphasized)
-    if (entry.title) {
-      parts.push(`*${this.formatTitle(entry.title)}*`);
-    }
-    
-    // Publisher and place
-    const pubInfo: string[] = [];
-    if (entry['publisher-place']) {
-      pubInfo.push(entry['publisher-place']);
-    }
-    if (entry.publisher) {
-      pubInfo.push(entry.publisher);
-    }
-    if (pubInfo.length > 0) {
-      parts.push(pubInfo.join(": "));
-    }
-    
-    // Date
-    if (entry.issued) {
-      parts.push(this.formatDate(entry.issued));
-    }
-    
-    return parts.join(", ") + ".";
-  }
-
-  private formatInProceedings(entry: BibEntry): string {
-    const parts: string[] = [];
-    
-    // Authors
-    if (entry.author) {
-      parts.push(this.formatAuthors(entry.author));
-    }
-    
-    // Title
-    if (entry.title) {
-      parts.push(this.formatTitle(entry.title));
-    }
-    
-    // Booktitle
-    if (entry['container-title']) {
-      let proceedingsPart = `In *${entry['container-title']}*`;
-      
-      // Pages
-      if (entry.page) {
-        proceedingsPart += `, pages ${entry.page.replace(/-+/g, "–")}`;
-      }
-      
-      parts.push(proceedingsPart);
-    }
-    
-    // Date
-    if (entry.issued) {
-      parts.push(this.formatDate(entry.issued));
-    }
-    
-    return parts.join(", ") + ".";
-  }
-
-  private formatInCollection(entry: BibEntry): string {
-    // Similar to inproceedings but for book chapters
-    return this.formatInProceedings(entry);
-  }
-
-  // Generate complete bibliography
-  processBibliography(entries: BibEntry[]): Array<{label: string, formatted: string, sortKey: string, originalId: string}> {
-    const formattedEntries = entries.map(entry => {
-      const label = this.generateAlphaLabel(entry);
-      const formatted = this.formatEntry(entry);
-      const sortKey = this.generateSortKey(entry, label);
-      
-      return { label, formatted, sortKey, originalId: entry.id, entry };
-    });
-
-    // Handle duplicate labels (add 'a', 'b', etc.)
-    const labelCounts: {[key: string]: number} = {};
-    const finalEntries = formattedEntries.map(({label, formatted, sortKey, originalId, entry}) => {
-      if (labelCounts[label]) {
-        labelCounts[label]++;
-        const suffix = String.fromCharCode(96 + labelCounts[label]); // 'a', 'b', 'c'...
-        return {
-          label: label + suffix,
-          formatted,
-          sortKey: sortKey + suffix,
-          originalId
-        };
-      } else {
-        labelCounts[label] = 1;
-        return { label, formatted, sortKey, originalId };
-      }
-    });
-
-    // Sort by sort key
-    finalEntries.sort((a, b) => a.sortKey.localeCompare(b.sortKey));
-    
-    // Cache citations
-    for (const entry of finalEntries) {
-      this.citationCache.set(entry.originalId, entry.label);
-    }
-    
-    this.bibliographyEntries = finalEntries;
-    return finalEntries;
-  }
-
-  private generateSortKey(entry: BibEntry, label: string): string {
-    // Simplified sort key for alpha style
-    const authorSort = entry.author ? 
-      entry.author[0].family || entry.author[0].literal || "" : 
-      (entry.editor ? entry.editor[0].family || entry.editor[0].literal || "" : "");
-    
-    const year = entry.issued?.['date-parts']?.[0]?.[0] || 9999;
-    const title = entry.title || "";
-    
-    return `${label}_${authorSort}_${year}_${title}`;
-  }
-
-  // Get citation label for a given cite key
-  getCitationLabel(citeKey: string): string | undefined {
-    return this.citationCache.get(citeKey);
-  }
-
-  // Generate bibliography page content
-  generateBibliographyMarkdown(title: string = "Bibliography"): string {
-    let output = `# ${title}\n\n`;
-    
-    for (const {label, formatted} of this.bibliographyEntries) {
-      output += `<div id="${label.toLowerCase()}" class="bib-entry">\n`;
-      output += `**[${label}]** ${formatted}\n`;
-      output += `</div>\n\n`;
-    }
-    
-    return output;
+    // Handle aa, ab, ac, etc.
+    const base26 = Math.floor((count - 1) / 26)
+    const remainder = (count - 1) % 26
+    return String.fromCharCode(97 + base26 - 1) + 
+           String.fromCharCode(97 + remainder)
   }
 }
 
-export const AlphaCitations: QuartzTransformerPlugin<AlphaCitationsOptions | undefined> = (userOpts) => {
-  const opts: AlphaCitationsOptions = {
-    bibFile: "references.bib",
-    generateBibliographyPage: true,
-    bibliographyTitle: "Bibliography",
+export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions>> = (userOpts) => {
+  const opts: AlphaCitationOptions = {
+    bibliography: [],
+    path: process.cwd(),
     linkCitations: true,
+    suppressBibliography: false,
+    locale: 'en-US',
     ...userOpts,
   }
 
   return {
-    name: "AlphaCitations",
-    markdownPlugins() {
-      return []
-    },
-    htmlPlugins() {
-      return []
-    },
-    externalResources() {
-      return {}
-    },
-    async process(processor, ctx) {
-      const alphaGen = new AlphaStyleGenerator();
-      let bibEntries: BibEntry[] = [];
-      
-      // Try to load and parse the bibliography file
-      if (opts.bibFile) {
-        try {
-          const bibPath = path.join(ctx.cfg.configuration.contentDir || "content", opts.bibFile);
-          if (fs.existsSync(bibPath)) {
-            const bibContent = fs.readFileSync(bibPath, 'utf-8');
-            bibEntries = alphaGen.parseBibFile(bibContent);
-            alphaGen.processBibliography(bibEntries);
-            console.log(`Loaded ${bibEntries.length} bibliography entries for alpha citations`);
-            
-            // Generate bibliography page if requested
-            if (opts.generateBibliographyPage) {
-              const bibliographyMarkdown = alphaGen.generateBibliographyMarkdown(opts.bibliographyTitle);
-              const bibliographyPath = path.join(ctx.cfg.configuration.contentDir || "content", "bibliography.md");
-              fs.writeFileSync(bibliographyPath, bibliographyMarkdown);
-              console.log(`Generated bibliography page at ${bibliographyPath}`);
-            }
-          } else {
-            console.warn(`Bibliography file not found: ${bibPath}`);
-          }
-        } catch (error) {
-          console.error(`Error loading bibliography file: ${error}`);
-        }
+    name: "AlphaCitation",
+    
+    htmlPlugins(ctx: BuildCtx): any[] {
+      if (!opts.bibliography || (Array.isArray(opts.bibliography) && opts.bibliography.length === 0)) {
+        console.warn("AlphaCitation: No bibliography specified, skipping citation processing")
+        return []
       }
 
-      // Return a remark plugin that processes citations in markdown
-      return () => {
-        return (tree: Root, file) => {
-          if (bibEntries.length === 0) return;
-
-          // Process citation patterns like [@citekey] or [citekey]
-          visit(tree, 'text', (node: any) => {
-            if (!node.value) return;
-            
-            // Match patterns like [@citekey], [citekey], or [@citekey1; citekey2]
-            const citationRegex = /\[(@?)([^\]]+)\]/g;
-            
-            node.value = node.value.replace(citationRegex, (match: string, at: string, keys: string) => {
-              const citeKeys = keys.split(/[;,]/).map(k => k.trim().replace(/^@/, ''));
+      return [
+        // First, run standard rehype-citation to get the base structure
+        [rehypeCitation, {
+          bibliography: opts.bibliography,
+          path: opts.path,
+          csl: 'apa', // Use APA as base, we'll replace the labels
+          linkCitations: opts.linkCitations,
+          suppressBibliography: opts.suppressBibliography,
+          locale: opts.locale,
+        }],
+        
+        // Then post-process to apply alpha labels
+        function alphaLabelProcessor() {
+          return async (tree: Root, file: VFile) => {
+            try {
+              // Parse bibliography to generate alpha labels
+              const labelGenerator = new AlphaLabelGenerator()
+              const alphaLabels = await generateAlphaLabelsFromBib(opts, labelGenerator)
               
-              if (opts.linkCitations) {
-                const links = citeKeys.map(key => {
-                  const label = alphaGen.getCitationLabel(key);
-                  if (label) {
-                    return `[${label}](#${label.toLowerCase()})`;
-                  } else {
-                    console.warn(`Citation not found: ${key}`);
-                    return `[${key}]`;
-                  }
-                });
-                return `[${links.join(', ')}]`;
-              } else {
-                const labels = citeKeys.map(key => {
-                  const label = alphaGen.getCitationLabel(key);
-                  return label || key;
-                });
-                return `[${labels.join(', ')}]`;
-              }
-            });
-          });
-
-          // Also process paragraph nodes
-          visit(tree, 'paragraph', (node: any) => {
-            visit(node, 'text', (textNode: any) => {
-              if (!textNode.value) return;
-              
-              const citationRegex = /\[(@?)([^\]]+)\]/g;
-              
-              textNode.value = textNode.value.replace(citationRegex, (match: string, at: string, keys: string) => {
-                const citeKeys = keys.split(/[;,]/).map(k => k.trim().replace(/^@/, ''));
-                
-                if (opts.linkCitations) {
-                  const links = citeKeys.map(key => {
-                    const label = alphaGen.getCitationLabel(key);
-                    if (label) {
-                      return `[${label}](#${label.toLowerCase()})`;
-                    } else {
-                      console.warn(`Citation not found: ${key}`);
-                      return `[${key}]`;
-                    }
-                  });
-                  return `[${links.join(', ')}]`;
-                } else {
-                  const labels = citeKeys.map(key => {
-                    const label = alphaGen.getCitationLabel(key);
-                    return label || key;
-                  });
-                  return `[${labels.join(', ')}]`;
+              // Replace citation labels in the HTML tree
+              visit(tree, 'element', (node: Element) => {
+                // Replace inline citations
+                if (isInlineCitation(node)) {
+                  replaceCitationLabels(node, alphaLabels)
                 }
-              });
-            });
-          });
+                
+                // Replace bibliography entries
+                if (isBibliographyEntry(node)) {
+                  replaceBibliographyLabels(node, alphaLabels)
+                }
+              })
+            } catch (error) {
+              console.error("AlphaCitation processing error:", error)
+              // Continue processing even if alpha label generation fails
+            }
+          }
+        }
+      ]
+    },
+
+    externalResources() {
+      return {
+        css: [{
+          content: `
+            .alpha-citation {
+              font-weight: 500;
+              color: var(--primary-color, #2563eb);
+              text-decoration: none;
+            }
+            
+            .alpha-citation:hover {
+              text-decoration: underline;
+            }
+            
+            .alpha-label {
+              font-weight: 600;
+              margin-right: 0.5rem;
+              color: var(--text-color, #374151);
+            }
+            
+            .bibliography-entry {
+              margin-bottom: 1rem;
+              padding-left: 1rem;
+              text-indent: -1rem;
+            }
+          `
+        }]
+      }
+    }
+  } as QuartzTransformerPluginInstance
+}
+
+// Helper functions
+
+async function generateAlphaLabelsFromBib(
+  opts: AlphaCitationOptions, 
+  generator: AlphaLabelGenerator
+): Promise<Map<string, string>> {
+  try {
+    // Read and parse bibliography file(s)
+    const bibliographies = Array.isArray(opts.bibliography) ? opts.bibliography : [opts.bibliography]
+    let allEntries: any[] = []
+    
+    for (const bibFile of bibliographies) {
+      const bibPath = path.resolve(opts.path || process.cwd(), bibFile)
+      
+      if (!fs.existsSync(bibPath)) {
+        console.warn(`Bibliography file not found: ${bibPath}`)
+        continue
+      }
+      
+      const bibContent = fs.readFileSync(bibPath, 'utf8')
+      const cite = new Cite(bibContent)
+      const entries = cite.data
+      allEntries = allEntries.concat(entries)
+    }
+    
+    return generator.generateLabels(allEntries)
+  } catch (error) {
+    console.error("Error generating alpha labels:", error)
+    return new Map()
+  }
+}
+
+function isInlineCitation(node: Element): boolean {
+  return node.tagName === 'span' && 
+         node.properties?.className &&
+         Array.isArray(node.properties.className) &&
+         node.properties.className.includes('citation')
+}
+
+function isBibliographyEntry(node: Element): boolean {
+  return node.tagName === 'div' &&
+         node.properties?.className &&
+         Array.isArray(node.properties.className) &&
+         (node.properties.className.includes('csl-entry') || 
+          node.properties.className.includes('bibliography-entry'))
+}
+
+function replaceCitationLabels(node: Element, alphaLabels: Map<string, string>) {
+  visit(node, 'element', (child: Element) => {
+    if (child.tagName === 'a' && child.properties?.href) {
+      // Extract citation key from href (e.g., #bib-smith2020 -> smith2020)
+      const href = String(child.properties.href)
+      const match = href.match(/#(?:bib-)?(.+)$/)
+      
+      if (match && match[1]) {
+        const citationKey = match[1]
+        const alphaLabel = alphaLabels.get(citationKey)
+        
+        if (alphaLabel) {
+          // Replace the text content with alpha label
+          child.children = [{ type: 'text', value: `[${alphaLabel}]` }]
+          
+          // Add alpha citation class
+          const classes = Array.isArray(child.properties.className) 
+            ? child.properties.className 
+            : []
+          child.properties.className = [...classes, 'alpha-citation']
         }
       }
     }
-  } satisfies QuartzTransformerPluginInstance<AlphaCitationsOptions | undefined>
+  })
+}
+
+function replaceBibliographyLabels(node: Element, alphaLabels: Map<string, string>) {
+  // Extract citation key from id (e.g., bib-smith2020 -> smith2020)
+  if (node.properties?.id) {
+    const id = String(node.properties.id)
+    const match = id.match(/^(?:bib-)?(.+)$/)
+    
+    if (match && match[1]) {
+      const citationKey = match[1]
+      const alphaLabel = alphaLabels.get(citationKey)
+      
+      if (alphaLabel) {
+        // Prepend alpha label to bibliography entry
+        const labelElement: Element = {
+          type: 'element',
+          tagName: 'span',
+          properties: { className: ['alpha-label'] },
+          children: [{ type: 'text', value: `[${alphaLabel}]` }]
+        }
+        
+        node.children.unshift(labelElement, { type: 'text', value: ' ' })
+      }
+    }
+  }
 }
