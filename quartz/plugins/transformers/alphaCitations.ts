@@ -453,14 +453,14 @@ function extractUrl(entry: any): string | null {
     return entry.url
   }
   
-  // Check for DOI and convert to URL
-  if (entry.DOI && typeof entry.DOI === 'string') {
-    return entry.DOI
-  }
-  
-  if (entry.doi && typeof entry.doi === 'string') {
-    return entry.doi
-  }
+  // // Check for DOI and convert to URL
+  // if (entry.DOI && typeof entry.DOI === 'string') {
+  //   return `iii${entry.DOI}`
+  // }
+  //
+  // if (entry.doi && typeof entry.doi === 'string') {
+  //   return `iii${entry.doi}`
+  // }
   
   // Check for arXiv ID and convert to URL
   if (entry.archivePrefix === 'arXiv' && entry.eprint) {
