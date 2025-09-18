@@ -1,6 +1,6 @@
 import { QuartzTransformerPlugin, QuartzTransformerPluginInstance } from "../types"
 import { visit } from "unist-util-visit"
-import { Element, Root } from "hast"
+import { Element, Root, Text } from "hast"
 import { VFile } from "vfile"
 import { BuildCtx } from "../../cfg"
 import path from "path"
@@ -208,14 +208,11 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
               const labelGenerator = new AlphaLabelGenerator()
               const { alphaLabels, entryData } = await generateAlphaLabelsFromBib(opts, labelGenerator)
               
-              // Replace citation labels in the HTML tree
+              // Replace citation labels throughout the entire HTML tree
+              replaceCitationLabels(tree, alphaLabels)
+              
+              // Replace bibliography entries
               visit(tree, 'element', (node: Element) => {
-                // Replace inline citations
-                if (isInlineCitation(node)) {
-                  replaceCitationLabels(node, alphaLabels)
-                }
-                
-                // Replace bibliography entries
                 if (isBibliographyEntry(node)) {
                   replaceBibliographyLabels(node, alphaLabels, entryData)
                 }
@@ -256,17 +253,16 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
             }
             
             .bibliography-url {
-              display: inline-block;
-              margin-left: 0.5rem;
-              padding: 0.25rem 0.5rem;
-              background-color: var(--bg-secondary, #f3f4f6);
               color: var(--primary-color, #2563eb);
-              text-decoration: none;
-              border-radius: 0.25rem;
+              text-decoration: underline;
               font-size: 0.875rem;
-              font-weight: 500;
-              border: 1px solid var(--border-color, #e5e7eb);
+              font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+              background-color: var(--bg-secondary, #f8fafc);
+              padding: 0.125rem 0.375rem;
+              border-radius: 0.25rem;
+              border: 1px solid var(--border-color, #e2e8f0);
               transition: all 0.15s ease-in-out;
+              word-break: break-all;
             }
             
             .bibliography-url:hover {
@@ -274,12 +270,12 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
               color: white;
               text-decoration: none;
               transform: translateY(-1px);
-              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
             }
             
             .bibliography-url:active {
               transform: translateY(0);
-              box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+              box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
             }
           `
         }]
@@ -393,39 +389,58 @@ function replaceBibliographyLabels(node: Element, alphaLabels: Map<string, strin
         
         node.children.unshift(labelElement, { type: 'text', value: ' ' })
         
-        // Add URL link if available
+        // Convert existing URLs to hyperlinks if available
         if (entry) {
-          addUrlLinkToBibEntry(node, entry)
+          convertUrlsToHyperlinks(node, entry)
         }
       }
     }
   }
 }
 
-function addUrlLinkToBibEntry(node: Element, entry: any) {
-  // Extract URL from various possible fields
+function convertUrlsToHyperlinks(node: Element, entry: any) {
   const url = extractUrl(entry)
   
-  if (url) {
-    // Create URL link element
-    const linkElement: Element = {
-      type: 'element',
-      tagName: 'a',
-      properties: {
-        href: url,
-        target: '_blank',
-        rel: 'noopener noreferrer',
-        className: ['bibliography-url']
-      },
-      children: [{ type: 'text', value: ' ' }]
-    }
+  if (!url) return
+  
+  // Find all text nodes and replace URLs with hyperlinks
+  visit(node, 'text', (textNode: Text, index, parent) => {
+    if (!parent || typeof index !== 'number') return
     
-    // Add spacing and the link at the end of the bibliography entry
-    node.children.push(
-      { type: 'text', value: ' ' },
-      linkElement
-    )
-  }
+    const text = textNode.value
+    
+    // Check if this text node contains the URL
+    if (text.includes(url)) {
+      // Split the text around the URL
+      const parts = text.split(url)
+      const newChildren = []
+      
+      for (let i = 0; i < parts.length; i++) {
+        // Add text part
+        if (parts[i]) {
+          newChildren.push({ type: 'text', value: parts[i] })
+        }
+        
+        // Add hyperlinked URL (except after the last part)
+        if (i < parts.length - 1) {
+          newChildren.push({
+            type: 'element',
+            tagName: 'a',
+            properties: {
+              href: url,
+              target: '_blank',
+              rel: 'noopener noreferrer',
+              className: ['bibliography-url']
+            },
+            children: [{ type: 'text', value: url }]
+          })
+        }
+      }
+      
+      // Replace the original text node with the new children
+      parent.children.splice(index, 1, ...newChildren)
+    }
+  })
 }
 
 function extractUrl(entry: any): string | null {
