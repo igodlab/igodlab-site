@@ -138,7 +138,7 @@ balance equations wrt distribution $\pi$, then $\pi$ is a stationary distributio
 - (eq.2.888) uses the form $f(r)=r\log r$: $D_{\mathbb{KL}}(p ||q) = \int p(\boldsymbol{x}) \log{\frac{p(\boldsymbol{x})}{q(\boldsymbol{x})}} dx$
 
 #### 2.7.1.2 Alpha divergence
-- (eq.2.290)
+- If $f(x)=\frac{4}{a-\alpha^2}\left(1-x^{\frac{1+\alpha}{2}}\right)$ the $f$-divergence becomes the **alpha divergence** and using Minka's parameterization [@minka2005divergence] and $\alpha\neq\pm 1$ we get: $$D_\alpha^M=\frac{1}{\alpha(1-\alpha)}\left(1-\int p(\boldsymbol{x})^\alpha q(\boldsymbol{x})^{1-\alpha}d\boldsymbol{x}\right)$$
 
 #### 2.7.1.3 Hellinger divergence
 - (eq.2.291): $D_{H}^2 (p || q) = 1 - \int \sqrt{p(\boldsymbol{x})^{1/2} - q(\boldsymbol{x})^{1/2}}d\boldsymbol{x}$
@@ -183,6 +183,8 @@ $D_{\mathcal{F}}(P, Q) \triangleq \sup _{f \in \mathcal{F}}\left|\mathbb{E}_{p(\
 - Moreover, the MMD is differentiable wrt the kernel parameters, so we can choose the optimal $\boldsymbol{\sigma}^2$ so as to maximize the power of the test
     - [@sutherland2021generativemodelsmodelcriticism]
     - bayesian version of the above [@flaxman2016bayesianlearningkernelembeddings]
+    - test citation [@zhao2019sensitivity; @zhang1998characterization]
+    - test2 [@zhang1998characterization]
     
     
 ### 2.7.4 Total variation distance (TV)
