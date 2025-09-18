@@ -455,11 +455,11 @@ function extractUrl(entry: any): string | null {
   
   // Check for DOI and convert to URL
   if (entry.DOI && typeof entry.DOI === 'string') {
-    return `https://doi.org/${entry.DOI}`
+    return entry.DOI
   }
   
   if (entry.doi && typeof entry.doi === 'string') {
-    return `https://doi.org/${entry.doi}`
+    return entry.doi
   }
   
   // Check for arXiv ID and convert to URL
