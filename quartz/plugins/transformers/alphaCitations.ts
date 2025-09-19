@@ -88,7 +88,7 @@ class AlphaLabelGenerator {
       return [entry.title.substring(0, 3)]
     }
     
-    return [entry.id || 'UNK']
+    return [entry.id || 'Autar']
   }
 
   private extractYear(entry: any): number {
@@ -326,13 +326,6 @@ async function generateAlphaLabelsFromBib(
   }
 }
 
-function isInlineCitation(node: Element): boolean {
-  return node.tagName === 'span' && 
-         node.properties?.className &&
-         Array.isArray(node.properties.className) &&
-         node.properties.className.includes('citation')
-}
-
 function isBibliographyEntry(node: Element): boolean {
   return node.tagName === 'div' &&
          node.properties?.className &&
@@ -341,11 +334,12 @@ function isBibliographyEntry(node: Element): boolean {
           node.properties.className.includes('bibliography-entry'))
 }
 
-function replaceCitationLabels(node: Element, alphaLabels: Map<string, string>) {
-  visit(node, 'element', (child: Element) => {
-    if (child.tagName === 'a' && child.properties?.href) {
-      // Extract citation key from href (e.g., #bib-smith2020 -> smith2020)
-      const href = String(child.properties.href)
+function replaceCitationLabels(tree: Root, alphaLabels: Map<string, string>) {
+  // Recursively find and replace all citation links throughout the entire tree
+  visit(tree, 'element', (element: Element) => {
+    // Handle direct citation links
+    if (element.tagName === 'a' && element.properties?.href) {
+      const href = String(element.properties.href)
       const match = href.match(/#(?:bib-)?(.+)$/)
       
       if (match && match[1]) {
@@ -354,13 +348,13 @@ function replaceCitationLabels(node: Element, alphaLabels: Map<string, string>) 
         
         if (alphaLabel) {
           // Replace the text content with alpha label
-          child.children = [{ type: 'text', value: `[${alphaLabel}]` }]
+          element.children = [{ type: 'text', value: `[${alphaLabel}]` }]
           
           // Add alpha citation class
-          const classes = Array.isArray(child.properties.className) 
-            ? child.properties.className 
+          const classes = Array.isArray(element.properties.className) 
+            ? element.properties.className 
             : []
-          child.properties.className = [...classes, 'alpha-citation']
+          element.properties.className = [...classes, 'alpha-citation']
         }
       }
     }
@@ -393,9 +387,29 @@ function replaceBibliographyLabels(node: Element, alphaLabels: Map<string, strin
         if (entry) {
           convertUrlsToHyperlinks(node, entry)
         }
+        
+        // NEW: Format author names in bibliography
+        formatAuthorNames(node)
       }
     }
   }
+}
+
+// NEW FUNCTION: Format author names in bibliography entries
+function formatAuthorNames(node: Element) {
+  visit(node, 'text', (textNode: Text) => {
+    let text = textNode.value
+    
+    // Replace author name patterns: "Surname, F." -> "F. Surname"
+    // Handle various initials patterns: F., F. M., F. M. K., etc.
+    text = text.replace(/([A-Z][a-z]+),\s+([A-Z]\.(?:\s+[A-Z]\.)*)/g, '$2 $1')
+    
+    // Replace final ampersand with "and"
+    text = text.replace(/\s&\s/g, ' and ')
+    
+    // Update the text node
+    textNode.value = text
+  })
 }
 
 function convertUrlsToHyperlinks(node: Element, entry: any) {
@@ -453,14 +467,14 @@ function extractUrl(entry: any): string | null {
     return entry.url
   }
   
-  // // Check for DOI and convert to URL
-  // if (entry.DOI && typeof entry.DOI === 'string') {
-  //   return `iii${entry.DOI}`
-  // }
-  //
-  // if (entry.doi && typeof entry.doi === 'string') {
-  //   return `iii${entry.doi}`
-  // }
+  // Check for DOI and convert to URL
+  if (entry.DOI && typeof entry.DOI === 'string') {
+    return `https://doi.org/${entry.DOI}`
+  }
+  
+  if (entry.doi && typeof entry.doi === 'string') {
+    return `https://doi.org/${entry.doi}`
+  }
   
   // Check for arXiv ID and convert to URL
   if (entry.archivePrefix === 'arXiv' && entry.eprint) {
