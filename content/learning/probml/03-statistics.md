@@ -216,7 +216,7 @@ Therefore $H_0$ is probably false
     - Great readings on this topic: https://bit.ly/3Rbd4lo and https://bit.ly/3j8miSR
 
 ### 3.3.6 Why isn't everyone a Bayesian?
-- Hard to argue in favor of frequentists, a great summary is this write-up: [[Erf86](https://www.tandfonline.com/doi/abs/10.1080/00031305.1986.10475342)]
+- Hard to argue in favor of frequentists, a great summary is this write-up @efron01021986
 - In the past everyone was a Bayesian (eg. Laplace, Gauss) until recent academic program. However, it is reclaiming dominance thanks to ML
 
 ## 3.4 Conjugate priors
@@ -392,7 +392,7 @@ Therefore $H_0$ is probably false
 
 #### 3.5.2.3 Jeffreys prior for mean and variance of a univariate Gaussian
 - In the 1D Gaussian with unknown params $\mu, \sigma^2$, using the FIM from Sec.3.3.4.4 the Jeffrey prior is $\sqrt{\det(\mathbf{F}(\boldsymbol{\theta}))}=\frac{\sqrt{2}}{\sigma^3}$
-- Furthermore, *standard uninformative Jeffreys priors* [[KW96](https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=75530d63b0286ff600738b45e648f0950f182530)] states that the prior can be written as a product of separate params: $p(\mu,\sigma^2)\propto p(\mu)p(\sigma^2)\propto\sigma^{-3}$
+- Furthermore, *standard uninformative Jeffreys priors* @kasswasserman1996 states that the prior can be written as a product of separate params: $p(\mu,\sigma^2)\propto p(\mu)p(\sigma^2)\propto\sigma^{-3}$
     - This is a favorable expression because it allows us to emulate this prior w/ the **NIX re-parameterization** of Sec.3.4.3.3
 
 ### 3.5.3 Invariant priors
@@ -410,8 +410,8 @@ Therefore $H_0$ is probably false
 
 #### 3.5.3.3 Learning invariant priors
 - When we have knowledge about the kind of invariance we want our model to satisfy we can encode this in our prior
-    - this can rarely be solved analytically [[Rob07](https://link.springer.com/book/10.1007/0-387-71599-1?ref=https://githubhelp.com), Ch.9]
-    - otherwise this is obtained computationally solving *variational optimization problems*
+    - this can rarely be solved analytically ( @robert2007bayesian, Ch.9)
+    - otherwise this is obtained computationally solving variational optimization problems @pmlrnalisnick18a
 
 ### 3.5.4 Reference priors
 - The basic idea of a **reference prior** is a way to obtain uninformative priors using the prior that is the most dissimilar to all possible posteriors
@@ -434,7 +434,7 @@ Therefore $H_0$ is probably false
     - in reality most hierarchical Bayes don't have analytical solutions thus the numerical approximation rely on observed data, so we actually compute: $p(\boldsymbol{\xi},\boldsymbol{\theta},\mathcal{D}) \rightarrow p(\boldsymbol{\xi},\boldsymbol{\theta}\mid\mathcal{D})$
     - so we have different groups of obervations $\mathcal{D}_j, \mathcal{D}_k,\ldots\mathcal{D}_\ast$ that correspond to datasets where we believe that different hyperparameters command their behavior 
 - Once we know the prior joint dist we proceed to compute predictive posteriors: $p\left(y_* \mid \mathcal{D}\right)=\int p\left(y_* \mid \theta_*\right) p\left(\theta_* \mid \boldsymbol{\xi}\right) p(\boldsymbol{\xi} \mid \mathcal{D}) d \theta_* d \boldsymbol{\xi}$
-- Lets explore examples (Binomial, Gaussian ) in the followig sub-sections, ref [[Gel+14a](http://www.stat.columbia.edu/~gelman/book/)]
+- Lets explore examples (Binomial, Gaussian ) in the followig sub-sections, @gelman2013bayesian
 
 ### 3.6.1 Hierarchical binomial model
 - example: estimate the prevalence of a disease in animals & humans. Assume we have different groups $\mathcal{D}_j$ of sizes $N_j$. We want to obtain the rates $\theta_j$ based on the observation of outcomes $y_j$. A way to get there is making a few assumptions:
@@ -451,7 +451,7 @@ Therefore $H_0$ is probably false
 
 
 #### 3.6.1.2 Example: the rats dataset 
-- See pg.102 in [[Gel+14a](http://www.stat.columbia.edu/~gelman/book/)]
+- See pg.102 in @gelman2013bayesian
 
 
 
@@ -463,7 +463,7 @@ Therefore $H_0$ is probably false
     - joint prior w/ $p(\mu)p(\tau^2)$ being some kind of prior over the (mean, variance)-hyperparams: $p(\mu,\tau^2, \boldsymbol{\theta}_{1:J}\mid\mathcal{D})\propto p(\mu)p(\tau^2)\prod_j\mathcal{N}(\theta_j\mid\mu,\tau^2)\mathcal{N}(y_j\mid\theta_j,\sigma_j^2)$
 
 #### 3.6.2.1 Example: the eight schools dartaset
-- See Sec.5.2 in [[Gel+14a](http://www.stat.columbia.edu/~gelman/book/)]
+- See Sec.5.2 in @gelman2013bayesian
 
 #### 3.6.2.2 Non-centered parameterization
 - Turns out that computing the posterior for this model is difficult because of the strong dependence between the variance-hyperparam $\tau^2$ and the j-th group mean $\theta_j$ (see funnel shape in Fig.3.18)
@@ -514,8 +514,8 @@ Therefore $H_0$ is probably false
     - that all states can be written as a *Dirichlet prior* $\mathbf{A}_{j}\sim \text{Dir}[\alpha\mathbf{1}]$ a.k.a. "all n-grams are equally likely"
     - this is not very realistic
 - We'll discuss three progressively better treatments:
-    - **deleted interpolation** [[CG96](https://www.sciencedirect.com/science/article/abs/pii/S0885230899901286)]- a smoothing technique that defines the transition matrix as a convex combination of bigram $f_{jk}$ and unigram $f_k$ frequencies: $A_{jk}=(1-\lambda)f_{jk}+\lambda f_k$, where $\lambda$ is set by cross-vaalidation
-    - **backoff smoothing** [[MP95](https://www.cambridge.org/core/journals/natural-language-engineering/article/abs/hierarchical-dirichlet-language-model/07CB63E866B2386854A1CA5BAA30055D)]- if the frequency $f_{jk}$ is low then we revert to $f_k$, so we assign a *Dirichlet* dist to each row $j$: $\mathbf{A}_j\sim \operatorname{Dir}(\alpha_0 \boldsymbol{m})=\operatorname{Dir}(\boldsymbol{\alpha})$, where the param vectors $\boldsymbol{\alpha}$  represents each row of $\mathbf{A}$. In previous notation $\boldsymbol{\theta}_j=\mathbf{A}_j$ and $\boldsymbol{\xi}=(\alpha,\boldsymbol{m})$. Finally the posterior is: $p(X_{t+1}=k\mid X_t=j, \mathcal{D})=(1-\lambda_j)f_{jk}+\lambda_j m_k$ and marginal likelihood $p(\mathcal{D}\mid\boldsymbol{\alpha})=\prod_j B(\mathbf{N}_j+\boldsymbol{\alpha})/B(\boldsymbol{\alpha})$
+    - **deleted interpolation** @chen1996empiricalstudysmoothingtechniques - a smoothing technique that defines the transition matrix as a convex combination of bigram $f_{jk}$ and unigram $f_k$ frequencies: $A_{jk}=(1-\lambda)f_{jk}+\lambda f_k$, where $\lambda$ is set by cross-validation
+    - **backoff smoothing** @mackay_peto_1995 - if the frequency $f_{jk}$ is low then we revert to $f_k$, so we assign a *Dirichlet* dist to each row $j$: $\mathbf{A}_j\sim \operatorname{Dir}(\alpha_0 \boldsymbol{m})=\operatorname{Dir}(\boldsymbol{\alpha})$, where the param vectors $\boldsymbol{\alpha}$  represents each row of $\mathbf{A}$. In previous notation $\boldsymbol{\theta}_j=\mathbf{A}_j$ and $\boldsymbol{\xi}=(\alpha,\boldsymbol{m})$. Finally the posterior is: $p(X_{t+1}=k\mid X_t=j, \mathcal{D})=(1-\lambda_j)f_{jk}+\lambda_j m_k$ and marginal likelihood $p(\mathcal{D}\mid\boldsymbol{\alpha})=\prod_j B(\mathbf{N}_j+\boldsymbol{\alpha})/B(\boldsymbol{\alpha})$
     - **interpolated Kneser-Ney** - more sophisticated model that improves *backoff* heuristics are superior
     - RNNs offer even more superior performance because they don't treat each token atomically but rather treat them as an embedded representation
 
@@ -558,7 +558,7 @@ Therefore $H_0$ is probably false
 - Marginal likelihood can be estimated using:
     - annealed importance sampling (Secc.11.5.4.1)
     - sequential Monte Carlo methods (Secc.13.2.3.3)
-    - estimate normalization constant w/ *nested sampling* [[Buc21](https://www.nature.com/articles/s43586-022-00121-x)]
+    - estimate normalization constant w/ *nested sampling* @ashton_2022
 
 
 #### 3.8.3.4 Variational Bayes
@@ -577,7 +577,7 @@ Therefore $H_0$ is probably false
 - Marginal likelihood answers the Q: *what is the likelihood of generating training data from my prior?*
     - this framing is useful for hypothesis testing, not so much for slecting models based on their posteriors
     - overfits first examples and fails to generalize well for the latest ones (weak prior)
-    - early overfitting can even be negatively correlated to generalization [[Lot+22](https://proceedings.mlr.press/v162/lotfi22a.html)]
+    - early overfitting can even be negatively correlated to generalization @pmlrlotfi22a
 - **Conditional log Marginal Likelihood (CLML)** asks: *what is the probability that a posterior could generate data points from* $\mathcal{D}$ ?
     - defined as: $\operatorname{CLML}(m)=\sum_{n=K}^{N}\log{p(\mathcal{D}_{n}\mid\mathcal{D}_{1:n-1},m)}$
     - where $K$ is a parameter to the algorithm (if we set $K=N-1$, we are back to the LOO estimate)
@@ -593,7 +593,7 @@ Therefore $H_0$ is probably false
 
 ### 3.8.7 Information criteria
 - An alternative to cross-validation for model selection is to score models based on the negative log-likelihood (NLL) PLUS some criteria (represented as complexity terms $C(m)$): $\mathcal{L}(m)=-\log{p(\mathcal{D}\mid\hat{\boldsymbol{\theta}},m)}+C(m)$
-    - see more [[GHV14](https://arxiv.org/pdf/1307.5928.pdf)]
+    - see more @gelman2013understandingpredictiveinformationcriteria
 
 ---
 

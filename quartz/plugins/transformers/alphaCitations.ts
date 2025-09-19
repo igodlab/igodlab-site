@@ -229,7 +229,8 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
     externalResources() {
       return {
         css: [{
-          content: `
+          content: 
+          `
             .alpha-citation {
               font-weight: 500;
               color: var(--primary-color, #2563eb);
@@ -467,14 +468,14 @@ function extractUrl(entry: any): string | null {
     return entry.url
   }
   
-  // Check for DOI and convert to URL
-  if (entry.DOI && typeof entry.DOI === 'string') {
-    return `https://doi.org/${entry.DOI}`
-  }
-  
-  if (entry.doi && typeof entry.doi === 'string') {
-    return `https://doi.org/${entry.doi}`
-  }
+  // // Check for DOI and convert to URL
+  // if (entry.DOI && typeof entry.DOI === 'string') {
+  //   return `https://doi.org/${entry.DOI}`
+  // }
+  //
+  // if (entry.doi && typeof entry.doi === 'string') {
+  //   return `https://doi.org/${entry.doi}`
+  // }
   
   // Check for arXiv ID and convert to URL
   if (entry.archivePrefix === 'arXiv' && entry.eprint) {
