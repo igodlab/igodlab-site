@@ -138,7 +138,7 @@ date: 2024-10-14
 ## 4.10 Genesis
 - In the previous section we made blocks attest about their freshness by pointing to the *previd*. But what about with the first *genesis block*? It cannot point to anything before it
     - $\mathcal{A}$ might take advantage of this by anticipating in (secretely) producing blocks before the protocol actually launched (*premining* attacks)
-    - To prevent these type of attacks the genesis block must contain in its metadata an anchor to unpredictable timestamped events (such as the frontpage of the next day newspaper eg. Bitcoin's The Times 03/Jan/2009 Chancellor on brink of second bailout for banks)
+    - To prevent these type of attacks the genesis block must contain in its metadata an anchor to unpredictable timestamped events (such as the frontpage of the next day newspaper ie. [Bitcoin's The Times 03/Jan/2009 Chancellor on brink of second bailout for banks](https://en.bitcoin.it/wiki/Genesis_block))
     - This anchor come into play conditioning the first PoW inequality, thus, only the protocol developer(s) can ensure which is the genesis block
     
 ## 4.11 Mining
