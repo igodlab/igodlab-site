@@ -88,7 +88,7 @@ class AlphaLabelGenerator {
       return [entry.title.substring(0, 3)]
     }
     
-    return [entry.id || 'Autar']
+    return [entry.id || 'UNK']
   }
 
   private extractYear(entry: any): number {
@@ -229,8 +229,7 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
     externalResources() {
       return {
         css: [{
-          content: 
-          `
+          content: `
             .alpha-citation {
               font-weight: 500;
               color: var(--primary-color, #2563eb);
@@ -277,6 +276,23 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
             .bibliography-url:active {
               transform: translateY(0);
               box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
+            }
+            
+            .bibliography-emoji-link {
+              display: inline;
+              margin-left: 0.25rem;
+              text-decoration: none;
+              font-size: 1rem;
+              transition: all 0.15s ease-in-out;
+            }
+            
+            .bibliography-emoji-link:hover {
+              transform: scale(1.2);
+              text-decoration: none;
+            }
+            
+            .bibliography-emoji-link:active {
+              transform: scale(1.1);
             }
           `
         }]
@@ -384,13 +400,12 @@ function replaceBibliographyLabels(node: Element, alphaLabels: Map<string, strin
         
         node.children.unshift(labelElement, { type: 'text', value: ' ' })
         
-        // Convert existing URLs to hyperlinks if available
+        // NEW: Format author names and handle smart links in bibliography
         if (entry) {
-          convertUrlsToHyperlinks(node, entry)
+          formatAuthorNames(node)
+          removeExistingUrls(node, entry)
+          appendSmartLinks(node, entry)
         }
-        
-        // NEW: Format author names in bibliography
-        formatAuthorNames(node)
       }
     }
   }
@@ -413,78 +428,126 @@ function formatAuthorNames(node: Element) {
   })
 }
 
-function convertUrlsToHyperlinks(node: Element, entry: any) {
-  const url = extractUrl(entry)
+// NEW FUNCTION: Remove existing URLs from text (added by rehype-citation)
+function removeExistingUrls(node: Element, entry: any) {
+  // Get all possible URLs that might be in the text
+  const urlsToRemove = []
   
-  if (!url) return
+  if (entry.DOI || entry.doi) {
+    const doi = entry.DOI || entry.doi
+    urlsToRemove.push(`https://doi.org/${doi}`)
+  }
   
-  // Find all text nodes and replace URLs with hyperlinks
-  visit(node, 'text', (textNode: Text, index, parent) => {
-    if (!parent || typeof index !== 'number') return
+  if (entry.URL || entry.url) {
+    urlsToRemove.push(entry.URL || entry.url)
+  }
+  
+  if (entry.archivePrefix === 'arXiv' && entry.eprint) {
+    urlsToRemove.push(`https://arxiv.org/abs/${entry.eprint}`)
+  }
+  
+  if (entry.pdf) {
+    urlsToRemove.push(entry.pdf)
+  }
+  
+  // Remove these URLs from text nodes
+  visit(node, 'text', (textNode: Text) => {
+    let text = textNode.value
     
-    const text = textNode.value
-    
-    // Check if this text node contains the URL
-    if (text.includes(url)) {
-      // Split the text around the URL
-      const parts = text.split(url)
-      const newChildren = []
-      
-      for (let i = 0; i < parts.length; i++) {
-        // Add text part
-        if (parts[i]) {
-          newChildren.push({ type: 'text', value: parts[i] })
-        }
-        
-        // Add hyperlinked URL (except after the last part)
-        if (i < parts.length - 1) {
-          newChildren.push({
-            type: 'element',
-            tagName: 'a',
-            properties: {
-              href: url,
-              target: '_blank',
-              rel: 'noopener noreferrer',
-              className: ['bibliography-url']
-            },
-            children: [{ type: 'text', value: url }]
-          })
-        }
+    urlsToRemove.forEach(url => {
+      if (url && text.includes(url)) {
+        // Remove the URL and any surrounding whitespace
+        text = text.replace(new RegExp(`\\s*${escapeRegex(url)}\\s*`, 'g'), ' ')
+        text = text.replace(/\s+/g, ' ').trim() // Clean up extra spaces
       }
-      
-      // Replace the original text node with the new children
-      parent.children.splice(index, 1, ...newChildren)
-    }
+    })
+    
+    textNode.value = text
   })
 }
 
-function extractUrl(entry: any): string | null {
-  // Check for URL field first
-  if (entry.URL && typeof entry.URL === 'string') {
-    return entry.URL
+// Helper function to escape special regex characters
+function escapeRegex(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+// NEW FUNCTION: Generate smart links based on simplified hierarchy
+function generateSmartLinks(entry: any): { primary?: {url: string, text: string}, secondary?: {url: string, emoji: string} } {
+  const result: { primary?: {url: string, text: string}, secondary?: {url: string, emoji: string} } = {}
+  
+  // Extract standard BibTeX fields only
+  const doi = entry.DOI || entry.doi
+  const url = entry.URL || entry.url
+  const archivePrefix = entry.archivePrefix
+  const eprint = entry.eprint
+  
+  // Case 1: arXiv has highest priority for academic papers
+  if (archivePrefix === 'arXiv' && eprint) {
+    const arxivUrl = `https://arxiv.org/abs/${eprint}`
+    result.primary = { url: arxivUrl, text: arxivUrl }
+    
+    // Always add PDF link for arXiv (🖻 links to PDF version)
+    const arxivPdfUrl = `https://arxiv.org/pdf/${eprint}`
+    result.secondary = { url: arxivPdfUrl, emoji: '   ↪ 🖻' }
+  } 
+
+  // Case 2: DOI as primary (most permanent)
+  else if (doi) {
+    const doiUrl = `https://doi.org/${doi}`
+    result.primary = { url: doiUrl, text: doiUrl }
+    
+    // Check if URL contains DOI, if not add as secondary with 🖻
+    if (url && !url.includes(doi)) {
+      result.secondary = { url: url, emoji: '   ↪ 🖻' }
+    }
+  }
+
+  // Case 3: URL only (fallback)
+  else if (url && url.slice(-4) === '.pdf') {
+    result.secondary = { url: url, emoji: '   ↪ 🖻' }
+  }
+
+  else if (url && url.slice(-4) !== '.pdf') {
+    result.primary = { url: url, text: url }
   }
   
-  if (entry.url && typeof entry.url === 'string') {
-    return entry.url
+  return result
+}
+
+// NEW FUNCTION: Append smart links to bibliography entry
+function appendSmartLinks(node: Element, entry: any) {
+  const links = generateSmartLinks(entry)
+  
+  if (!links.primary && !links.secondary) return
+  
+  // Helper function to append a link
+  const appendLink = (linkData: {url: string, text?: string, emoji?: string}) => {
+    // Add space before link
+    node.children.push({ type: 'text', value: ' ' })
+    
+    // Create link element
+    const linkElement: Element = {
+      type: 'element',
+      tagName: 'a',
+      properties: {
+        href: linkData.url,
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        className: linkData.emoji ? ['bibliography-emoji-link'] : ['bibliography-url']
+      },
+      children: [{ type: 'text', value: linkData.emoji || linkData.text || linkData.url }]
+    }
+    
+    node.children.push(linkElement)
   }
   
-  // // Check for DOI and convert to URL
-  // if (entry.DOI && typeof entry.DOI === 'string') {
-  //   return `https://doi.org/${entry.DOI}`
-  // }
-  //
-  // if (entry.doi && typeof entry.doi === 'string') {
-  //   return `https://doi.org/${entry.doi}`
-  // }
-  
-  // Check for arXiv ID and convert to URL
-  if (entry.archivePrefix === 'arXiv' && entry.eprint) {
-    return `https://arxiv.org/abs/${entry.eprint}`
+  // Add primary link
+  if (links.primary) {
+    appendLink({ url: links.primary.url, text: links.primary.text })
   }
   
-  if (entry.eprint && typeof entry.eprint === 'string' && entry.eprint.match(/^\d{4}\.\d{4,5}$/)) {
-    return `https://arxiv.org/abs/${entry.eprint}`
+  // Add secondary link (with 🖻 emoji)
+  if (links.secondary) {
+    appendLink({ url: links.secondary.url, emoji: links.secondary.emoji })
   }
-  
-  return null
 }
