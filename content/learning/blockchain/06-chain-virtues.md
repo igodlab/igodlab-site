@@ -77,8 +77,8 @@ date: 2024-11-13
     - **Theorem 8** (Chain Growth $\Rightarrow$ Liveness (informal)). *If the blocktree satisfies Chain Growth and Chain Quality with positive params $\tau>0$ and $\mu>0$ respectively, then the longest chain protocol is __live__*
 
 ## 6.8 Further Reading
-- The two chain virtues of Common Prefix & Chain Quality were first introduced in the *Bitcoin Backbone paper* @nakamoto2008bitcoin
-- The Chain Growth virtue was identified in a later paper: *Speed-Security Tradeoffs in Blockchain Protocols* @kiayias2015speed 
-- The Ledger virtues of *liveness* and *safety* have been adapted from older literature @lamport1982byzantine in the context of two problems: (1) The Byzantine Generals Problem and (2) The Byzantine Agreement Problem
+- The two chain virtues of Common Prefix & Chain Quality were first introduced in the *Bitcoin Backbone paper* [@nakamoto2008bitcoin]
+- The Chain Growth virtue was identified in a later paper: *Speed-Security Tradeoffs in Blockchain Protocols* [@kiayias2015speed] 
+- The Ledger virtues of *liveness* and *safety* have been adapted from older literature [@lamport1982byzantine] in the context of two problems: (1) The Byzantine Generals Problem and (2) The Byzantine Agreement Problem
 
 # References

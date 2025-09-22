@@ -168,7 +168,7 @@ date: 2025-08-13
         
         
 #### 4.2.7.5 Using EM to fit CPTs in the incomplete data case
-- The Expectation-Maximization (EM) @lauritzen1995algorithm algorithm is an iterative approach for MLE in the presence of latent variables (in depth - Sec.6.5.3)
+- The Expectation-Maximization (EM) [@lauritzen1995algorithm] algorithm is an iterative approach for MLE in the presence of latent variables (in depth - Sec.6.5.3)
 - Consists of two main steps: E-step and the M-step
     - 1) Initialize the parameters of the model, including any latent variables.
     - 2) E-step: Estimate the expected value of the latent variables $\boldsymbol{z}_n$ given the observed data and the current parameter estimates $\Rightarrow$ rather than returning the full posterior we return **Estimated Sufficient Stats (ESS)**
@@ -176,11 +176,11 @@ date: 2025-08-13
     - 4) Repeat steps 2 and 3 until convergence is achieved, i.e., the change in the parameter estimates is below a certain threshold or the log-likelihood of the observed data no longer increases.
 - See book for EM example based on Sec.4.2.7.2 
 
-- test citation baldi @baldi1994smooth
+- test citation baldi [@baldi1994smooth]
 
 
 #### 4.2.7.6 Using SGD to fit CPTs in the incomplete data case
-- In the same scenario as above (Sec.4.6.7.5). **Stochastic Gradient Descent (SGD)** @, @ instead of EM is more common because is a scalable batch algorithm
+- In the same scenario as above (Sec.4.6.7.5). **Stochastic Gradient Descent (SGD)** [@, @] instead of EM is more common because is a scalable batch algorithm
 - The steps are:
     - *Collapse* the model by MARGINALIZING OUT $\boldsymbol{z}_{n}$ from the marginal likelihood for each $n$-th node-observation $\boldsymbol{x}_{n}$ as: $p(\boldsymbol{x}_{n}\mid\boldsymbol{\theta})=\sum_{\boldsymbol{z}_{n}}p(\boldsymbol{z}_{n}\mid\boldsymbol{\theta}_{z})p(\boldsymbol{x}_{n}\mid\boldsymbol{z}_{n},\boldsymbol{\theta}_{x})$
     - the log-likelihood is: $\log{p(\mathcal{D}\mid\boldsymbol{\theta})}=l(\boldsymbol{\theta})=\sum_{n=1}^{N}\log{p\left(\boldsymbol{x}_{n}\mid\boldsymbol{\theta}\right)}$
@@ -246,7 +246,7 @@ date: 2025-08-13
         - with: $\mathcal{E}(\boldsymbol{x};J)=-J\sum_{i\sim j}x_{i}x_{j}$, where the pair $x_{i}x_{j}$ is $-1$ ($+1$) when $x_i=x_j$ ($x_i\neq x_j$) 
         - moreover, if all contributions are $+J>0$ ($-J<0$) in ML this is known as an **associative Markov network** in Physics **ferromagnet** (**antiferromagnet/frustrated system** $\Rightarrow$ neighbors can't be in same spin/state thus system has many solutions)
 - if we study an approx infinite lattice we see that there is a *critical* temperature for which clusters will form, this emerges alongside larger values of $J\geq J_{c}$ 
-    - isotropic case @georgii2011 has shown: $J_{c}=\frac{1}{2}\log{(1+\sqrt{2})}\approx 0.44$
+    - isotropic case [@georgii2011] has shown: $J_{c}=\frac{1}{2}\log{(1+\sqrt{2})}\approx 0.44$
 - More complete model introduces external fields (acting on unary terms $\psi_i(x_i)$) which result in: $p(\boldsymbol{x}\mid\boldsymbol{\theta})=\frac{1}{Z(\boldsymbol{\theta})}\prod_{i}\psi(x_i;\boldsymbol{\theta})\prod_{i\sim j}\psi(x_i,x_j;\boldsymbol{\theta})$ where $\psi_{i}(x_i)=\begin{cases}e^{\alpha} & \text { if } x_i=+1 \\ e^{-\alpha} & \text { if } x_i=-1 \end{cases}$
     - written as an energy model: $\mathcal{E}(\boldsymbol{x}\mid\boldsymbol{\theta})=-\alpha\sum_{i}x_i -J\sum_{i\sim j}x_ix_j$
         
@@ -256,7 +256,7 @@ date: 2025-08-13
 - Potts is the special case when same-neigbor-states contribute same magnitude $J$ such that: $\psi_{ij}(x_i=k,x_j=k^{\prime})=\begin{cases}e^{J} & \text { if } k=k^{\prime} \\ e^{0} & \text { if } k \neq k^{\prime}\end{cases}$
     - Meaing that when $J>0$ neighboors are encouraged to have the same label (thus the name *Markov associative* model)
     - when Potts $J_{\text{potts}}=2J_{\text{ising}}$ model reduces to Ising
-    - phase transistion (in Potts 2D @matveev1995 ) occurs at: $J_c=\log{(1+\sqrt{K})}$
+    - phase transistion (in Potts 2D [@matveev1995] ) occurs at: $J_c=\log{(1+\sqrt{K})}$
 - More general formulation, adding an external field, the energy model is: $\mathcal{E}(\boldsymbol{x}\mid\boldsymbol{\theta})=-\sum_{i}\sum_{k=1}^{K}\alpha_{k}\mathbb{I}(x_i=k)-J\sum_{i\sim j}\mathbb{I}(x_i=x_j)$
 
 #### 4.3.2.3 Potts models for protein structure prediction
@@ -291,7 +291,7 @@ date: 2025-08-13
 
 
 ### 4.3.3.3 Deep Boltzmann Machines
-- Achieved by stacking multiple RBMs @pmlrsalakhutdinov09a eg. a two layer RBM would be: $p(\boldsymbol{x},\boldsymbol{z}_1,\boldsymbol{z}_2\mid\boldsymbol{\theta})=\frac{1}{\mathbf{Z}(\mathbf{W}_1,\mathbf{W}_2)}\exp{(\boldsymbol{x}^{\top}\mathbf{W}_1\boldsymbol{z}_1+\boldsymbol{z}_1^{\top}\mathbf{W}_2\boldsymbol{z}_2)}$
+- Achieved by stacking multiple RBMs [@pmlrsalakhutdinov09a] eg. a two layer RBM would be: $p(\boldsymbol{x},\boldsymbol{z}_1,\boldsymbol{z}_2\mid\boldsymbol{\theta})=\frac{1}{\mathbf{Z}(\mathbf{W}_1,\mathbf{W}_2)}\exp{(\boldsymbol{x}^{\top}\mathbf{W}_1\boldsymbol{z}_1+\boldsymbol{z}_1^{\top}\mathbf{W}_2\boldsymbol{z}_2)}$
     - dropped the bias terms for brevity
     - see Fig.4.22(a) for visual picture. Note that Deep Boltzmann machines are UPGMs whereas Deep belief nets are DPGMs
     
@@ -326,7 +326,7 @@ date: 2025-08-13
         - Moreover, if we define a feature for every combination of words we then can represent ANY dist!
         
 ### 4.3.5 Gaussian MRFs
-- Sec.4.2.3 was about representing a MVN/Gaussian as a DPGM, now we represent it in an UPGM, see more in @rue2005gaussian.
+- Sec.4.2.3 was about representing a MVN/Gaussian as a DPGM, now we represent it in an UPGM, see more in [@rue2005gaussian].
 
 
 #### 4.3.5.1 Standard GMRFs
@@ -396,7 +396,7 @@ date: 2025-08-13
     - $$\nabla_{\boldsymbol{\theta}}\log Z(\boldsymbol{\theta})=\frac{1}{Z(\boldsymbol{\theta})}\int \nabla_{\boldsymbol{\theta}}\tilde{p}(\boldsymbol{x};\boldsymbol{\theta})d\boldsymbol{x}=\mathbb{E}_{\boldsymbol{x}\sim p(\boldsymbol{x};\boldsymbol{\theta})}[\nabla_{\boldsymbol{\theta}}\log \tilde{p}(\boldsymbol{x};\boldsymbol{\theta})]$$
     - thus we need to draw samples at EACH step of the SGD training just to estimate the gradient
 - Future chapters discuss efficient sampling methods ie. *gradient-based MCMC* (Sec.24.2.1), and alternative estimators instead of MLE eg. *contrastive divergence* (Sec.24.2.2) & *maximum pseudo-likelihood estimation* (Sec.4.3.9.3) 
-    - see @stoehr2017reviewstatisticalinferencemethods for a great review on param estimation in MRFs
+    - see [@stoehr2017reviewstatisticalinferencemethods] for a great review on param estimation in MRFs
     
 #### 4.3.9.3 Maximum pseudolikelihood estimation
 - An alternative to maximizing the likelihood we can maximize the *pseudo likelihood* - it predicts each node $x_d$ given all neighbors $\boldsymbol{x}_{-d}$. The objective is easier to compute because the full-conditional for each $d$-th node (and all $N$ datapoints) $p(x_d\mid\boldsymbol{x}_{-d},\boldsymbol{\theta})$ only sums over the states of such node
@@ -439,7 +439,7 @@ date: 2025-08-13
 #### 4.4.2.1 Semantic segmentation
 - Deals with the problem of identifying the label of every pixel in an image
     - CNNs aim to achieve this via softmax outputs per pixel/node but FAILS to capture long-range dependencies
-    - feeding the CNNs' output to *fully-connected CRFs* (grid CRFs doesn't improve capturing long-range dependencies) CRFsimproves segmentation @chen2017deeplabsemanticimagesegmentation
+    - feeding the CNNs' output to *fully-connected CRFs* (grid CRFs doesn't improve capturing long-range dependencies) CRFsimproves segmentation [@chen2017deeplabsemanticimagesegmentation]
     - unfortunately, CRFs computation is intractable so
         - in the case of Gaussian potentials there are workarounds using *mean field algorithms*
         - mean field algos can be implemented using RNNs
@@ -474,7 +474,7 @@ date: 2025-08-13
     
 ### 4.4.4 Other cases  to structured prediction
 - Further notable approaches to structured prediction beyond CRFs are: *graph neural networks* (Sec.16.3.6) and sequence-to-sequence models like **transformers** (Sec.16.3.5)
-    - other historical notable mentions: *max margin Markov nets* @nips2003_878d5691, *structural support vector machines* @jmlrtsochantaridis05a, *structured prediction energy models* @pmlrbelanger17a (Chapter.24)
+    - other historical notable mentions: *max margin Markov nets* [@nips2003_878d5691], *structural support vector machines* [@jmlrtsochantaridis05a], *structured prediction energy models* [@pmlrbelanger17a] (Chapter.24)
 
 ## 4.5 Comparing directed and undirected graphical PGMs
 - There are different advantages to both, additionally these can sometimes be converted between both structures.

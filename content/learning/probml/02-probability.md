@@ -83,7 +83,7 @@ sequences given inputs, such as mapping one language to another, or an image to 
 #### 2.6.3.2 Sparse data problem
 - If we want to fit n-gram models (past state memory) to text data, for large $n$ we face huge overfitting problems due to sparsity (most words in any training dataset are not linked)
 - Thus if we have a chain of length $K$ (# words in dataset), and context $K^{n-1}$ (**context** / past states), then we'll have a sparse matrix of $K\times K$, beacuse most $N_{jk}$ are zero
-- Brute force attempts to overcome this have been used in the past @halevy2009unreasonable,  but ideally we wouldn't like to NOT be able to predict a particular word just because it is not in our training set
+- Brute force attempts to overcome this have been used in the past [@halevy2009unreasonable],  but ideally we wouldn't like to NOT be able to predict a particular word just because it is not in our training set
 
 #### 2.6.3.3 MAP estimation
 - A simple initial solution to the sparsity problem is to use the *Dirichlet prior* $\mathbf{A}_{j:}\sim \text{Dir}[\alpha\mathbf{1}]$
@@ -138,7 +138,7 @@ balance equations wrt distribution $\pi$, then $\pi$ is a stationary distributio
 - (eq.2.888) uses the form $f(r)=r\log r$: $D_{\mathbb{KL}}(p ||q) = \int p(\boldsymbol{x}) \log{\frac{p(\boldsymbol{x})}{q(\boldsymbol{x})}} dx$
 
 #### 2.7.1.2 Alpha divergence
-- If $f(x)=\frac{4}{a-\alpha^2}\left(1-x^{\frac{1+\alpha}{2}}\right)$ the $f$-divergence becomes the **alpha divergence** and using Minka's parameterization @minka2005divergence and $\alpha\neq\pm 1$ we get: $$D_\alpha^M=\frac{1}{\alpha(1-\alpha)}\left(1-\int p(\boldsymbol{x})^\alpha q(\boldsymbol{x})^{1-\alpha}d\boldsymbol{x}\right)$$
+- If $f(x)=\frac{4}{a-\alpha^2}\left(1-x^{\frac{1+\alpha}{2}}\right)$ the $f$-divergence becomes the **alpha divergence** and using Minka's parameterization [@minka2005divergence] and $\alpha\neq\pm 1$ we get: $$D_\alpha^M=\frac{1}{\alpha(1-\alpha)}\left(1-\int p(\boldsymbol{x})^\alpha q(\boldsymbol{x})^{1-\alpha}d\boldsymbol{x}\right)$$
 
 #### 2.7.1.3 Hellinger divergence
 - (eq.2.291): $D_{H}^2 (p || q) = 1 - \int \sqrt{p(\boldsymbol{x})^{1/2} - q(\boldsymbol{x})^{1/2}}d\boldsymbol{x}$
@@ -172,7 +172,7 @@ $D_{\mathcal{F}}(P, Q) \triangleq \sup _{f \in \mathcal{F}}\left|\mathbb{E}_{p(\
 
 #### 2.7.3.3 Linear time computation
 - MMD takes $O(N^2)$ time to compute
-- great alternative is the **Unormalized Mean Embedding (UME)** @chwialkowski2015fasttwosampletestinganalytic that takes only $O(N)$.
+- great alternative is the **Unormalized Mean Embedding (UME)** [@chwialkowski2015fasttwosampletestinganalytic] that takes only $O(N)$.
     - the idea is that evaluating a set of locations $\{ \boldsymbol{v}_j \}_j^J$ is enough to detect the difference between $P$ and $Q$
     - $\operatorname{UME}^2(P,Q)=\frac{1}{N}\sum_j\left[\boldsymbol{\mu}_P(\boldsymbol{v}_j) - \boldsymbol{\mu}_Q(\boldsymbol{v}_j)\right]^2$
     - where $\boldsymbol{\mu}_P(\boldsymbol{v})=\mathbb{E}_{p(x)}[\mathcal{K}(\boldsymbol{x},\boldsymbol{v})]$
@@ -181,10 +181,10 @@ $D_{\mathcal{F}}(P, Q) \triangleq \sup _{f \in \mathcal{F}}\left|\mathbb{E}_{p(\
 #### 2.7.3.4 Choosing the right kernel
 - The effectiveness of MMD, and UME, depends on the choice of the kernel. For example a *Gaussian kernel* $\mathcal{K}_\sigma(\boldsymbol{x},\boldsymbol{x}^\prime)=\exp\left(\frac{1}{2\boldsymbol{\sigma}^2}\left\| \boldsymbol{x}-\boldsymbol{x}^\prime \right\|^2\right)$
 - Moreover, the MMD is differentiable wrt the kernel parameters, so we can choose the optimal $\boldsymbol{\sigma}^2$ so as to maximize the power of the test
-    - @sutherland2021generativemodelsmodelcriticism
-    - bayesian version of the above @flaxman2016bayesianlearningkernelembeddings
-    - test citation @zhao2018sensitivityanalysisinverseprobability, @zhao2019sensitivity, @zhang1998characterization
-    - test2 @zhang1998characterization
+    - [@sutherland2021generativemodelsmodelcriticism]
+    - bayesian version of the above [@flaxman2016bayesianlearningkernelembeddings]
+    - test citation ([@zhao2018sensitivityanalysisinverseprobability], [@zhang1998characterization])
+    - test2 [@zhang1998characterization]
     
     
 ### 2.7.4 Total variation distance (TV)
