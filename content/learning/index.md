@@ -1,8 +1,6 @@
 ---
-title: Learning
+title: Learning Areas
 ---
-
-# Current Learning Areas
 
 <div class="grid-container">
 

@@ -22,3 +22,45 @@
   text-align: center;
   text-decoration: none;
 }
+
+// Alphabetic citation styling
+.csl-entry {
+  .alpha-label {
+    color: var(--secondary);
+    font-weight: 600;
+    margin-right: 0.5em;
+    font-family: 'Courier New', monospace;
+  }
+}
+
+// Citation links
+a[href^="#bib"] {
+  color: var(--secondary);
+  text-decoration: none;
+  font-weight: 500;
+  font-family: 'Courier New', monospace;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Bibliography container
+.csl-bib-body {
+  .csl-entry {
+    margin-bottom: 1em;
+    padding-left: 0;
+    text-indent: 0;
+    
+    // Hanging indent for bibliography entries
+    margin-left: 2em;
+    text-indent: -2em;
+  }
+}
+
+// Multiple citations styling
+.citation-multiple {
+  .citation-item {
+    margin-right: 0.3em;
+  }
+}

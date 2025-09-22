@@ -1,6 +1,6 @@
 export { FrontMatter } from "./frontmatter"
 export { GitHubFlavoredMarkdown } from "./gfm"
-export { Citations } from "./citations"
+export { AlphaCitation } from "./alphaCitations"
 export { CreatedModifiedDate } from "./lastmod"
 export { Pseudocode } from "./pseudocode"
 export { Latex } from "./latex"

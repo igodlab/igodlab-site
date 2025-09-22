@@ -168,17 +168,19 @@ date: 2025-08-13
         
         
 #### 4.2.7.5 Using EM to fit CPTs in the incomplete data case
-- The Expectation-Maximization (EM) [[Lau95](https://www.sciencedirect.com/science/article/pii/0167947393E0056A)] algorithm is an iterative approach for MLE in the presence of latent variables (in depth - Sec.6.5.3)
+- The Expectation-Maximization (EM) [@lauritzen1995algorithm] algorithm is an iterative approach for MLE in the presence of latent variables (in depth - Sec.6.5.3)
 - Consists of two main steps: E-step and the M-step
     - 1) Initialize the parameters of the model, including any latent variables.
     - 2) E-step: Estimate the expected value of the latent variables $\boldsymbol{z}_n$ given the observed data and the current parameter estimates $\Rightarrow$ rather than returning the full posterior we return **Estimated Sufficient Stats (ESS)**
     - 3) M-step: Maximize the likelihood of the observed data by updating the parameter estimates based on the ESS/expected values of the latent variables obtained in the E-step
     - 4) Repeat steps 2 and 3 until convergence is achieved, i.e., the change in the parameter estimates is below a certain threshold or the log-likelihood of the observed data no longer increases.
-- See book for EM example based on Sec.4.2.7.2
+- See book for EM example based on Sec.4.2.7.2 
+
+- test citation baldi [@baldi1994smooth]
 
 
 #### 4.2.7.6 Using SGD to fit CPTs in the incomplete data case
-- In the same scenario as above (Sec.4.6.7.5). **Stochastic Gradient Descent (SGD)** [[BC94](https://watermark.silverchair.com/neco.1994.6.2.307.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAA18wggNbBgkqhkiG9w0BBwagggNMMIIDSAIBADCCA0EGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMXaZxZitVAOclrvUfAgEQgIIDEnK7d6u82QVYgd6ENpHqmBFZhb1ciIj1YnXsRBw8F1t3d2_KfX0sPAC-ObCkxiJE9C4mIEOjQ0jRHSEif7GEr7zE2Yqjq0f7JxWs_U0hC328rV1m8mK1TEwf1HKVzJ70LaFHBGMtkIEHDZd1YlCjLIMHqtmYGgDtvdVq0MJCqC8CmisaE5W6urmlHuv1OpSRzsLIDrvlGc3pROfbTalXT_tMrC3uWeyD_9Ksrdc8mfZ549eB5YdEx4zE8rq8OkWIBF7_hFvsIVCE2xsR3j2CKvG3-tP-nRLCLJ_ipxuOyyZ5DXEGFWkDLsEanNkNrllFi5nztgcIGu6icTeMoZR3BZpjq_OobaxMTY_jKKuWX2u3n46MfMKVpy0pJKgVmavZIZXrmm-tPaNkDcu13PGs7UurjcP_cskflad-tnWeLtJEObrnYQUFrIOE8lSCNrIuumNwKz_wm5RGbx6luWmnh6AF9oYGt7XScLiYP0uVFgFkwGPczIGT7qZsp_YUwFCCSQwR3PaYwfMZJcem6KdgACSt5cuFqh_NrlMV5eprpWzNrphJgp4ThuPPRiEIEB_lyntDw915jtKeQ1U30ZRXDb31TwZc1ZcuFeZHwMAowegX8Z0Hd6UPkTflYsR1OIelgwpv0upwN-59r2p_E9libMJZVFaKkusgOCeyOQBs1gcEYkdZE3VL1fU4LwVpcWDcf3MWe0cZM0KxK_QIZUeqdnRLWP2jWokIUkk7jyN3I48-raYOqI4G96OV3qvHP59oKEidrTHqBM0dAzB1IEKN1k5xXqrnrsCc5Us8fGWm8K8Up01gwwThczZSYHYFSV2KWr47QaxdL2wRllhQp54lbJ7Kq3QAoh31j_DGViejfb15S4j3d5YemUhIY7_lrvitBgEXgiQ4OoHt5wprFoT8SbLwILl9YNxvFWrC4souicxPRNfYNaXjmUYjpkfUmi35P5Vkb8_qoQHCkoyaCZNaavpKg8UDqI8tna7vPcU56aeXRucev5U1mXHWpDyMFeSOK1kKiV77yxAVlsAyEu5RGwy7nw); [Bin+97](https://link.springer.com/content/pdf/10.1023/A:1007421730016.pdf)] instead of EM is more common because is a scalable batch algorithm
+- In the same scenario as above (Sec.4.6.7.5). **Stochastic Gradient Descent (SGD)** [@, @] instead of EM is more common because is a scalable batch algorithm
 - The steps are:
     - *Collapse* the model by MARGINALIZING OUT $\boldsymbol{z}_{n}$ from the marginal likelihood for each $n$-th node-observation $\boldsymbol{x}_{n}$ as: $p(\boldsymbol{x}_{n}\mid\boldsymbol{\theta})=\sum_{\boldsymbol{z}_{n}}p(\boldsymbol{z}_{n}\mid\boldsymbol{\theta}_{z})p(\boldsymbol{x}_{n}\mid\boldsymbol{z}_{n},\boldsymbol{\theta}_{x})$
     - the log-likelihood is: $\log{p(\mathcal{D}\mid\boldsymbol{\theta})}=l(\boldsymbol{\theta})=\sum_{n=1}^{N}\log{p\left(\boldsymbol{x}_{n}\mid\boldsymbol{\theta}\right)}$
@@ -218,7 +220,9 @@ date: 2025-08-13
 - Assuming a joint distribution that satisfies the CI properties for UPGMs (will be defined in Sec 4.3.6) then the **Hammersley-Clifford** theorem is:
     - $p(\boldsymbol{x}\mid\boldsymbol{\theta})=\frac{1}{Z(\boldsymbol{\theta}_{c})}\prod_{c\in\mathcal{C}}\psi_{c}(\boldsymbol{x}_{c};\boldsymbol{\theta}_{c})$
     - where the partition function $Z(\boldsymbol{\theta})=\sum_{\boldsymbol{x}}\prod_{c\in\mathcal{C}}\psi_{c}(\boldsymbol{x}_{c};\boldsymbol{\theta}_{c})$ normalizes the dist to 1
-    - `cool fact.- part func is Z because of 'Zustandssumme' which means 'sum over states' pretty literal as expected comming from a German brain`
+    - > [!info] Cool fact
+      > 
+      > The partition function uses the symbol $Z$ because of *'Zustandssumme'* which means *'sum over states'* pretty literal as expected comming from a German brain
 
 
 #### 4.3.1.2 Gibbs distribution
@@ -242,7 +246,7 @@ date: 2025-08-13
         - with: $\mathcal{E}(\boldsymbol{x};J)=-J\sum_{i\sim j}x_{i}x_{j}$, where the pair $x_{i}x_{j}$ is $-1$ ($+1$) when $x_i=x_j$ ($x_i\neq x_j$) 
         - moreover, if all contributions are $+J>0$ ($-J<0$) in ML this is known as an **associative Markov network** in Physics **ferromagnet** (**antiferromagnet/frustrated system** $\Rightarrow$ neighbors can't be in same spin/state thus system has many solutions)
 - if we study an approx infinite lattice we see that there is a *critical* temperature for which clusters will form, this emerges alongside larger values of $J\geq J_{c}$ 
-    - isotropic case has shown [[Geo88](https://books.google.ca/books?hl=en&lr=&id=3vMCnvMH-hkC&oi=fnd&pg=PR7&dq=gibbs+measures+and+phase+transitions+1988&ots=kzJfPJNbQv&sig=USObALiUs8W-96YGKcikldzot28&redir_esc=y#v=onepage&q=gibbs%20measures%20and%20phase%20transitions%201988&f=false)]: $J_{c}=\frac{1}{2}\log{(1+\sqrt{2})}\approx 0.44$
+    - isotropic case [@georgii2011] has shown: $J_{c}=\frac{1}{2}\log{(1+\sqrt{2})}\approx 0.44$
 - More complete model introduces external fields (acting on unary terms $\psi_i(x_i)$) which result in: $p(\boldsymbol{x}\mid\boldsymbol{\theta})=\frac{1}{Z(\boldsymbol{\theta})}\prod_{i}\psi(x_i;\boldsymbol{\theta})\prod_{i\sim j}\psi(x_i,x_j;\boldsymbol{\theta})$ where $\psi_{i}(x_i)=\begin{cases}e^{\alpha} & \text { if } x_i=+1 \\ e^{-\alpha} & \text { if } x_i=-1 \end{cases}$
     - written as an energy model: $\mathcal{E}(\boldsymbol{x}\mid\boldsymbol{\theta})=-\alpha\sum_{i}x_i -J\sum_{i\sim j}x_ix_j$
         
@@ -252,7 +256,7 @@ date: 2025-08-13
 - Potts is the special case when same-neigbor-states contribute same magnitude $J$ such that: $\psi_{ij}(x_i=k,x_j=k^{\prime})=\begin{cases}e^{J} & \text { if } k=k^{\prime} \\ e^{0} & \text { if } k \neq k^{\prime}\end{cases}$
     - Meaing that when $J>0$ neighboors are encouraged to have the same label (thus the name *Markov associative* model)
     - when Potts $J_{\text{potts}}=2J_{\text{ising}}$ model reduces to Ising
-    - phase transistion (in Potts 2D) occurs at [[MS96](https://iopscience.iop.org/article/10.1088/0305-4470/28/6/012/meta?casa_token=GPFPgd26oiEAAAAA:uBLoJ2B8zfCTgrzp_OzQrULGPC1pZKTDBCDKP0f7-XWZ7_dZgGL43lTNbBiFvyvKmOp8fPp6smf92MeMteGZQOWxbpg)]: $J_c=\log{(1+\sqrt{K})}$
+    - phase transistion (in Potts 2D [@matveev1995] ) occurs at: $J_c=\log{(1+\sqrt{K})}$
 - More general formulation, adding an external field, the energy model is: $\mathcal{E}(\boldsymbol{x}\mid\boldsymbol{\theta})=-\sum_{i}\sum_{k=1}^{K}\alpha_{k}\mathbb{I}(x_i=k)-J\sum_{i\sim j}\mathbb{I}(x_i=x_j)$
 
 #### 4.3.2.3 Potts models for protein structure prediction
@@ -287,7 +291,7 @@ date: 2025-08-13
 
 
 ### 4.3.3.3 Deep Boltzmann Machines
-- Achieved by stacking multiple RBMs [[SH09](https://proceedings.mlr.press/v5/salakhutdinov09a)] eg. a two layer RBM would be: $p(\boldsymbol{x},\boldsymbol{z}_1,\boldsymbol{z}_2\mid\boldsymbol{\theta})=\frac{1}{\mathbf{Z}(\mathbf{W}_1,\mathbf{W}_2)}\exp{(\boldsymbol{x}^{\top}\mathbf{W}_1\boldsymbol{z}_1+\boldsymbol{z}_1^{\top}\mathbf{W}_2\boldsymbol{z}_2)}$
+- Achieved by stacking multiple RBMs [@pmlrsalakhutdinov09a] eg. a two layer RBM would be: $p(\boldsymbol{x},\boldsymbol{z}_1,\boldsymbol{z}_2\mid\boldsymbol{\theta})=\frac{1}{\mathbf{Z}(\mathbf{W}_1,\mathbf{W}_2)}\exp{(\boldsymbol{x}^{\top}\mathbf{W}_1\boldsymbol{z}_1+\boldsymbol{z}_1^{\top}\mathbf{W}_2\boldsymbol{z}_2)}$
     - dropped the bias terms for brevity
     - see Fig.4.22(a) for visual picture. Note that Deep Boltzmann machines are UPGMs whereas Deep belief nets are DPGMs
     
@@ -322,7 +326,7 @@ date: 2025-08-13
         - Moreover, if we define a feature for every combination of words we then can represent ANY dist!
         
 ### 4.3.5 Gaussian MRFs
-- Sec.4.2.3 was about representing a MVN/Gaussian as a DPGM, now we represent it in an UPGM, see more [[RH05](https://books.google.com.bo/books?hl=en&lr=&id=TLBYs-faw-0C&oi=fnd&pg=PP1&dq=gaussian+markov+random+fields+theory+and+application&ots=RO2RuKTtmW&sig=OIrHNCiogY5tCJe0NFKNXzCcevs&redir_esc=y#v=onepage&q=gaussian%20markov%20random%20fields%20theory%20and%20application&f=false)].
+- Sec.4.2.3 was about representing a MVN/Gaussian as a DPGM, now we represent it in an UPGM, see more in [@rue2005gaussian].
 
 
 #### 4.3.5.1 Standard GMRFs
@@ -392,7 +396,7 @@ date: 2025-08-13
     - $$\nabla_{\boldsymbol{\theta}}\log Z(\boldsymbol{\theta})=\frac{1}{Z(\boldsymbol{\theta})}\int \nabla_{\boldsymbol{\theta}}\tilde{p}(\boldsymbol{x};\boldsymbol{\theta})d\boldsymbol{x}=\mathbb{E}_{\boldsymbol{x}\sim p(\boldsymbol{x};\boldsymbol{\theta})}[\nabla_{\boldsymbol{\theta}}\log \tilde{p}(\boldsymbol{x};\boldsymbol{\theta})]$$
     - thus we need to draw samples at EACH step of the SGD training just to estimate the gradient
 - Future chapters discuss efficient sampling methods ie. *gradient-based MCMC* (Sec.24.2.1), and alternative estimators instead of MLE eg. *contrastive divergence* (Sec.24.2.2) & *maximum pseudo-likelihood estimation* (Sec.4.3.9.3) 
-    - see [[Sto17](https://arxiv.org/abs/1704.03331)] for a great review on param estimation in MRFs
+    - see [@stoehr2017reviewstatisticalinferencemethods] for a great review on param estimation in MRFs
     
 #### 4.3.9.3 Maximum pseudolikelihood estimation
 - An alternative to maximizing the likelihood we can maximize the *pseudo likelihood* - it predicts each node $x_d$ given all neighbors $\boldsymbol{x}_{-d}$. The objective is easier to compute because the full-conditional for each $d$-th node (and all $N$ datapoints) $p(x_d\mid\boldsymbol{x}_{-d},\boldsymbol{\theta})$ only sums over the states of such node
@@ -435,7 +439,7 @@ date: 2025-08-13
 #### 4.4.2.1 Semantic segmentation
 - Deals with the problem of identifying the label of every pixel in an image
     - CNNs aim to achieve this via softmax outputs per pixel/node but FAILS to capture long-range dependencies
-    - feeding the CNNs' output to *fully-connected CRFs* (grid CRFs doesn't improve capturing long-range dependencies) CRFsimproves segmentation [[Che+17a](https://ieeexplore.ieee.org/abstract/document/7913730?casa_token=gkAJa-qIWzsAAAAA:XiKRhsril5diX8e1aoKlGp0F9lVPGWPU9PdKShF3SAWpxQAVH1kOnm0Pyipy453nbiMfDb9JFGBS)]
+    - feeding the CNNs' output to *fully-connected CRFs* (grid CRFs doesn't improve capturing long-range dependencies) CRFsimproves segmentation [@chen2017deeplabsemanticimagesegmentation]
     - unfortunately, CRFs computation is intractable so
         - in the case of Gaussian potentials there are workarounds using *mean field algorithms*
         - mean field algos can be implemented using RNNs
@@ -470,7 +474,7 @@ date: 2025-08-13
     
 ### 4.4.4 Other cases  to structured prediction
 - Further notable approaches to structured prediction beyond CRFs are: *graph neural networks* (Sec.16.3.6) and sequence-to-sequence models like **transformers** (Sec.16.3.5)
-    - other historical notable mentions: *max margin Markov nets* [[TGK03](https://proceedings.neurips.cc/paper/2003/hash/878d5691c824ee2aaf770f7d36c151d6-Abstract.html)], *structural support vector machines* [[Tso+05](https://www.jmlr.org/papers/volume6/tsochantaridis05a/tsochantaridis05a.pdf)], *structured prediction energy models* [[BYM17](https://proceedings.mlr.press/v70/belanger17a.html)] (Chapter.24)
+    - other historical notable mentions: *max margin Markov nets* [@nips2003_878d5691], *structural support vector machines* [@jmlrtsochantaridis05a], *structured prediction energy models* [@pmlrbelanger17a] (Chapter.24)
 
 ## 4.5 Comparing directed and undirected graphical PGMs
 - There are different advantages to both, additionally these can sometimes be converted between both structures.
@@ -495,3 +499,5 @@ date: 2025-08-13
 
 ### 4.5.3 Conditional directed vs undirected PGMs and the label bias problem
 - eg. in some graph architectures UDPGMs are **globally normalized** (by $Z$) whereas DPGMs are **locally normalized** (each node's Conditional PDist is normalized). However, UPGMs trade-off comes in computation cost as oppsed to DPGMs which are easier to train be 
+
+# References

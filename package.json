@@ -35,6 +35,9 @@
     "quartz": "./quartz/bootstrap-cli.mjs"
   },
   "dependencies": {
+    "@citation-js/core": "^0.7.9",
+    "@citation-js/plugin-bibtex": "^0.7.9",
+    "@citation-js/plugin-csl": "^0.7.9",
     "@clack/prompts": "^0.11.0",
     "@floating-ui/dom": "^1.7.3",
     "@myriaddreamin/rehype-typst": "^0.6.0",
@@ -69,7 +72,6 @@
     "pseudocode": "^2.4.1",
     "reading-time": "^1.5.0",
     "rehype-autolink-headings": "^7.1.0",
-    "rehype-citation": "^2.3.1",
     "rehype-katex": "^7.0.1",
     "rehype-mathjax": "^7.1.0",
     "rehype-pretty-code": "^0.14.1",

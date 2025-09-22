@@ -1,5 +1,5 @@
 ---
-Title: A Journey from Haskell to CAtegory Theory
+Title: A Journey from Haskell to Category Theory
 date: 2024-06-03
 ---
 
@@ -123,7 +123,7 @@ Learning Haskell and its category theory foundations has been like discovering a
 
 Every time I define a new data type, I ask: "What are its functor laws? Could this be a monad? What mathematical structure am I modeling?" These questions lead to more robust, composable designs.
 
-If you're on a similar journey, my advice is simple: embrace the mathematical foundations. Don't just learn the syntax—understand the theory. The [Haskell Book](https://lorepub.com/product/haskellbook) will teach you the language, and [Bartosz's category theory series](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/) will show you the mathematical beauty underlying it all.
+If you're on a similar journey, my advice is simple: embrace the mathematical foundations. Don't just learn the syntax—understand the theory. The [@allenmoronuki2016haskell] will teach you the language, and [@milewski2019category] will show you the mathematical beauty underlying it all.
 
 The rabbit hole is deep, but the view from the bottom is incredible.
 
