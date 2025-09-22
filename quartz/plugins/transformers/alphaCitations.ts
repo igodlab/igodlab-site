@@ -9,8 +9,6 @@ import fs from "fs"
 // Import citation processing dependencies
 import { Cite } from "@citation-js/core"
 import "@citation-js/plugin-bibtex"
-import "@citation-js/plugin-csl"
-import rehypeCitation from "rehype-citation"
 
 interface AlphaCitationOptions {
   bibliography: string | string[]
@@ -27,11 +25,30 @@ interface AlphaLabel {
   entry: any
 }
 
+interface CitationEntry {
+  id: string
+  alphaLabel: string
+  authors: string[]
+  title: string
+  year: number
+  journal?: string
+  volume?: string
+  number?: string
+  pages?: string
+  publisher?: string
+  edition?: string
+  doi?: string
+  url?: string
+  archivePrefix?: string
+  eprint?: string
+  rawEntry: any
+}
+
 class AlphaLabelGenerator {
   private labelCounts = new Map<string, number>()
   private resolvedLabels = new Map<string, string>()
 
-  generateLabels(entries: any[]): Map<string, string> {
+  generateLabels(entries: CitationEntry[]): Map<string, string> {
     // Step 1: Generate base labels
     const baseLabels: AlphaLabel[] = entries.map(entry => ({
       id: entry.id,
@@ -54,54 +71,11 @@ class AlphaLabelGenerator {
     return labelMap
   }
 
-  private generateBaseLabel(entry: any): string {
-    const authors = this.extractAuthors(entry)
-    const year = this.extractYear(entry)
-    
-    const namepart = this.formatNames(authors)
-    const yearpart = year.toString().slice(-2).padStart(2, '0')
+  private generateBaseLabel(entry: CitationEntry): string {
+    const namepart = this.formatNames(entry.authors)
+    const yearpart = entry.year.toString().slice(-2).padStart(2, '0')
     
     return namepart + yearpart
-  }
-
-  private extractAuthors(entry: any): string[] {
-    if (entry.author && Array.isArray(entry.author)) {
-      return entry.author.map((author: any) => {
-        if (typeof author === 'string') return author
-        if (author.family) return author.family
-        if (author.literal) return author.literal
-        return String(author)
-      })
-    }
-    
-    if (entry.editor && Array.isArray(entry.editor)) {
-      return entry.editor.map((editor: any) => {
-        if (typeof editor === 'string') return editor
-        if (editor.family) return editor.family
-        if (editor.literal) return editor.literal
-        return String(editor)
-      })
-    }
-
-    // Fallback to title or entry id
-    if (entry.title) {
-      return [entry.title.substring(0, 3)]
-    }
-    
-    return [entry.id || 'UNK']
-  }
-
-  private extractYear(entry: any): number {
-    if (entry.issued && entry.issued['date-parts'] && entry.issued['date-parts'][0]) {
-      return entry.issued['date-parts'][0][0] || new Date().getFullYear()
-    }
-    
-    if (entry.year) {
-      const yearMatch = String(entry.year).match(/\d{4}/)
-      if (yearMatch) return parseInt(yearMatch[0])
-    }
-    
-    return new Date().getFullYear()
   }
 
   private formatNames(authors: string[]): string {
@@ -180,6 +154,80 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
     ...userOpts,
   }
 
+  // Parse bibliography once during plugin initialization
+  let citations: Map<string, CitationEntry> = new Map()
+  let alphaLabels: Map<string, string> = new Map()
+
+  const initializeCitations = async () => {
+    try {
+      const bibliographies = Array.isArray(opts.bibliography) ? opts.bibliography : [opts.bibliography]
+      let allEntries: any[] = []
+      
+      console.log('🔍 Processing bibliography files:', bibliographies)
+      
+      for (const bibFile of bibliographies) {
+        const bibPath = path.resolve(opts.path || process.cwd(), bibFile)
+        
+        if (!fs.existsSync(bibPath)) {
+          console.warn(`Bibliography file not found: ${bibPath}`)
+          continue
+        }
+        
+        console.log(`📖 Reading bibliography: ${bibPath}`)
+        const bibContent = fs.readFileSync(bibPath, 'utf8')
+        const cite = new Cite(bibContent)
+        const entries = cite.data
+        console.log(`📚 Found ${entries.length} entries in ${bibFile}`)
+        
+        // Debug: show first few entries
+        entries.slice(0, 3).forEach(entry => {
+          console.log(`   Entry ID: ${entry.id}, Title: ${entry.title}`)
+        })
+        
+        allEntries = allEntries.concat(entries)
+      }
+      
+      console.log(`📋 Total entries parsed: ${allEntries.length}`)
+      
+      // Convert to our CitationEntry format
+      const citationEntries: CitationEntry[] = allEntries.map(entry => ({
+        id: entry.id,
+        alphaLabel: '', // Will be set later
+        authors: extractAuthors(entry),
+        title: entry.title || '',
+        year: extractYear(entry),
+        journal: entry['container-title'] || entry.journal,
+        volume: entry.volume,
+        number: entry.number || entry.issue,
+        pages: entry.page,
+        publisher: entry.publisher,
+        edition: entry.edition,
+        doi: entry.DOI || entry.doi,
+        url: entry.URL || entry.url,
+        archivePrefix: entry.archivePrefix,
+        eprint: entry.eprint,
+        rawEntry: entry
+      }))
+
+      // Generate alpha labels
+      const labelGenerator = new AlphaLabelGenerator()
+      alphaLabels = labelGenerator.generateLabels(citationEntries)
+      
+      console.log(`🏷️  Generated ${alphaLabels.size} alpha labels`)
+      
+      // Store citations with alpha labels
+      citationEntries.forEach(entry => {
+        entry.alphaLabel = alphaLabels.get(entry.id) || 'UNK'
+        citations.set(entry.id, entry)
+      })
+
+      console.log(`✅ Citations initialized: ${citations.size} entries available`)
+
+    } catch (error) {
+      console.error("❌ Error initializing citations:", error)
+    }
+  }
+
   return {
     name: "AlphaCitation",
     
@@ -190,36 +238,120 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
       }
 
       return [
-        // First, run standard rehype-citation to get the base structure
-        [rehypeCitation, {
-          bibliography: opts.bibliography,
-          path: opts.path,
-          csl: 'apa', // Use APA as base, we'll replace the labels
-          linkCitations: opts.linkCitations,
-          suppressBibliography: opts.suppressBibliography,
-          locale: opts.locale,
-        }],
-        
-        // Then post-process to apply alpha labels
-        function alphaLabelProcessor() {
+        function alphaCitationProcessor() {
           return async (tree: Root, file: VFile) => {
-            try {
-              // Parse bibliography to generate alpha labels and get entry data
-              const labelGenerator = new AlphaLabelGenerator()
-              const { alphaLabels, entryData } = await generateAlphaLabelsFromBib(opts, labelGenerator)
+            // Initialize citations if not done yet
+            if (citations.size === 0) {
+              await initializeCitations()
+            }
+
+            // Process citations in the document - safer approach
+            const citationsFound = new Set<string>()
+            const replacements = []
+            
+            // First pass: find all citations without modifying the tree
+            visit(tree, 'text', (node: Text, index, parent) => {
+              if (!parent || typeof index !== 'number') return
               
-              // Replace citation labels throughout the entire HTML tree
-              replaceCitationLabels(tree, alphaLabels)
+              const text = node.value
+              // Match [@citationkey] patterns only for now
+              const citationPattern = /\[@([^\]]+)\]/g
               
-              // Replace bibliography entries
-              visit(tree, 'element', (node: Element) => {
-                if (isBibliographyEntry(node)) {
-                  replaceBibliographyLabels(node, alphaLabels, entryData)
+              let match
+              const citationsInText = []
+              
+              while ((match = citationPattern.exec(text)) !== null) {
+                const citationKeys = match[1].split(';').map(key => key.trim().replace(/^@/, ''))
+                
+                citationsInText.push({
+                  match: match[0],
+                  keys: citationKeys,
+                  start: match.index,
+                  end: match.index + match[0].length
+                })
+                
+                // Add to found citations
+                citationKeys.forEach(key => {
+                  if (citations.get(key)) {
+                    citationsFound.add(key)
+                  }
+                })
+              }
+              
+              if (citationsInText.length > 0) {
+                replacements.push({
+                  node,
+                  parent,
+                  index,
+                  citations: citationsInText,
+                  originalText: text
+                })
+              }
+            })
+            
+            // Second pass: apply all replacements
+            for (const replacement of replacements) {
+              const { node, parent, index, citations: citationsInText, originalText } = replacement
+              
+              if (!parent.children[index] || parent.children[index] !== node) {
+                continue // Skip if tree changed
+              }
+              
+              const newChildren = []
+              let lastIndex = 0
+              
+              for (const citationInfo of citationsInText) {
+                // Add text before citation
+                if (citationInfo.start > lastIndex) {
+                  newChildren.push({
+                    type: 'text',
+                    value: originalText.substring(lastIndex, citationInfo.start)
+                  })
                 }
-              })
-            } catch (error) {
-              console.error("AlphaCitation processing error:", error)
-              // Continue processing even if alpha label generation fails
+                
+                // Create citation links (no parentheses)
+                citationInfo.keys.forEach((key, idx) => {
+                  const citation = citations.get(key)
+                  if (citation) {
+                    if (idx > 0) {
+                      newChildren.push({ type: 'text', value: '; ' })
+                    }
+                    
+                    newChildren.push({
+                      type: 'element',
+                      tagName: 'a',
+                      properties: {
+                        href: `#bib-${key}`,
+                        className: ['alpha-citation']
+                      },
+                      children: [{ type: 'text', value: `[${citation.alphaLabel}]` }]
+                    })
+                  } else {
+                    if (idx > 0) {
+                      newChildren.push({ type: 'text', value: '; ' })
+                    }
+                    newChildren.push({ type: 'text', value: `[@${key}]` })
+                  }
+                })
+                
+                lastIndex = citationInfo.end
+              }
+              
+              // Add remaining text
+              if (lastIndex < originalText.length) {
+                newChildren.push({
+                  type: 'text',
+                  value: originalText.substring(lastIndex)
+                })
+              }
+              
+              // Replace the node
+              parent.children.splice(index, 1, ...newChildren)
+            }
+            
+            // Add bibliography section if citations were found and not suppressed
+            if (citationsFound.size > 0 && !opts.suppressBibliography) {
+              addBibliographySection(tree, citationsFound, citations)
             }
           }
         }
@@ -246,10 +378,17 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
               color: var(--text-color, #374151);
             }
             
+            .bibliography-section {
+              margin-top: 2rem;
+              padding-top: 1rem;
+              border-top: 1px solid var(--border-color, #e2e8f0);
+            }
+            
             .bibliography-entry {
               margin-bottom: 1rem;
               padding-left: 1rem;
               text-indent: -1rem;
+              line-height: 1.5;
             }
             
             .bibliography-url {
@@ -303,251 +442,221 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
 
 // Helper functions
 
-async function generateAlphaLabelsFromBib(
-  opts: AlphaCitationOptions, 
-  generator: AlphaLabelGenerator
-): Promise<{ alphaLabels: Map<string, string>, entryData: Map<string, any> }> {
-  try {
-    // Read and parse bibliography file(s)
-    const bibliographies = Array.isArray(opts.bibliography) ? opts.bibliography : [opts.bibliography]
-    let allEntries: any[] = []
-    
-    for (const bibFile of bibliographies) {
-      const bibPath = path.resolve(opts.path || process.cwd(), bibFile)
-      
-      if (!fs.existsSync(bibPath)) {
-        console.warn(`Bibliography file not found: ${bibPath}`)
-        continue
+function extractAuthors(entry: any): string[] {
+  if (entry.author && Array.isArray(entry.author)) {
+    return entry.author.map((author: any) => {
+      if (typeof author === 'string') return author
+      if (author.family && author.given) {
+        return `${author.family}, ${author.given}`
       }
-      
-      const bibContent = fs.readFileSync(bibPath, 'utf8')
-      const cite = new Cite(bibContent)
-      const entries = cite.data
-      allEntries = allEntries.concat(entries)
-    }
-    
-    const alphaLabels = generator.generateLabels(allEntries)
-    
-    // Create entry data map for easy lookup
-    const entryData = new Map<string, any>()
-    allEntries.forEach(entry => {
-      if (entry.id) {
-        entryData.set(entry.id, entry)
-      }
+      if (author.family) return author.family
+      if (author.literal) return author.literal
+      return String(author)
     })
-    
-    return { alphaLabels, entryData }
-  } catch (error) {
-    console.error("Error generating alpha labels:", error)
-    return { alphaLabels: new Map(), entryData: new Map() }
   }
-}
-
-function isBibliographyEntry(node: Element): boolean {
-  return node.tagName === 'div' &&
-         node.properties?.className &&
-         Array.isArray(node.properties.className) &&
-         (node.properties.className.includes('csl-entry') || 
-          node.properties.className.includes('bibliography-entry'))
-}
-
-function replaceCitationLabels(tree: Root, alphaLabels: Map<string, string>) {
-  // Recursively find and replace all citation links throughout the entire tree
-  visit(tree, 'element', (element: Element) => {
-    // Handle direct citation links
-    if (element.tagName === 'a' && element.properties?.href) {
-      const href = String(element.properties.href)
-      const match = href.match(/#(?:bib-)?(.+)$/)
-      
-      if (match && match[1]) {
-        const citationKey = match[1]
-        const alphaLabel = alphaLabels.get(citationKey)
-        
-        if (alphaLabel) {
-          // Replace the text content with alpha label
-          element.children = [{ type: 'text', value: `[${alphaLabel}]` }]
-          
-          // Add alpha citation class
-          const classes = Array.isArray(element.properties.className) 
-            ? element.properties.className 
-            : []
-          element.properties.className = [...classes, 'alpha-citation']
-        }
+  
+  if (entry.editor && Array.isArray(entry.editor)) {
+    return entry.editor.map((editor: any) => {
+      if (typeof editor === 'string') return editor
+      if (editor.family && editor.given) {
+        return `${editor.family}, ${editor.given}`
       }
-    }
-  })
-}
-
-function replaceBibliographyLabels(node: Element, alphaLabels: Map<string, string>, entryData: Map<string, any>) {
-  // Extract citation key from id (e.g., bib-smith2020 -> smith2020)
-  if (node.properties?.id) {
-    const id = String(node.properties.id)
-    const match = id.match(/^(?:bib-)?(.+)$/)
-    
-    if (match && match[1]) {
-      const citationKey = match[1]
-      const alphaLabel = alphaLabels.get(citationKey)
-      const entry = entryData.get(citationKey)
-      
-      if (alphaLabel) {
-        // Prepend alpha label to bibliography entry
-        const labelElement: Element = {
-          type: 'element',
-          tagName: 'span',
-          properties: { className: ['alpha-label'] },
-          children: [{ type: 'text', value: `[${alphaLabel}]` }]
-        }
-        
-        node.children.unshift(labelElement, { type: 'text', value: ' ' })
-        
-        // NEW: Format author names and handle smart links in bibliography
-        if (entry) {
-          formatAuthorNames(node)
-          removeExistingUrls(node, entry)
-          appendSmartLinks(node, entry)
-        }
-      }
-    }
-  }
-}
-
-// NEW FUNCTION: Format author names in bibliography entries
-function formatAuthorNames(node: Element) {
-  visit(node, 'text', (textNode: Text) => {
-    let text = textNode.value
-    
-    // Replace author name patterns: "Surname, F." -> "F. Surname"
-    // Handle various initials patterns: F., F. M., F. M. K., etc.
-    text = text.replace(/([A-Z][a-z]+),\s+([A-Z]\.(?:\s+[A-Z]\.)*)/g, '$2 $1')
-    
-    // Replace final ampersand with "and"
-    text = text.replace(/\s&\s/g, ' and ')
-    
-    // Update the text node
-    textNode.value = text
-  })
-}
-
-// NEW FUNCTION: Remove existing URLs from text (added by rehype-citation)
-function removeExistingUrls(node: Element, entry: any) {
-  // Get all possible URLs that might be in the text
-  const urlsToRemove = []
-  
-  if (entry.DOI || entry.doi) {
-    const doi = entry.DOI || entry.doi
-    urlsToRemove.push(`https://doi.org/${doi}`)
-  }
-  
-  if (entry.URL || entry.url) {
-    urlsToRemove.push(entry.URL || entry.url)
-  }
-  
-  if (entry.archivePrefix === 'arXiv' && entry.eprint) {
-    urlsToRemove.push(`https://arxiv.org/abs/${entry.eprint}`)
-  }
-  
-  if (entry.pdf) {
-    urlsToRemove.push(entry.pdf)
-  }
-  
-  // Remove these URLs from text nodes
-  visit(node, 'text', (textNode: Text) => {
-    let text = textNode.value
-    
-    urlsToRemove.forEach(url => {
-      if (url && text.includes(url)) {
-        // Remove the URL and any surrounding whitespace
-        text = text.replace(new RegExp(`\\s*${escapeRegex(url)}\\s*`, 'g'), ' ')
-        text = text.replace(/\s+/g, ' ').trim() // Clean up extra spaces
-      }
+      if (editor.family) return editor.family
+      if (editor.literal) return editor.literal
+      return String(editor)
     })
-    
-    textNode.value = text
-  })
+  }
+
+  return []
 }
 
-// Helper function to escape special regex characters
-function escapeRegex(string: string): string {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+function extractYear(entry: any): number {
+  if (entry.issued && entry.issued['date-parts'] && entry.issued['date-parts'][0]) {
+    return entry.issued['date-parts'][0][0] || new Date().getFullYear()
+  }
+  
+  if (entry.year) {
+    const yearMatch = String(entry.year).match(/\d{4}/)
+    if (yearMatch) return parseInt(yearMatch[0])
+  }
+  
+  return new Date().getFullYear()
 }
 
-// NEW FUNCTION: Generate smart links based on simplified hierarchy
-function generateSmartLinks(entry: any): { primary?: {url: string, text: string}, secondary?: {url: string, emoji: string} } {
+function formatAuthorNames(authors: string[]): string {
+  if (authors.length === 0) return ''
+  
+  return authors.map((author, idx) => {
+    // Convert "Surname, Given" to "G. Surname"
+    if (author.includes(',')) {
+      const [surname, given] = author.split(',').map(s => s.trim())
+      const initials = given.split(/\s+/).map(name => name.charAt(0).toUpperCase()).join('. ')
+      return `${initials}. ${surname}`
+    }
+    return author
+  }).join(', ').replace(/,\s*([^,]+)$/, ' and $1') // Replace last comma with "and"
+}
+
+function generateSmartLinks(entry: CitationEntry): { primary?: {url: string, text: string}, secondary?: {url: string, emoji: string} } {
   const result: { primary?: {url: string, text: string}, secondary?: {url: string, emoji: string} } = {}
   
-  // Extract standard BibTeX fields only
-  const doi = entry.DOI || entry.doi
-  const url = entry.URL || entry.url
-  const archivePrefix = entry.archivePrefix
-  const eprint = entry.eprint
-  
   // Case 1: arXiv has highest priority for academic papers
-  if (archivePrefix === 'arXiv' && eprint) {
-    const arxivUrl = `https://arxiv.org/abs/${eprint}`
+  if (entry.archivePrefix === 'arXiv' && entry.eprint) {
+    const arxivUrl = `https://arxiv.org/abs/${entry.eprint}`
     result.primary = { url: arxivUrl, text: arxivUrl }
     
-    // Always add PDF link for arXiv (🖻 links to PDF version)
-    const arxivPdfUrl = `https://arxiv.org/pdf/${eprint}`
-    result.secondary = { url: arxivPdfUrl, emoji: '   ↪ 🖻' }
+    // Always add PDF link for arXiv
+    const arxivPdfUrl = `https://arxiv.org/pdf/${entry.eprint}`
+    result.secondary = { url: arxivPdfUrl, emoji: '🖻' }
+    
   } 
-
   // Case 2: DOI as primary (most permanent)
-  else if (doi) {
-    const doiUrl = `https://doi.org/${doi}`
+  else if (entry.doi) {
+    const doiUrl = `https://doi.org/${entry.doi}`
     result.primary = { url: doiUrl, text: doiUrl }
     
     // Check if URL contains DOI, if not add as secondary with 🖻
-    if (url && !url.includes(doi)) {
-      result.secondary = { url: url, emoji: '   ↪ 🖻' }
+    if (entry.url && !entry.url.includes(entry.doi)) {
+      result.secondary = { url: entry.url, emoji: '🖻' }
     }
+    
   }
-
   // Case 3: URL only (fallback)
-  else if (url && url.slice(-4) === '.pdf') {
-    result.secondary = { url: url, emoji: '   ↪ 🖻' }
-  }
-
-  else if (url && url.slice(-4) !== '.pdf') {
-    result.primary = { url: url, text: url }
+  else if (entry.url) {
+    result.primary = { url: entry.url, text: entry.url }
   }
   
   return result
 }
 
-// NEW FUNCTION: Append smart links to bibliography entry
-function appendSmartLinks(node: Element, entry: any) {
-  const links = generateSmartLinks(entry)
+function addBibliographySection(tree: Root, citationsFound: Set<string>, citations: Map<string, CitationEntry>) {
+  // Sort citations by alpha label for consistent ordering
+  const sortedCitations = Array.from(citationsFound)
+    .map(key => citations.get(key)!)
+    .sort((a, b) => a.alphaLabel.localeCompare(b.alphaLabel))
+
+  // Create bibliography section
+  const bibliographySection: Element = {
+    type: 'element',
+    tagName: 'div',
+    properties: { className: ['bibliography-section'] },
+    children: [
+      {
+        type: 'element',
+        tagName: 'h2',
+        properties: {},
+        children: [{ type: 'text', value: 'References' }]
+      }
+    ]
+  }
+
+  // Add each citation entry
+  sortedCitations.forEach(citation => {
+    const entryElement = createBibliographyEntry(citation)
+    bibliographySection.children.push(entryElement)
+  })
+
+  // Add to document
+  tree.children.push(bibliographySection)
+}
+
+function createBibliographyEntry(citation: CitationEntry): Element {
+  const children = []
   
-  if (!links.primary && !links.secondary) return
+  // Alpha label
+  children.push({
+    type: 'element',
+    tagName: 'span',
+    properties: { className: ['alpha-label'] },
+    children: [{ type: 'text', value: `[${citation.alphaLabel}]` }]
+  })
   
-  // Helper function to append a link
-  const appendLink = (linkData: {url: string, text?: string, emoji?: string}) => {
-    // Add space before link
-    node.children.push({ type: 'text', value: ' ' })
+  children.push({ type: 'text', value: ' ' })
+  
+  // Authors
+  if (citation.authors.length > 0) {
+    children.push({ type: 'text', value: formatAuthorNames(citation.authors) })
+    children.push({ type: 'text', value: ' ' })
+  }
+  
+  // Year
+  children.push({ type: 'text', value: `(${citation.year}). ` })
+  
+  // Title (italic with quotes)
+  if (citation.title) {
+    children.push({
+      type: 'element',
+      tagName: 'em',
+      properties: {},
+      children: [{ type: 'text', value: `"${citation.title}"` }]
+    })
+    children.push({ type: 'text', value: '. ' })
+  }
+  
+  // Journal/Publisher info
+  if (citation.journal) {
+    children.push({ type: 'text', value: citation.journal })
     
-    // Create link element
-    const linkElement: Element = {
+    if (citation.volume) {
+      children.push({ type: 'text', value: `, ${citation.volume}` })
+      
+      if (citation.number) {
+        children.push({ type: 'text', value: `(${citation.number})` })
+      }
+    }
+    
+    if (citation.pages) {
+      children.push({ type: 'text', value: `, ${citation.pages}` })
+    }
+    
+    children.push({ type: 'text', value: '. ' })
+  } else if (citation.publisher) {
+    children.push({ type: 'text', value: citation.publisher })
+    if (citation.edition) {
+      children.push({ type: 'text', value: ` (${citation.edition} ed.)` })
+    }
+    children.push({ type: 'text', value: '. ' })
+  }
+  
+  // Add smart links
+  const links = generateSmartLinks(citation)
+  
+  if (links.primary) {
+    children.push({
       type: 'element',
       tagName: 'a',
       properties: {
-        href: linkData.url,
+        href: links.primary.url,
         target: '_blank',
         rel: 'noopener noreferrer',
-        className: linkData.emoji ? ['bibliography-emoji-link'] : ['bibliography-url']
+        className: ['bibliography-url']
       },
-      children: [{ type: 'text', value: linkData.emoji || linkData.text || linkData.url }]
-    }
-    
-    node.children.push(linkElement)
+      children: [{ type: 'text', value: links.primary.text }]
+    })
   }
   
-  // Add primary link
-  if (links.primary) {
-    appendLink({ url: links.primary.url, text: links.primary.text })
-  }
-  
-  // Add secondary link (with 🖻 emoji)
   if (links.secondary) {
-    appendLink({ url: links.secondary.url, emoji: links.secondary.emoji })
+    children.push({ type: 'text', value: ' ' })
+    children.push({
+      type: 'element',
+      tagName: 'a',
+      properties: {
+        href: links.secondary.url,
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        className: ['bibliography-emoji-link']
+      },
+      children: [{ type: 'text', value: links.secondary.emoji }]
+    })
+  }
+
+  return {
+    type: 'element',
+    tagName: 'div',
+    properties: { 
+      id: `bib-${citation.id}`,
+      className: ['bibliography-entry'] 
+    },
+    children
   }
 }
