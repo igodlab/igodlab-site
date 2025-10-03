@@ -196,5 +196,3 @@ $D_{\mathcal{F}}(P, Q) \triangleq \sup _{f \in \mathcal{F}}\left|\mathbb{E}_{p(\
     - as $f-$divergence (eq.2.312)
     - as IPM (eq.2.316)
 
----
-# References

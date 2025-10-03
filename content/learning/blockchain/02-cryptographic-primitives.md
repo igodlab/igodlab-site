@@ -151,4 +151,3 @@ date: 2024-09-22
 
 - Check the seminal paper on cryptographic primitives [@rogawayshrimpton2004]
 
-# References
