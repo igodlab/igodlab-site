@@ -595,6 +595,3 @@ Therefore $H_0$ is probably false
 - An alternative to cross-validation for model selection is to score models based on the negative log-likelihood (NLL) PLUS some criteria (represented as complexity terms $C(m)$): $\mathcal{L}(m)=-\log{p(\mathcal{D}\mid\hat{\boldsymbol{\theta}},m)}+C(m)$
     - see more [@gelman2013understandingpredictiveinformationcriteria]
 
----
-
-# References

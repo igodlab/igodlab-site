@@ -81,4 +81,3 @@ date: 2024-11-13
 - The Chain Growth virtue was identified in a later paper: *Speed-Security Tradeoffs in Blockchain Protocols* [@kiayias2015speed] 
 - The Ledger virtues of *liveness* and *safety* have been adapted from older literature [@lamport1982byzantine] in the context of two problems: (1) The Byzantine Generals Problem and (2) The Byzantine Agreement Problem
 
-# References

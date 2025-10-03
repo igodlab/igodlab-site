@@ -361,49 +361,51 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
     externalResources() {
       return {
         css: [{
+          inline: true,
           content: `
             .alpha-citation {
               font-weight: 500;
               color: var(--primary-color, #2563eb);
               text-decoration: none;
             }
-            
+
             .alpha-citation:hover {
               text-decoration: underline;
             }
-            
+
             .alpha-label {
               font-weight: 600;
-              margin-right: 0.5rem;
+              margin-right: 1rem;          /* Increased from 0.5rem for better spacing */
               color: var(--text-color, #374151);
+              display: inline-block;        /* Ensures consistent spacing */
+              min-width: fit-content;       /* Prevents label from wrapping */
             }
-            
+
             .bibliography-section {
               margin-top: 2rem;
               padding-top: 1rem;
               border-top: 1px solid var(--border-color, #e2e8f0);
             }
-            
+
             .bibliography-entry {
-              margin-bottom: 1rem;
-              padding-left: 1rem;
-              text-indent: -1rem;
-              line-height: 1.5;
+              margin-bottom: 1.5rem;        /* Increased from 1rem for better separation */
+              padding-left: 2rem;           /* Increased from 1rem for better hanging indent */
+              text-indent: -2rem;           /* Adjusted to match padding-left */
+              line-height: 1.6;             /* Increased from 1.5 for better readability */
             }
-            
+
             .bibliography-url {
               color: var(--primary-color, #2563eb);
               text-decoration: underline;
               font-size: 0.875rem;
               font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-              background-color: var(--bg-secondary, #f8fafc);
               padding: 0.125rem 0.375rem;
               border-radius: 0.25rem;
               border: 1px solid var(--border-color, #e2e8f0);
               transition: all 0.15s ease-in-out;
               word-break: break-all;
             }
-            
+
             .bibliography-url:hover {
               background-color: var(--primary-color, #2563eb);
               color: white;
@@ -411,12 +413,12 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
               transform: translateY(-1px);
               box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
             }
-            
+
             .bibliography-url:active {
               transform: translateY(0);
               box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
             }
-            
+
             .bibliography-emoji-link {
               display: inline;
               margin-left: 0.25rem;
@@ -424,12 +426,12 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
               font-size: 1rem;
               transition: all 0.15s ease-in-out;
             }
-            
+
             .bibliography-emoji-link:hover {
               transform: scale(1.2);
               text-decoration: none;
             }
-            
+
             .bibliography-emoji-link:active {
               transform: scale(1.1);
             }

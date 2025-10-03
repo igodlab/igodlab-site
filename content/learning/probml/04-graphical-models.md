@@ -500,4 +500,3 @@ date: 2025-08-13
 ### 4.5.3 Conditional directed vs undirected PGMs and the label bias problem
 - eg. in some graph architectures UDPGMs are **globally normalized** (by $Z$) whereas DPGMs are **locally normalized** (each node's Conditional PDist is normalized). However, UPGMs trade-off comes in computation cost as oppsed to DPGMs which are easier to train be 
 
-# References
