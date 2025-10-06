@@ -520,7 +520,8 @@ function generateSmartLinks(entry: CitationEntry): { primary?: {url: string, tex
   const result: { primary?: {url: string, text: string}, secondary?: {url: string, iconType: 'pdf'} } = {}
   
   // Case 1: arXiv has highest priority for academic papers
-  if (entry.archivePrefix === 'arXiv' && entry.eprint) {
+  // if (entry.archivePrefix === 'arXiv' && entry.eprint) {
+  if (entry.archivePrefix) {
     const arxivUrl = `https://arxiv.org/abs/${entry.eprint}`
     result.primary = { url: arxivUrl, text: arxivUrl }
     
@@ -542,7 +543,13 @@ function generateSmartLinks(entry: CitationEntry): { primary?: {url: string, tex
   }
   // Case 3: URL only (fallback)
   else if (entry.url) {
-    result.primary = { url: entry.url, text: entry.url }
+    // check if url is a pdf actually
+    if (entry.url.endsWith(".pdf")) {
+      result.secondary = { url: entry.url, iconType: 'pdf' }
+    }
+    else {
+      result.primary = { url: entry.url, text: entry.url }
+    }
   }
   
   return result
