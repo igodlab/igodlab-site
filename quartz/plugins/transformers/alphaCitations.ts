@@ -360,83 +360,100 @@ export const AlphaCitation: QuartzTransformerPlugin<Partial<AlphaCitationOptions
 
     externalResources() {
       return {
-        css: [{
-          inline: true,
-          content: `
+        css: [
+          // FontAwesome CDN
+          {
+            inline: false,
+            content: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'
+          },
+          // Inline custom styles
+          {
+            inline: true,
+            content: `
             .alpha-citation {
               font-weight: 500;
-              color: var(--primary-color, #2563eb);
               text-decoration: none;
             }
-
+            
             .alpha-citation:hover {
               text-decoration: underline;
             }
-
+            
             .alpha-label {
               font-weight: 600;
-              margin-right: 1rem;          /* Increased from 0.5rem for better spacing */
-              color: var(--text-color, #374151);
-              display: inline-block;        /* Ensures consistent spacing */
-              min-width: fit-content;       /* Prevents label from wrapping */
+              color: inherit;
             }
-
+            
             .bibliography-section {
               margin-top: 2rem;
               padding-top: 1rem;
-              border-top: 1px solid var(--border-color, #e2e8f0);
+              border-top: 1px solid var(--border-color, #b8a1e3);
             }
-
+            
             .bibliography-entry {
-              margin-bottom: 1.5rem;        /* Increased from 1rem for better separation */
-              padding-left: 2rem;           /* Increased from 1rem for better hanging indent */
-              text-indent: -2rem;           /* Adjusted to match padding-left */
-              line-height: 1.6;             /* Increased from 1.5 for better readability */
+              position: relative;      /* For absolute positioning of label */
+              margin-bottom: 1.75rem;
+              padding-left: 5rem;      /* Increased spacing - more room after handles */
+              line-height: 1.65;
+              /* No text-indent needed! */
             }
-
+            
+            /* Position the label absolutely */
+            .bibliography-entry .alpha-label {
+              position: absolute;
+              left: 0;
+              top: 0;
+              display: inline-block;
+              width: 4rem;             /* Slightly wider to accommodate longer handles */
+              font-weight: 600;
+              color: inherit;
+            }
+            
             .bibliography-url {
-              color: var(--primary-color, #2563eb);
               text-decoration: underline;
               font-size: 0.875rem;
               font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
               padding: 0.125rem 0.375rem;
               border-radius: 0.25rem;
-              border: 1px solid var(--border-color, #e2e8f0);
+              border: 1px solid var(--border-color, #b8a1e3);
               transition: all 0.15s ease-in-out;
               word-break: break-all;
             }
-
+            
             .bibliography-url:hover {
-              background-color: var(--primary-color, #2563eb);
-              color: white;
-              text-decoration: none;
               transform: translateY(-1px);
               box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
             }
-
+            
             .bibliography-url:active {
               transform: translateY(0);
               box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
             }
-
+            
             .bibliography-emoji-link {
-              display: inline;
-              margin-left: 0.25rem;
+              display: inline-block;
+              margin-left: 0.5rem;     /* Moderate spacing from previous text */
+              padding: 0.2rem 0.4rem;
+              border: 1px solid var(--border-color, #b8a1e3);
+              border-radius: 0.25rem;
               text-decoration: none;
-              font-size: 1rem;
+              font-size: 0.875rem;
               transition: all 0.15s ease-in-out;
+              vertical-align: middle;  /* Better alignment with text */
             }
-
+            
             .bibliography-emoji-link:hover {
-              transform: scale(1.2);
-              text-decoration: none;
+              transform: translateY(-1px);
+              box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
             }
-
+            
             .bibliography-emoji-link:active {
-              transform: scale(1.1);
+              transform: translateY(0);
+              box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
             }
           `
-        }]
+          }
+        ]
       }
     }
   } as QuartzTransformerPluginInstance
@@ -499,8 +516,8 @@ function formatAuthorNames(authors: string[]): string {
   }).join(', ').replace(/,\s*([^,]+)$/, ' and $1') // Replace last comma with "and"
 }
 
-function generateSmartLinks(entry: CitationEntry): { primary?: {url: string, text: string}, secondary?: {url: string, emoji: string} } {
-  const result: { primary?: {url: string, text: string}, secondary?: {url: string, emoji: string} } = {}
+function generateSmartLinks(entry: CitationEntry): { primary?: {url: string, text: string}, secondary?: {url: string, iconType: 'pdf'} } {
+  const result: { primary?: {url: string, text: string}, secondary?: {url: string, iconType: 'pdf'} } = {}
   
   // Case 1: arXiv has highest priority for academic papers
   if (entry.archivePrefix === 'arXiv' && entry.eprint) {
@@ -509,7 +526,7 @@ function generateSmartLinks(entry: CitationEntry): { primary?: {url: string, tex
     
     // Always add PDF link for arXiv
     const arxivPdfUrl = `https://arxiv.org/pdf/${entry.eprint}`
-    result.secondary = { url: arxivPdfUrl, emoji: '🖻' }
+    result.secondary = { url: arxivPdfUrl, iconType: 'pdf' }
     
   } 
   // Case 2: DOI as primary (most permanent)
@@ -517,9 +534,9 @@ function generateSmartLinks(entry: CitationEntry): { primary?: {url: string, tex
     const doiUrl = `https://doi.org/${entry.doi}`
     result.primary = { url: doiUrl, text: doiUrl }
     
-    // Check if URL contains DOI, if not add as secondary with 🖻
+    // Check if URL contains DOI, if not add as secondary with PDF icon
     if (entry.url && !entry.url.includes(entry.doi)) {
-      result.secondary = { url: entry.url, emoji: '🖻' }
+      result.secondary = { url: entry.url, iconType: 'pdf' }
     }
     
   }
@@ -646,9 +663,19 @@ function createBibliographyEntry(citation: CitationEntry): Element {
         href: links.secondary.url,
         target: '_blank',
         rel: 'noopener noreferrer',
-        className: ['bibliography-emoji-link']
+        className: ['bibliography-emoji-link'],
+        title: 'Download PDF'
       },
-      children: [{ type: 'text', value: links.secondary.emoji }]
+      children: [
+        {
+          type: 'element',
+          tagName: 'i',
+          properties: {
+            className: ['fa-solid', 'fa-file-pdf']  // FontAwesome icon classes
+          },
+          children: []  // Icon elements have no children
+        }
+      ]
     })
   }
 
