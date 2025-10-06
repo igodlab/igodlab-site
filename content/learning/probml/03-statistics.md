@@ -213,7 +213,7 @@ Therefore $H_0$ is probably false
 - Users of statistics want to know the probability (after seeing the data) that a hypothesis is true, or the probability that the param $\theta$ is in a given interval, and yet frequentist can't offer this
     - frequentists assume fixed parameters $\boldsymbol{\theta}$ given a model, which are then evaluated w/ hypothesis tests. This rigid approach forces to induce fixed uncertainty (using sampling) and use conf ints that have the limitation of ruling out whatever doesn't fit our model.
     - Bayes, instead, is a calibrated approach. We update our opinions of the world given new observed data, having $\boldsymbol{\theta}$ as a quantity w/ capabilities of updating
-    - Great readings on this topic: https://bit.ly/3Rbd4lo and https://bit.ly/3j8miSR
+    - A great reading on this topic: [What keeps a bayesian awake at night - Part I](https://mlg.eng.cam.ac.uk/blog/2021/03/31/what-keeps-a-bayesian-awake-at-night-part-1.html) and [Part II](https://mlg.eng.cam.ac.uk/blog/2021/03/31/what-keeps-a-bayesian-awake-at-night-part-2.html)
 
 ### 3.3.6 Why isn't everyone a Bayesian?
 - Hard to argue in favor of frequentists, a great summary is this write-up [@efron01021986]

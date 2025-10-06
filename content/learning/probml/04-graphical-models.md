@@ -180,7 +180,7 @@ date: 2025-08-13
 
 
 #### 4.2.7.6 Using SGD to fit CPTs in the incomplete data case
-- In the same scenario as above (Sec.4.6.7.5). **Stochastic Gradient Descent (SGD)** [@, @] instead of EM is more common because is a scalable batch algorithm
+- In the same scenario as above (Sec.4.6.7.5). **Stochastic Gradient Descent (SGD)** [@6796180, @binder1997adaptive] instead of EM is more common because is a scalable batch algorithm
 - The steps are:
     - *Collapse* the model by MARGINALIZING OUT $\boldsymbol{z}_{n}$ from the marginal likelihood for each $n$-th node-observation $\boldsymbol{x}_{n}$ as: $p(\boldsymbol{x}_{n}\mid\boldsymbol{\theta})=\sum_{\boldsymbol{z}_{n}}p(\boldsymbol{z}_{n}\mid\boldsymbol{\theta}_{z})p(\boldsymbol{x}_{n}\mid\boldsymbol{z}_{n},\boldsymbol{\theta}_{x})$
     - the log-likelihood is: $\log{p(\mathcal{D}\mid\boldsymbol{\theta})}=l(\boldsymbol{\theta})=\sum_{n=1}^{N}\log{p\left(\boldsymbol{x}_{n}\mid\boldsymbol{\theta}\right)}$
@@ -474,7 +474,7 @@ date: 2025-08-13
     
 ### 4.4.4 Other cases  to structured prediction
 - Further notable approaches to structured prediction beyond CRFs are: *graph neural networks* (Sec.16.3.6) and sequence-to-sequence models like **transformers** (Sec.16.3.5)
-    - other historical notable mentions: *max margin Markov nets* [@nips2003_878d5691], *structural support vector machines* [@jmlrtsochantaridis05a], *structured prediction energy models* [@pmlrbelanger17a] (Chapter.24)
+    - other historical notable mentions: max margin Markov nets [@nips2003_878d5691], structural support vector machines [@jmlrtsochantaridis05a], structured prediction energy models [@pmlrbelanger17a] (Chapter.24)
 
 ## 4.5 Comparing directed and undirected graphical PGMs
 - There are different advantages to both, additionally these can sometimes be converted between both structures.
