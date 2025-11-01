@@ -30,7 +30,7 @@ date: 2025-10-26
       
 <img src="../assets/learning/cuda/ch023-vector-sum.png" width="100%">
       
-- > **Pointers in C lang** - regular (pointer) variables are declared as `float V` (`float *P`). We can make `P` access the value of `V` w/ `P=&V`. So the args for `vecAdd` are pointers that access the i-th element of `A_h, B-h, C_h`
+- > **Pointers in C lang** - regular (pointer) variables are declared as `float V` (`float *P`). We can make `P` access the value of `V` w/ `P=&V`. So the args for `vecAdd` are pointers that access the i-th element of `A_h, B_h, C_h`
 
 ## 2.4 Device global memory and data transfer
 
