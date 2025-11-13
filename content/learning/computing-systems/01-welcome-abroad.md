@@ -17,12 +17,12 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 ---
 - **1.3** What difficulty with analog computers encourages computer designers to use digital designs?
 
-*Ans.-* Analog computers cannot become *universal computational devices* (Turing complete), they can only do one type of computation. Moreover, it is very hard to improve their computation accuracy due to physical complications.
+*Ans.-* Analog computers cannot become *universal computational devices* (Turing complete), they are not general-purpose. Moreover, it is very hard to improve their computation accuracy due to physical complications.
 
 ---
 - **1.4** Name one characteristic of natural languages that prevents them from being used as programming languages.
 
-*Ans.-* Natural languages are abstract and imprecise which makes them bad choices to directly communicate instructions to computers. Computers can only be fed *algorithms* (step-by-step procedures) that have the following characteristics: *definitness* - each step is precisely stated; *effective  computability* - each step can be carried out by a computer and *finitness* - the procedure terminates.
+*Ans.-* Natural languages are abstract and ambiguous which makes them bad choices to directly communicate instructions to computers. Computers can only be fed *algorithms* (step-by-step procedures) that have the following characteristics: *definitness* - each step is precisely stated; *effective  computability* - each step can be carried out by a computer and *finitness* - the procedure terminates.
 
 ---
 - **1.5** Say we had a *“black box”*, which takes two numbers as input and outputs their sum. See Figure 1.10a. Say we had another box capable of multiplying two numbers together. See Figure 1.10b. We can connect these boxes together to calculate $p \times (m + n)$. See Figure 1.10c. Assume we have an unlimited number of these boxes. Show how to connect them together to calculate:
@@ -37,14 +37,14 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 <img src="../../assets/learning/computing-systems/ch01-ex1_5-sol.png" width="75%">
 
 ---
-- **1.6** Write a statement in a natural language, and oﬀer two diﬀerent interpretations of that statement.
+- **1.6** Write a statement in a natural language, and offer two different interpretations of that statement.
 
-*Ans.-* The statement: *"This sentence doesn't exist"* is a Godel-like incompleteness kind of statement which has at least two interpretations. First we can take the literal meaning that the sentence doesn't exist. However, that immediately lead us to a consequential interpretation that, since we are actually reading the statement, then of course it factually exists.
+*Ans.-* The statement: *"I wear many hats at my job"* is a common phrase we might hear at work. It has least two interpretations: we can take the literal meaning that the person actually wears different phyisical hats or that the 'hat' is a metaphor for job-roles.
 
 ---
 - **1.7** The discussion of abstraction in Section 1.3.1 noted that one does not need to understand the makeup of the components as long as “everything about the detail is just ﬁne.” The case was made that when everything is not ﬁne, one must be able to deconstruct the components, or be at the mercy of the abstractions. In the taxi example, suppose you did not understand the component, that is, you had no clue how to get to the airport. Using the notion of abstraction, you simply tell the driver, *“Take me to the airport.”* Explain when this is a productivity enhancer, and when it could result in very negative consequences.
 
-*Ans.-* It is a productivity enhancer when you trust the driver can safely take you to your destination and none of the parties need to discuss the intricacies about how to get there. However, if neither individual knows how to get there it is a failed interaction.
+*Ans.-* It is a productivity enhancer when you trust the driver can safely take you to your destination and none of the parties need to discuss the intricacies about how to get there. However, if neither individual knows how to get there it is a failed interaction ie. the driver might wander around the city without ever getting you to the airport and you could miss your flight.
 
 ---
 - **1.8** John said, “I saw the man in the park with a telescope.” What did he mean? How many reasonable interpretations can you provide for this statement? List them. What property does this sentence demonstrate that makes it unacceptable as a statement in a program?
@@ -54,7 +54,7 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 ---
 - **1.9** Are natural languages capable of expressing algorithms?
 
-*Ans.-* Yes, the universe of what can be expressed with natural languages encompasses many abstract-free ways of specifying algorithms ie. otherwise science and this book couldn't exist. The caveat is that we have to make a great effort in expressing accurate descriptions (abstract-free) of technical  concepts with human languages.
+*Ans.-* Yes, the universe of what can be expressed with natural languages encompasses what can be expressed with computer languages (which are not ambiguous). If it would be otherwise science and this very same book couldn't exist. The caveat is that we have to make a great extra effort to accurately describe technical specifications or concepts with natral languages.
 
 ---
 - **1.10** Name three characteristics of algorithms. Briefly explain each of these three characteristics.
@@ -67,9 +67,9 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 *Ans.-* 
 | characteristic | counterexample | 
 |----------------|----------------|
-| definitness | An instruction that asks to calculate what is north to the north pole |
+| definitness | An cooking recipe that says "add salt to taste" - we cannot know how much salt is appropriate "to taste" |
 | eff. comp. | Find the largest real number or largest prime number. | 
-| finitness | A simulation of the Universe might be infinite. Or any infinite loop if we want to be more simplistic like finding the largest real number. |
+| finitness | Any infinite loop like `int n = 2; while (n % 2 == 0) { printf("%d is even", n); n += 2 }` |
 
 ---
 - **1.12** Are items a through e in the following list algorithms? If not, what qualities required of algorithms do they lack?
@@ -112,10 +112,10 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 
 ---
 
-- **1.14** Suppose we wish to put a set of names in alphabetical order. We call the act of doing so sorting. One algorithm that can accomplish that is called the bubble sort. We could then program our bubble sort algorithm in C and compile the C program to execute on an x86 ISA. The x86 ISA can be implemented with an Intel Pentium IV microarchitecture. Let us call the sequence “Bubble Sort, C program, x86 ISA, Pentium IV microarchitecture” one transformation process. Assume we have available four sorting algorithms and can program in C, C++, Pascal, Fortran, and COBOL. We have available compilers that can translate from each of these to either x86 or SPARC, and we have available three diﬀerent microarchitectures for x86 and three diﬀerent microarchitectures for SPARC.
+- **1.14** Suppose we wish to put a set of names in alphabetical order. We call the act of doing so sorting. One algorithm that can accomplish that is called the bubble sort. We could then program our bubble sort algorithm in C and compile the C program to execute on an x86 ISA. The x86 ISA can be implemented with an Intel Pentium IV microarchitecture. Let us call the sequence “Bubble Sort, C program, x86 ISA, Pentium IV microarchitecture” one transformation process. Assume we have available four sorting algorithms and can program in C, C++, Pascal, Fortran, and COBOL. We have available compilers that can translate from each of these to either x86 or SPARC, and we have available three different microarchitectures for x86 and three different microarchitectures for SPARC.
     - a. How many transformation processes are possible?
     - b. Write three examples of transformation processes.
-    - c. How many transformation processes are possible if instead of three diﬀerent microarchitectures for x86 and three diﬀerent microarchitectures for SPARC, there were two for x86 and four for SPARC?
+    - c. How many transformation processes are possible if instead of three different microarchitectures for x86 and three different microarchitectures for SPARC, there were two for x86 and four for SPARC?
 
 *Ans.-* 
 
@@ -133,7 +133,7 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 
 ---
 
-- **1.17** Brieﬂy describe the diﬀerence between an ISA and a microarchitecture.
+- **1.17** Brieﬂy describe the difference between an ISA and a microarchitecture.
 
 *Ans.-* 
 
