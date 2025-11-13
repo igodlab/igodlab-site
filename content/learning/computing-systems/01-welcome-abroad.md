@@ -25,14 +25,16 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 *Ans.-* Natural languages are abstract and imprecise which makes them bad choices to directly communicate instructions to computers. Computers can only be fed *algorithms* (step-by-step procedures) that have the following characteristics: *definitness* - each step is precisely stated; *effective  computability* - each step can be carried out by a computer and *finitness* - the procedure terminates.
 
 ---
-- **1.5** Say we had a *“black box”*, which takes two numbers as input and outputs their sum. See Figure 1.10a. Say we had another box capable of multiplying two numbers together. See Figure 1.10b. We can connect these boxes together to calculate $p × (m + n)$. See Figure 1.10c. Assume we have an unlimited number of these boxes. Show how to connect them together to calculate:
+- **1.5** Say we had a *“black box”*, which takes two numbers as input and outputs their sum. See Figure 1.10a. Say we had another box capable of multiplying two numbers together. See Figure 1.10b. We can connect these boxes together to calculate $p \times (m + n)$. See Figure 1.10c. Assume we have an unlimited number of these boxes. Show how to connect them together to calculate:
     - a. $ax + b$
     - b. The average of the four input numbers $w, x, y,$ and $z$
-    - c. $a2 + 2ab + b2$ (Can you do it with one add box and one multiply box?)
+    - c. $a^2 + 2ab + b^2$ (Can you do it with one add box and one multiply box?)
 
-<img src="../assets/learning/computing-systems/ch01-ex1_5.png" width="75%">
+<img src="../../assets/learning/computing-systems/ch01-ex1_5.png" width="75%">
 
 *Ans.-* 
+
+<img src="../../assets/learning/computing-systems/ch01-ex1_5-sol.png" width="75%">
 
 ---
 - **1.6** Write a statement in a natural language, and oﬀer two diﬀerent interpretations of that statement.
@@ -99,7 +101,9 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 - a. Could be classified as not an algorithm because the instruction of adding the 1st row + "another" row (whose fst column contains a non-zero entry) is not specific enough ie. lacks definitness. There are many rows w/o a zero as its first element eg. 1st, 3rd, 4th and "another" doesn't specify how to pick among these candidates.
 - b. Not an algorithm, it lacks finitness ie. we'll be able to infinetly find a subsequent prime number paired with a natural number $\mathbb{N}$.
 - c. Yes, it is a well known algorithm as a matter of fact.
-- d. 
+- d. Yes, definetly an algorithm. Although, it won't do anything to prove that the coin is not weighted.
+- e. 
+
 ---
 
 - **1.13** Two computers, A and B, are identical except for the fact that A has a subtract instruction and B does not. Both have add instructions. Both have instructions that can take a value and produce the negative of that value. Which computer is able to solve more problems, A or B? Prove your result.
