@@ -12,7 +12,7 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 ---
 - **1.2** Can a higher-level programming language instruct a computer to compute more than a lower-level programming language?
 
-*Ans.-* No it cannot. Higher-level programming languages have limitations regarding their capability of instructing fine grained low-level computation tweaks. Normally higher-level programming languages operate many layers of abstraction above bare metal programming so its language abstractions detach their granularity capabilities whereas low-level languages allow closer manipulation of bare metal specifics.
+*Ans.-* No it cannot. Normally programming languages are Turing complete, so given enough time and resources both programming languages are capable of instructing the same computation. It is important to mention though that higher-level programming languages have limitations regarding their capability of instructing fine grained low-level computation tweaks. Normally higher-level programming languages operate many layers of abstraction above bare metal programming so its language abstractions detach their granularity capabilities whereas low-level languages allow closer manipulation of bare metal specifics.
 
 ---
 - **1.3** What difficulty with analog computers encourages computer designers to use digital designs?
@@ -42,7 +42,7 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 *Ans.-* The statement: *"I wear many hats at my job"* is a common phrase we might hear at work. It has least two interpretations: we can take the literal meaning that the person actually wears different phyisical hats or that the 'hat' is a metaphor for job-roles.
 
 ---
-- **1.7** The discussion of abstraction in Section 1.3.1 noted that one does not need to understand the makeup of the components as long as “everything about the detail is just ﬁne.” The case was made that when everything is not ﬁne, one must be able to deconstruct the components, or be at the mercy of the abstractions. In the taxi example, suppose you did not understand the component, that is, you had no clue how to get to the airport. Using the notion of abstraction, you simply tell the driver, *“Take me to the airport.”* Explain when this is a productivity enhancer, and when it could result in very negative consequences.
+- **1.7** The discussion of abstraction in Section 1.3.1 noted that one does not need to understand the makeup of the components as long as “everything about the detail is just fine.” The case was made that when everything is not fine, one must be able to deconstruct the components, or be at the mercy of the abstractions. In the taxi example, suppose you did not understand the component, that is, you had no clue how to get to the airport. Using the notion of abstraction, you simply tell the driver, *“Take me to the airport.”* Explain when this is a productivity enhancer, and when it could result in very negative consequences.
 
 *Ans.-* It is a productivity enhancer when you trust the driver can safely take you to your destination and none of the parties need to discuss the intricacies about how to get there. However, if neither individual knows how to get there it is a failed interaction ie. the driver might wander around the city without ever getting you to the airport and you could miss your flight.
 
@@ -73,20 +73,20 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 
 ---
 - **1.12** Are items a through e in the following list algorithms? If not, what qualities required of algorithms do they lack?
-    - a. Add the ﬁrst row of the following matrix to another row whose first column contains a non-zero entry. (Reminder: Columns run vertically; rows run horizontally.)$$
+    - a. Add the first row of the following matrix to another row whose first column contains a non-zero entry. (Reminder: Columns run vertically; rows run horizontally.)$$
 \begin{bmatrix}
 1 & 2 & 0 & 4 \\
 0 & 3 & 2 & 4 \\
 2 & 3 & 10 & 22 \\
 12 & 4 & 3 & 4
 \end{bmatrix}$$
-    - b. In order to show that there are as many prime numbers as there are natural numbers, match each prime number with a natural number in the following manner. Create pairs of prime and natural numbers by matching the ﬁrst prime number with 1 (which is the ﬁrst natural number) and the second prime number with 2, the third with 3, and so forth. If, in the end, it turns out that each prime number can be paired with each natural number, then it is shown that there are as many prime numbers as natural numbers.
-    - c. Suppose you’re given two vectors each with 20 elements and asked to perform the following operation: Take the ﬁrst element of the ﬁrst vector and multiply it by the ﬁrst element of the second vector. Do the same to the second elements, and so forth. Add all the individual products together to derive the dot product.
-    - d. Lynne and Calvin are trying to decide who will take the dog for a walk. Lynne suggests that they ﬂip a coin and pulls a quarter out of her pocket. Calvin does not trust Lynne and suspects that the quarter may be weighted (meaning that it might favor a particular outcome when tossed) and suggests the following procedure to fairly determine who will walk the dog.
+    - b. In order to show that there are as many prime numbers as there are natural numbers, match each prime number with a natural number in the following manner. Create pairs of prime and natural numbers by matching the first prime number with 1 (which is the first natural number) and the second prime number with 2, the third with 3, and so forth. If, in the end, it turns out that each prime number can be paired with each natural number, then it is shown that there are as many prime numbers as natural numbers.
+    - c. Suppose you’re given two vectors each with 20 elements and asked to perform the following operation: Take the first element of the first vector and multiply it by the first element of the second vector. Do the same to the second elements, and so forth. Add all the individual products together to derive the dot product.
+    - d. Lynne and Calvin are trying to decide who will take the dog for a walk. Lynne suggests that they flip a coin and pulls a quarter out of her pocket. Calvin does not trust Lynne and suspects that the quarter may be weighted (meaning that it might favor a particular outcome when tossed) and suggests the following procedure to fairly determine who will walk the dog.
         - 1. Flip the quarter twice.
         - 2. If the outcome is heads on the first flip and tails on the second, then I will walk the dog.
         - 3. If the outcome is tails on the first flip and heads on the second, then you will walk the dog.
-        - 4. If both outcomes are tails or both outcomes are heads, then we ﬂip twice again. Is Calvin’s technique an algorithm?
+        - 4. If both outcomes are tails or both outcomes are heads, then we flip twice again. Is Calvin’s technique an algorithm?
     - e. Given a number, perform the following steps in order:
         - 1. Multiply it by 4
         - 2. Add 4
@@ -102,13 +102,13 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 - b. Not an algorithm, it lacks finitness ie. we'll be able to infinetly find a subsequent prime number paired with a natural number $\mathbb{N}$.
 - c. Yes, it is a well known algorithm as a matter of fact.
 - d. Yes, definetly an algorithm. Although, it won't do anything to prove that the coin is not weighted.
-- e. 
+- e. Steps 1-6: $n\rightarrow \left((4n+4)/2-2\right)/2-1$ simplify to: $n\rightarrow n-1$ so the only ambiguity is if the input number $n$ is a natural, real or complex number? The instructions are an algorithm only if $n\in \mathbb{N}$, otherwise the instructions lead to violating finitness.
 
 ---
 
 - **1.13** Two computers, A and B, are identical except for the fact that A has a subtract instruction and B does not. Both have add instructions. Both have instructions that can take a value and produce the negative of that value. Which computer is able to solve more problems, A or B? Prove your result.
 
-*Ans.-* 
+*Ans.-* Both computers A & B are equally capable because they both have sign inversion instructions so they are equivalent.
 
 ---
 
@@ -119,35 +119,46 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 
 *Ans.-* 
 
+- a. Nine
+- b. *i)* 
+- c. Eighteen
+
 ---
 
 - **1.15** Identify one advantage of programming in a higher-level language compared to a lower-level language. Identify one disadvantage.
 
-*Ans.-* 
+*Ans.-* Higher-level pograming languages allow to write feature-rich programs faster with less boilerplate thanks to the rich libraries and packages typically available within their ecosystems. This is one advantage of abstraction that high-level programming lanugages benefit from. One disadvantage of their abstraction is that fine granularity to manipulate low-level systems is hidden or often inaccessible.
 
 ---
 
-- **1.16** Name at least three things speciﬁed by an ISA.
+- **1.16** Name at least three things specified by an ISA.
 
-*Ans.-* 
+*Ans.-* The opcode, operands, data types and addressing modes.
 
 ---
 
-- **1.17** Brieﬂy describe the difference between an ISA and a microarchitecture.
+- **1.17** Briefly describe the difference between an ISA and a microarchitecture.
 
-*Ans.-* 
+*Ans.-* The ISA is a set of instructions that specifies how to give instructions to a computer and how the computer can carry-on those instructions. Whereas the microarchitecture is the way that a given ISA is implemented in a processor making sure that the underlying hardware architecture is compatible with understanding and executing all instructions.
 
 ---
 
 - **1.18** How many ISAs are normally implemented by a single microarchitecture? Conversely, how many microarchitectures could exist for a single ISA?
 
-*Ans.-* 
+*Ans.-* Only one ISA is normally implemented by a single microarchitecture whereas there could be many microarchitectures for a single ISA. For example, the ISA x86 microprocessor can be implemented by different processors' manufacturers throughout the years.
 
 ---
 
 - **1.19** List the levels of transformation and name an example for each level.
 
 *Ans.-* 
+
+| Transformation | Example |
+|---|---|
+| Problems $\rightarrow$ Algorithms | Humans make this translation. They understand the problem and formulate the algorithms to solve it, mostly thinking in terms of natural language. |
+| Algorithms $\rightarrow$ Language | Humans also perform this translation by writing the algorithms in code. |
+| Language $\rightarrow$ ISA | Computer manufacturers ship their devices with hardware compatible to a specific ISA. |
+| ISA $\rightarrow$ Microarchitecture | Computer manufacturers |
 
 ---
 
