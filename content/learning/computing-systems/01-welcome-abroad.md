@@ -65,11 +65,11 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 - **1.11** For each characteristic of an algorithm, give an example of a procedure that does not have the characteristic and is therefore not an algorithm.
 
 *Ans.-* 
-| characteristic | counterexample | 
+| Characteristic | Counterexample | 
 |----------------|----------------|
-| definitness | An cooking recipe that says "add salt to taste" - we cannot know how much salt is appropriate "to taste" |
-| eff. comp. | Find the largest real number or largest prime number. | 
-| finitness | Any infinite loop like `int n = 2; while (n % 2 == 0) { printf("%d is even", n); n += 2 }` |
+| Definitness | A cooking recipe that says "add salt to taste" - we cannot know how much salt is appropriate "to taste" |
+| Effective computability | Find the largest real number or largest prime number. | 
+| Finitness | Any infinite loop like `int n = 2; while (n % 2 == 0) { printf("%d is even", n); n += 2 }` |
 
 ---
 - **1.12** Are items a through e in the following list algorithms? If not, what qualities required of algorithms do they lack?
@@ -101,14 +101,14 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 - a. Could be classified as not an algorithm because the instruction of adding the 1st row + "another" row (whose fst column contains a non-zero entry) is not specific enough ie. lacks definitness. There are many rows w/o a zero as its first element eg. 1st, 3rd, 4th and "another" doesn't specify how to pick among these candidates.
 - b. Not an algorithm, it lacks finitness ie. we'll be able to infinetly find a subsequent prime number paired with a natural number $\mathbb{N}$.
 - c. Yes, it is a well known algorithm as a matter of fact.
-- d. Yes, definetly an algorithm. Although, it won't do anything to prove that the coin is not weighted.
+- d. Yes, Calvin's procedure is an algorithm. However, there is a posibility that it will never end if the coin is weighted to the point that it will produce the same result 100% of the times.
 - e. Steps 1-6: $n\rightarrow \left((4n+4)/2-2\right)/2-1$ simplify to: $n\rightarrow n-1$ so the only ambiguity is if the input number $n$ is a natural, real or complex number? The instructions are an algorithm only if $n\in \mathbb{N}$, otherwise the instructions lead to violating finitness.
 
 ---
 
 - **1.13** Two computers, A and B, are identical except for the fact that A has a subtract instruction and B does not. Both have add instructions. Both have instructions that can take a value and produce the negative of that value. Which computer is able to solve more problems, A or B? Prove your result.
 
-*Ans.-* Both computers A & B are equally capable because they both have sign inversion instructions so they are equivalent.
+*Ans.-* Both computers A & B are equally capable because they both have sign inversion instructions so they are equivalent ie. both can perform `ADD(X0,X1)` whereas A can perform `SUBSTRACT(X0,X1)` and B cannot, but the latter can perform `ADD(X0,(-X1))` which is equivalent to substraction.
 
 ---
 
@@ -119,15 +119,15 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 
 *Ans.-* 
 
-- a. Nine
-- b. *i)* 
-- c. Eighteen
+- a. It reduces to a combinatorics problem where we have 4 sorting algorithms $(A=4)$, five programming languages $(P=5)$, compilers for its respective programming language that can target two ISAs $(C_{\text{x86}}=1, C_{\text{SPARC}}=1)$ and three different microarchitectures for each ISA $(M_{\text{x86}}=3, M_{\text{SPARC}}=3)$. So the total number of possible transformation processes is: $A\times P \times (C_{\text{x86}} \times M_{\text{x86}} + C_{\text{SPARC}} \times M_{\text{SPARC}}) = 120$
+- b. *(i)* Bubble Sort, Fortran program, x86 ISA Pentium IV microarchitecture. *(ii)* Merge Sort, COBOL program, x86 ISA, Pentium IV microarchitecture. *(iii)* Bubble Sort, C ptrogram, SPARC, UltraSPARC microarchitecture.
+- c. In this case we have $M_{\text{x86}}=2, M_{\text{SPARC}}=4$ but we still have $120$ possible processes.
 
 ---
 
 - **1.15** Identify one advantage of programming in a higher-level language compared to a lower-level language. Identify one disadvantage.
 
-*Ans.-* Higher-level pograming languages allow to write feature-rich programs faster with less boilerplate thanks to the rich libraries and packages typically available within their ecosystems. This is one advantage of abstraction that high-level programming lanugages benefit from. One disadvantage of their abstraction is that fine granularity to manipulate low-level systems is hidden or often inaccessible.
+*Ans.-* Higher-level pograming languages allow to write feature-rich programs faster with less instructions thanks to the rich libraries and packages typically available within their ecosystems. This is one advantage of abstraction that high-level programming lanugages benefit from. One disadvantage of their abstraction is that fine granularity to manipulate low-level systems is hidden or often inaccessible.
 
 ---
 
@@ -157,32 +157,45 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 |---|---|
 | Problems $\rightarrow$ Algorithms | Humans make this translation. They understand the problem and formulate the algorithms to solve it, mostly thinking in terms of natural language. |
 | Algorithms $\rightarrow$ Language | Humans also perform this translation by writing the algorithms in code. |
-| Language $\rightarrow$ ISA | Computer manufacturers ship their devices with hardware compatible to a specific ISA. |
-| ISA $\rightarrow$ Microarchitecture | Computer manufacturers |
+| Language $\rightarrow$ ISA | The language compiler performs this translation from programming language to its corresponding ISA assembly. |
+| ISA $\rightarrow$ Microarchitecture | Chip architects design the microarchitecture specification that will implement a particular ISA. |
+| Microarchitecture $\rightarrow$ Cicuits | Circuit designers translate the microarchitecture blocks into actual logic gates and transistor arrangements. |
+| Circuits $\rightarrow$ Device | Physics takes care of this connection. Where we trust in the circuitry and transistors to perform currents and voltage switches in such a way that they are suitable for computing stuff. |
 
 ---
 
 - **1.20** The levels of transformation in Figure 1.9 are often referred to as levels of abstraction. Is that a reasonable characterization? If yes, give an example. If no, why not?
 
-*Ans.-* 
+<img src="../../assets/learning/computing-systems/ch01-ex1_20.png" width="50%">
+
+*Ans.-* Yes it is a reasonable characterization. We can refer to Problem 1.19 where we worked out all these translation steps. An example would be trying to sort a list of guests' surnames for an event in alphabetical order. 
+
+| Transformation | Action |
+|---|---|
+| Problems $\rightarrow$ Algorithms | We already stated the problem in English now we posit a solution thinking in terms of algorithms (eg. Timsort). |
+| Algorithms $\rightarrow$ Language | Write the algorithm in a programming language like C. |
+| Language $\rightarrow$ ISA | Compile our code with the gcc compiler targeting x86 ISA 64bit, for example. |
+| ISA $\rightarrow$ Microarchitecture | The specific microarchitecture design eg. the 13th Gen Intel Core i9-13900H implements the x86 ISA. |
+| Microarchitecture $\rightarrow$ Cicuits | The ALU block in the microarchitecture becomes thousands of physical transistors arranged as logic gates (AND, OR, XOR, etc.). |
+| Circuits $\rightarrow$ Device | Physics in the hardware solves our problem ie. voltages and electrons perform computations. |
 
 ---
 
 - **1.21** Say you go to the store and buy some word processing software. What form is the software actually in? Is it in a high-level programming language? Is it in assembly language? Is it in the ISA of the computer on which you’ll run it? Justify your answer.
 
-*Ans.-* 
+*Ans.-* When you buy software you actually get compiled machine code for the specific ISA of your computer. The actual software is an application that is an executable binary that has already been compiled from high-level languages down to ISA.
 
 ---
 
 - **1.22** Suppose you were given a task at one of the transformation levels shown in Figure 1.9, and required to transform it to the level just below. At which level would it be most diﬃcult to perform the transformation to the next lower level? Why?
 
-*Ans.-* 
+*Ans.-* The most difficult transformation is definetly the first one - *Problems to Algorithms*. Because this is step comprises the real difficutly of how we can solve any problem with a Turing complete machine. So the range of problems that can be presented as computational problems are almost unbounded eg. from solving Artificial General Intelligence to solving High Performance Computing to solving Biology problems to even solving how to create better computers.
 
 ---
 
 - **1.23** Why is an ISA unlikely to change between successive generations of microarchitectures that implement it? For example, why would Intel want to make certain that the ISA implemented by the Pentium III is the same as the one implemented by the Pentium II? Hint: When you upgrade your computer (or buy one with a newer CPU), do you need to throw out all your old software?
 
-*Ans.-* 
+*Ans.-* The ISA is unlikely to change because of backwards compatibility - old software must run on new michroarchitectures. While ISAs do evolve they extend their instructions set making it a superset thus, preventing a disastrous invalidation of the entire older software ecosystem.
 
 ---
 
