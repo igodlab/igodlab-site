@@ -1,5 +1,5 @@
 ---
-title: Ch01 - Exercises Solutions
+title: Chapter 1 Solutions - Welcome abroad
 date: 2025-09-28
 ---
 
