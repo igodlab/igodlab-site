@@ -3,31 +3,32 @@ title: Chapter 2 solutions - Bits, datatypes and operations
 date: 2025-11-17
 ---
 
-- 2.1 Given $n$ bits, how many distinct combinations of the n bits exist? 
+- 2.1 Given $n$ bits, how many distinct combinations of the $n$ bits exist? 
 
-*Ans.-*
+*Ans.-* $2^n$
 
 ---
 
 - 2.2 There are 26 characters in the alphabet we use for writing English. What is the least number of bits needed to give each character a unique bit pattern? How many bits would we need to distinguish between upper and lowercase versions of all 26 characters?
 
-
-*Ans.-*
+*Ans.-* The minimum bits required to represent all the 26 (52) alphabet characters is a 5-bit (6-bit) system.
 
 ---
-
 
 - 2.3
     - a. Assume that there are about 400 students in your class. If every student is to be assigned a unique bit pattern, what is the minimum number of bits required to do this?
     - b. How many more students can be admitted to the class without requiring additional bits for each student’s unique bit pattern?
 
-*Ans.-*
+*Ans.-* 
+
+- a. $2^b\geq 400\rightarrow b\geq \log_2 400 = 8.64\approx 9$ so that makes $2^9=512$ unique possibilities.
+- b. We can admit $112$ extra students without requiring additional bits.
 
 ---
 
 - 2.4 Given n bits, how many unsigned integers can be represented with the $n$ bits? What is the range of these integers?
 
-*Ans.-*
+*Ans.-* We can represent $[0,2^n-1]$ (closed) integers.
 
 ---
 
@@ -35,17 +36,41 @@ date: 2025-11-17
 
 *Ans.-*
 
+| dec | 1's comp. | signed mag. | 2's comp. |
+|---|---|---|---|
+| `7`   | `00111` | `00111` | `00111` | 
+| `-7`  | `11000` | `10111` | `11001` | 
+
 ---
 
 - 2.6 Write the six-bit 2’s complement representation of -32.
 
-*Ans.-*
+*Ans.-* Lets first check the range of signed integers that can be represented with 6-bits $[-2^{n-1},2^{n-1}-1]=[-32,31]$, so this means that -32 only exists in 2's complement, and can be obtained by overflowing 31 in binary. So, since 31 is the largest positive number for 6-bit we know that the left-most digit is `0` and the rest are ones: `31 = 011 111` so `-32 = 31 + 1 = 011 111 + 000 001 = 100 000`. Alternatively, we can also get there by considering the 1's complement of `-31 = 100 000` which in 2's complement is equal to `-32`.
 
 ---
 
 - 2.7 Create a table showing the decimal values of all four-bit 2’s complement numbers.
 
-*Ans.-*
+*Ans.-* The range of signed values we can represent is $[-2^{n-1},2^{n-1}-1]=[-8,7]$
+
+| 4-bit  | unsigned | 2's comp. | 
+|---|---|---|
+| `0000` | `0` | `0` |
+| `0001` | `1` | `1` |
+| `0010` | `2` | `2` |
+| `0011` | `3` | `3` |
+| `0100` | `4` | `4` |
+| `0101` | `5` | `5` | 
+| `0110` | `6` | `6` |
+| `0111` | `7` | `7` |
+| `1000` | `8` | `-8` |
+| `1001` | `9` | `-7` |
+| `1010` | `10` | `-6` |
+| `1011` | `11` | `-5` |
+| `1100` | `12` | `-4` |
+| `1101` | `13` | `-3` |
+| `1110` | `14` | `-2` |
+| `1111` | `15` | `-1` |
 
 ---
 
@@ -59,9 +84,9 @@ date: 2025-11-17
 
 ---
 
-- 2.9 How many bits are needed to represent Avogadro’s number $(6.02 \times 10^{23})$ in 2’s complement binary representation?
+- 2.9 How many bits are needed to represent Avogadro’s number $(N_A=6.02 \times 10^{23})$ in 2’s complement binary representation?
 
-*Ans.-*
+*Ans.-* In 2's complement representation we need $2^{(n-1)}-1\geq N_A\rightarrow n-1 \geq \log_2{N_A} = 78.994 \approx 79 \rightarrow n = 80$
 
 ---
 
@@ -73,6 +98,25 @@ date: 2025-11-17
 
 *Ans.-*
 
+- a. Leftmost digit is `1` so number is negative and its 2's complement positive representation is `0101 + 0001 = 0110`
+$$
+\begin{align*}
+0110 &= -(0\cdot 2^3 + 1\cdot 2^2 + 1\cdot 2^1 + 0\cdot 2^0) \\
+&= -6
+\end{align*}
+$$
+
+- b. Leftmost digit is `0` so its positive and rightmost digit is `0` so its an even number
+$$
+\begin{align*}
+01011010 &= 0\cdot 2^7 + 1\cdot 2^6 + 0\cdot 2^5 + 1\cdot 2^4 + 1\cdot 2^3 + 0\cdot 2^2 + 1\cdot 2^1 + 0\cdot 2^0 \\
+&= 64+16+8+2 = 90
+\end{align*}
+$$
+
+- c. Negative number. Its 2's complement positive representation is `0000 0010` which corresponds to $-2$
+- d. Positive and odd number, it is $14803$
+
 ---
 - 2.11 Convert these decimal numbers to eight-bit 2’s complement binary numbers.
     - a. $102$
@@ -81,7 +125,24 @@ date: 2025-11-17
     - d. $-128$
     - e. $127$
 
-*Ans.-*
+*Ans.-* Recall that the range of possible numbers that can be represented with 8-bits is $[-128,127]$
+- a. Expanding the number in positional 8-bits:
+$$
+\begin{align*}
+102 &= b_7\cdot 2^7 + b_6\cdot 2^6 + b_5\cdot 2^5 + b_4\cdot 2^4 + b_3\cdot 2^3 + b_2\cdot 2^2 + b_1\cdot 2^1 + b_0\cdot 2^0 \; && \text{positive \& even: }b_7=0,b_0=0//(2^{-1}) \\
+51 &= b_6\cdot 2^5 + b_5\cdot 2^4 + b_4\cdot 2^3 + b_3\cdot 2^2 + b_2\cdot 2^1 + b_1\cdot 2^0 \; && \text{odd: }b_1=1,//-1\&(2^{-1}) \\
+25 &= b_6\cdot 2^4 + b_5\cdot 2^3 + b_4\cdot 2^2 + b_3\cdot 2^1 + b_2\cdot 2^0 \; && \text{odd: }b_2=1,//-1\&(2^{-1}) \\
+12 &= b_6\cdot 2^3 + b_5\cdot 2^2 + b_4\cdot 2^1 + b_3\cdot 2^0 \; && \text{even: }b_3=0,//(2^{-1}) \\
+6 &= b_6\cdot 2^2 + b_5\cdot 2^1 + b_4\cdot 2^0 \; && \text{even: }b_4=0,//(2^{-1}) \\
+3 &= b_6\cdot 2^1 + b_5\cdot 2^0 \; && \text{odd: }b_5=1,//-1\&(2^{-1}) \\
+1 &= b_6 \; \\
+\rightarrow 102 &= 0110\;0110
+\end{align*}
+$$
+- b. Easy, we know that we can represent it in one power of 2 exponent $64=2^6$ therefore only $b_6=1$ and the others are zeros so: `0100 0000`
+- c. We can save time by computing $32+1=2^5+1$ in binary, so `0010 0000 + 0000 0001 = 0010 0001`
+- d. Its the lowest bound of our 8-bit representation so: `1000 0000`
+- c. Its the highest bound of our 8-bit representation so: `0111 1111`
 
 ---
 
@@ -365,7 +426,7 @@ $$
 
 ---
 
-- 2.42 A computer programmer wrote a program that adds two numbers. The programmer ran the program and observed that when 5 is added to 8, the result is the character m. Explain why this program is behaving erroneously.
+- 2.42 A computer programmer wrote a program that adds two numbers. The programmer ran the program and observed that when 5 is added to 8, the result is the character $m$. Explain why this program is behaving erroneously.
 
 *Ans.-*
 
@@ -462,17 +523,13 @@ $$
 
 *Ans.-*
 
-$$
-\begin{array}{c|c|c}
-& x434F4D50 & x55544552 \\
-\hline
-\text{Unsigned binary} &  &  \\
-\text{1's complement} &  &  \\
-\text{2's complement} &  &  \\
-\text{IEEE 754 floating point} &  &  \\
-\text{ASCII string} &  &  \\
-\end{array}
-$$
+| | `x434F4D50` | `x55544552` |
+|---|---|---|  
+| Unsigned binary | & | & |
+| 1's complement | & | & |
+| 2's complement | & | & |
+| IEEE 754 floating point | & | & |
+| ASCII string | & | & |
 
 ---
 
@@ -531,10 +588,10 @@ $$
 - 2.55 We have represented numbers in base-2 (binary) and in base-16 (hex). We are now ready for unsigned base-4, which we will call quad numbers. A quad digit can be 0, 1, 2, or 3.
     - a. What is the maximum unsigned decimal value that one can represent with 3 quad digits?
     - b. What is the maximum unsigned decimal value that one can represent with $n$ quad digits? (Hint: Your answer should be a function of $n$.)
-    - c. Add the two unsigned quad numbers: $023$ and $221$.
-    - d. What is the quad representation of the decimal number $42$?
-    - e. What is the binary representation of the unsigned quad number $123.3$?
-    - f. Express the unsigned quad number $123.3$ in IEEE ﬂoating point format.
+    - c. Add the two unsigned quad numbers: `023` and `221`.
+    - d. What is the quad representation of the decimal number `42`?
+    - e. What is the binary representation of the unsigned quad number `123.3`?
+    - f. Express the unsigned quad number `123.3` in IEEE ﬂoating point format.
     - g. Given a black box that takes m quad digits as input and produces one quad digit for output, what is the maximum number of unique functions this black box can implement?
 
 *Ans.-*
