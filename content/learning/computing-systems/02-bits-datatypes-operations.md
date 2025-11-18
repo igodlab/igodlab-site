@@ -140,7 +140,7 @@ $$
 \end{align*}
 $$
 - b. Easy, we know that we can represent it in one power of 2 exponent $64=2^6$ therefore only $b_6=1$ and the others are zeros so: `0100 0000`
-- c. We can save time by computing $32+1=2^5+1$ in binary, so `0010 0000 + 0000 0001 = 0010 0001`
+- c. We can save time by calculating instead $32+1=2^5+1$ in binary, so `0010 0000 + 0000 0001 = 0010 0001`
 - d. Its the lowest bound of our 8-bit representation so: `1000 0000`
 - c. Its the highest bound of our 8-bit representation so: `0111 1111`
 
