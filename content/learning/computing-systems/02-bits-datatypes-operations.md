@@ -247,10 +247,10 @@ $$
 \begin{array}{l|r|r|r|r}
  & (a) & (b) & (c) & (d) \\
 \hline
-                       &   0011 &   0000 0011 &   0101 &   01 \\
-\texttt{operation}     & + 0001 & + 0101 0101 & + 0110 & + 10 \\
+                       &   0011 &   0000\;0011 &   0101 &   01 \\
+\texttt{operation}     & + 0001 & + 0101\;0101 & + 0110 & + 10 \\
 \hline
-\texttt{binary result} &   0100 &   0101 1000 &   1011 &   11 \\
+\texttt{binary result} &   0100 &   0101\;1000 &   1011 &   11 \\
 \hline
 \texttt{decimal result} & 4 & 88 & 11 & 3
 \end{array}
@@ -260,7 +260,16 @@ $$
 
 2.19 Express the negative value $-27$ as a 2’s complement integer, using eight bits. Repeat, using 16 bits. Repeat, using 32 bits. What does this illustrate with respect to the properties of sign-extension as they pertain to 2’s complement representation?
 
-*Ans.-*
+*Ans.-* Consider that the minimum number of bit decimal places needed to represent -27 is 6 ie. $[-32,31]$ so any larger bit representations will just padd ones (because -27 is negative)
+
+$$
+\begin{array}{l|r}
+\texttt{decimal} & -27 \\
+\texttt{8-bit} & 1110\;0101 \\
+\texttt{16-bit} & 1111\;1111\;1110\;0101 \\
+\texttt{32-bit} & 1111\;1111\;1111\;1111\;1111\;1111\;1110\;0101 
+\end{array}
+$$
 
 ---
 
@@ -271,37 +280,45 @@ $$
     - d. `1000 - 0001`
     - e. `0111 + 1001`
 
-*Ans.-*
+*Ans.-* Range of 4-bit numbers is $[-8,7]$
+- a. Doesn't overflow. `1111 = -1` and is the upper bound binary number that can be represented. Essentially we're adding $-4+3=-1$
+- b. Doesn't overflow. We are adding the same magnitude with opposite signs, carry is ignored past 4 digits and yields `0000 = 0` . We're adding $-4+4=0$
+- c. Overflows. The carry takes up the signed digit place, resulting in `1000 = -8` . The sum $7+1=8$ is too large for the 4-bit 2's representation range.
+- d. Overflows. Convert `- 0001 = 1111` now the result is `1000 + 1111 = 0111 = 7` (two negative operands result in a positive?) or in decimal $-8-1=-9$, which exceeds the representation range.
+- e. Doesn't overflow. Carry is ignored past 4 digits and by definition the result is `0000 = 0` or $7+(-7)=0$
 
 ---
 
 2.21 Describe what conditions indicate overflow has occurred when two 2’s complement numbers are added.
 
-*Ans.-*
+*Ans.-* When addding two positive operands (both have leftmost digit `0`) result in a negative binary number (lefmost `1`) or the inverse ie. adding two negative operands (both lefmost are `1`) and yield a positive (leftmost `0`).
 
 ---
 
 - 2.22 Create two 16-bit 2’s complement integers such that their sum causes an overflow.
 
-*Ans.-*
+*Ans.-* Lets go for the easy examples - overflow both upper and lower bounds $[-32768, 32767]$ ie.
+- (1) largest positive plus one: `0111 1111 1111 1111 + 0000 0000 0000 0001 = 1000 0000 0000 0000` (equivalent to $32767 + 1$ but due to overflow results in $-32768$ rather than $32768$). 
+- (2) smallest negative minus one: `1000 0000 0000 0000 + 1111 1111 1111 1111 = 0111 1111 1111 1111` (which is $-32768 +(-1)$ but due to overflow yields $32767$ rather than $-32769$).
 
 ---
 
 - 2.23 Describe what conditions indicate overflow has occurred when two unsigned numbers are added.
 
-*Ans.-*
+*Ans.-* When adding two unsigned operands yield a carry out of the leftmost bits ie. the carry 'is carried out' past our $n$-bit digit.
 
 ---
 
 - 2.24 Create two 16-bit unsigned integers such that their sum causes an overflow.
 
-*Ans.-*
-
+*Ans.-* 
+- (1) Upper bound plus one: `1111 1111 1111 1111 + 0000 0000 0000 0001 = 0000 0000 0000 0000` (+carry past 16th digit) which is $65535 + 1$ but returns $0$ rather than $65536$
+- (2) Ten plus second largest number: `0000 0000 0000 01010 + 1111 1111 1111 1110 = 0000 0000 0000 0001` (+carry past 16th digit) which is $65534 + 10$ but returns $8$ rather than $65544$
 ---
 
 - 2.25 Why does the sum of a negative 2’s complement number and a positive 2’s complement number never generate an overflow?
 
-*Ans.-*
+*Ans.-* Because it will always fall within the range of numbers that can be represented in 2's complement.
 
 ---
 
@@ -312,17 +329,21 @@ $$
 
 *Ans.-*
 
+- a. 7 bits with $[-64,63]$ 2's complemenent range .
+- b. `63 = 0111111`
+- c. `127 = 1111111`
+
 ---
 
 2.27 The LC-3, a 16-bit machine, adds the two 2’s complement numbers `0101010101010101` and `0011100111001111`, producing `1000111100100100`. Is there a problem here? If yes, what is the problem? If no, why not?
 
-*Ans.-*
+*Ans.-* Yes, there is an overflow problem because we are adding two positive operands and the result is negative.
 
 ---
 
 - 2.28 When is the output of an AND operation equal to 1?
 
-*Ans.-*
+*Ans.-* Only when both operands are ones.
 
 ---
 
