@@ -53,34 +53,43 @@ date: 2025-11-17
 
 *Ans.-* The range of signed values we can represent is $[-2^{n-1},2^{n-1}-1]=[-8,7]$
 
-| 4-bit  | unsigned | 2's comp. | 
-|---|---|---|
-| `0000` | `0` | `0` |
-| `0001` | `1` | `1` |
-| `0010` | `2` | `2` |
-| `0011` | `3` | `3` |
-| `0100` | `4` | `4` |
-| `0101` | `5` | `5` | 
-| `0110` | `6` | `6` |
-| `0111` | `7` | `7` |
-| `1000` | `8` | `-8` |
-| `1001` | `9` | `-7` |
-| `1010` | `10` | `-6` |
-| `1011` | `11` | `-5` |
-| `1100` | `12` | `-4` |
-| `1101` | `13` | `-3` |
-| `1110` | `14` | `-2` |
-| `1111` | `15` | `-1` |
+$$
+\begin{array}{r|r|r}
+\texttt{4-bit} & \texttt{uns.} & \texttt{2's} \\
+\hline
+0000 & 0 & 0 \\
+0001 & 1 & 1 \\
+0010 & 2 & 2 \\
+0011 & 3 & 3 \\
+0100 & 4 & 4 \\
+0101 & 5 & 5 \\
+0110 & 6 & 6 \\
+0111 & 7 & 7 \\
+1000 & 8 & -8 \\
+1001 & 9 & -7 \\
+1010 & 10 & -6 \\
+1011 & 11 & -5 \\
+1100 & 12 & -4 \\
+1101 & 13 & -3 \\
+1110 & 14 & -2 \\
+1111 & 15 & -1 \\
+\end{array}
+$$
 
 ---
 
 - 2.8
     - a. What is the largest positive number one can represent in an eight-bit 2’s complement code? Write your result in binary and decimal.
     - b. What is the greatest magnitude negative number one can represent in an eight-bit 2’s complement code? Write your result in binary and decimal.
-    - c. What is the largest positive number one can represent in n-bit 2’s complement code?
+    - c. What is the largest positive number one can represent in $n$-bit 2’s complement code?
     - d. What is the greatest magnitude negative number one can represent in n-bit 2’s complement code?
 
 *Ans.-*
+
+- a. $2^{8-1}-1=127$ which expressed in binary is the largest positive (last leftmost `0`) number `0111 1111`
+- b. $-2^{8-1}=-128$ which is the first negative (first leftmost `1`) binary number `1000 0000`
+- c. $2^{n-1}-1$
+- d. $-2^{n-1}$
 
 ---
 
@@ -148,7 +157,7 @@ $$
 
 - 2.12 If the last digit of a 2’s complement binary number is 0, then the number is even. If the last two digits of a 2’s complement binary number are `00` (e.g., the binary number `01100`), what does that tell you about the number?
 
-*Ans.-*
+*Ans.-* It also tells us that its divisible by $4=2^2$.
 
 ---
 
@@ -158,7 +167,12 @@ $$
     - c. `1111111000`
     - d. `01`
 
-*Ans.-*
+*Ans.-* Recall that we can pad with zeros (ones) to the left until we get eight digits for a positive (negative) number
+
+- a. `1111 1010`
+- b. `0001 1001`
+- c. `1111 1000`
+- d. `0000 0001`
 
 ---
 - 2.14 Add the following bit patterns. Leave your results in binary form.
@@ -170,11 +184,17 @@ $$
 
 *Ans.-*
 
+- a. `1100`
+- b. `1010`
+- c. `1111`
+- d. `1011`
+- e. `0000`
+
 ---
 
 - 2.15 It was demonstrated in Example 2.5 that shifting a binary number one bit to the left is equivalent to multiplying the number by 2. What operation is performed when a binary number is shifted one bit to the right?
 
-*Ans.-*
+*Ans.-* Multiplication by $2^{-1}$
 
 ---
 
@@ -183,7 +203,11 @@ $$
     - b. Add the signed magnitude representation of $7$ to the signed magnitude representation of $-7$.
     - c. Add the 2’s complement representation of $7$ to the 2’s complement representation of $-7$.
 
-*Ans.-*
+*Ans.-* The 8-bit binary for `7 = 0000 0111` in all representations. Its negative in: 2's `-7 = 1111 1001` (invert `7` and add 1); 1's `-7 = 1111 1000` (just invert `7`) and magnitude `-7 = 1000 0111` (seventh number after overflow) representations. Because we're operating among different representations, parts a, b need **special arithmetic rules**. Remember the *special signed addition rules*: *(i)* if signs are the same add the magnitudes and keep the sign. *(ii)* if signs are different substract the smaller magnitude from the larger magnitude, keep the sign of the larger magnitude. 
+
+- a. Add magnitudes `1111 1111` and keep the sign. This yields `-0` decimal.
+- b. We have different signs so we keep the sign of +7 (`0`) and substract the magnitude, which yields `0000 0000`. Equivalent to `+0` decimal.
+- c. `0000 0000` by definition its the zero decimal
 
 ---
 
@@ -193,7 +217,21 @@ $$
     - c. `0101 + 110`
     - d. `01 + 10`
 
-*Ans.-*
+*Ans.-* Because we're operating only with 2's complement representations normal binary arithmetic applies
+
+$$
+\begin{array}{l|r|r|r|r}
+ & (a) & (b) & (c) & (d) \\
+\hline
+                       &   1011 &   1111 1111 &   0101 &   01 \\
+\texttt{operation}     & + 0001 & + 0101 0101 & + 1110 & + 10 \\
+\hline
+\texttt{binary result} &   1100 &   0101 0100 &   0011 &   11 \\
+\hline
+\texttt{decimal result} & -4 & 84 & 3 & -1
+\end{array}
+$$
+
 
 ---
 
@@ -203,7 +241,20 @@ $$
     - c. `0101 + 110`
     - d. `01 + 10`
 
-*Ans.-*
+*Ans.-* Unsigned numbers are all positives ie. padd w/ zeros
+
+$$
+\begin{array}{l|r|r|r|r}
+ & (a) & (b) & (c) & (d) \\
+\hline
+                       &   0011 &   0000 0011 &   0101 &   01 \\
+\texttt{operation}     & + 0001 & + 0101 0101 & + 0110 & + 10 \\
+\hline
+\texttt{binary result} &   0100 &   0101 1000 &   1011 &   11 \\
+\hline
+\texttt{decimal result} & 4 & 88 & 11 & 3
+\end{array}
+$$
 
 ---
 
