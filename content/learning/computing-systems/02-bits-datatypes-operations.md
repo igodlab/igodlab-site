@@ -318,7 +318,7 @@ $$
 
 - 2.25 Why does the sum of a negative 2’s complement number and a positive 2’s complement number never generate an overflow?
 
-*Ans.-* Because addition of two operands with opposing signs will always move towards zero from either end. Thus, the result will always fall within the range of numbers that can be represented in 2's complement.
+*Ans.-* Because addition of two operands with opposing signs will always move the result towards zero from either end thus, it will always fall within the range of numbers that can be represented in 2's complement.
 
 ---
 
@@ -365,20 +365,27 @@ $$
 ---
 
 - 2.30 Compute the following. Write your results in binary.
-    - a. `01010111 AND 11010111`
+    - a. `0101 0111 AND 1101 0111`
     - b. `101 AND 110`
-    - c. `11100000 AND 10110100`
-    - d. `00011111 AND 10110100`
+    - c. `1110 0000 AND 1011 0100`
+    - d. `0001 1111 AND 1011 0100`
     - e. `(0011 AND 0110) AND 1101`
     - f. `0011 AND (0110 AND 1101)`
 
 *Ans.-*
 
+- a. `0101 0111`
+- b. `100`
+- c. `1010 0000`
+- d. `0001 0100`
+- e. `0000`
+- f. `0000`
+
 ---
 
 - 2.31 When is the output of an OR operation equal to 1?
 
-*Ans.-*
+*Ans.-* When at least one input is 1.
 
 ---
 
@@ -393,21 +400,28 @@ $$
 0 & 0 & 0 \\
 0 & 1 & 1 \\
 1 & 0 & 1 \\
-1 & 1 & 0 \\
+1 & 1 & 1 \\
 \end{array}
 $$
 
 ---
 
 - 2.33 Compute the following:
-    - a. `01010111 OR 11010111`
+    - a. `0101 0111 OR 1101 0111`
     - b. `101 OR 110`
-    - c. `11100000 OR 10110100`
-    - d. `00011111 OR 10110100`
+    - c. `1110 0000 OR 1011 0100`
+    - d. `0001 1111 OR 1011 0100`
     - e. `(0101 OR 1100) OR 1101`
     - f. `0101 OR (1100 OR 1101)`
 
 *Ans.-*
+
+- a. `1101 0111`
+- b. `111` 
+- c. `1111 0100`
+- d. `1011 1111`
+- e. `1101`
+- f. `1101`
 
 ---
 
@@ -419,11 +433,16 @@ $$
 
 *Ans.-*
 
+- a. `0111`
+- b. `0111`
+- c. `1101`
+- d. `0110`
+
 ---
 
 - 2.35 In Example 2.11, what are the masks used for?
 
-*Ans.-*
+*Ans.-* 
 
 ---
 
