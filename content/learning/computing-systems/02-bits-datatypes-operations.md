@@ -313,12 +313,12 @@ $$
 
 *Ans.-* 
 - (1) Upper bound plus one: `1111 1111 1111 1111 + 0000 0000 0000 0001 = 0000 0000 0000 0000` (+carry past 16th digit) which is $65535 + 1$ but returns $0$ rather than $65536$
-- (2) Ten plus second largest number: `0000 0000 0000 01010 + 1111 1111 1111 1110 = 0000 0000 0000 0001` (+carry past 16th digit) which is $65534 + 10$ but returns $8$ rather than $65544$
+- (2) Ten plus second largest number: `0000 0000 0000 1010 + 1111 1111 1111 1110 = 0000 0000 0000 0001` (+carry past 16th digit) which is $65534 + 10$ but returns $8$ rather than $65544$
 ---
 
 - 2.25 Why does the sum of a negative 2’s complement number and a positive 2’s complement number never generate an overflow?
 
-*Ans.-* Because it will always fall within the range of numbers that can be represented in 2's complement.
+*Ans.-* Because addition of two operands with opposing signs will always move towards zero from either end. Thus, the result will always fall within the range of numbers that can be represented in 2's complement.
 
 ---
 
