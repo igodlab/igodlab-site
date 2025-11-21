@@ -442,7 +442,7 @@ $$
 
 - 2.35 In Example 2.11, what are the masks used for?
 
-*Ans.-* 
+*Ans.-* In example 2.11 aka the BUSYNESS example masks are used to change the state of units where ones in an AND mask will change state to *busy* and conversely ones in an OR mask will turn the state to *available*.
 
 ---
 
@@ -454,9 +454,9 @@ $$
     - e. Using the operations discussed in this chapter, develop a procedure to isolate the status bit of machine 2 as the sign bit. For example, if the BUSYNESS pattern is `01011100`, then the output of this procedure is `10000000`. If the BUSYNESS pattern is `01110011`, then the output is `00000000`. In general, if the BUSYNESS pattern is:
 
 $$
-\begin{array}{|c|c|c|c|c|c|c|}
+\begin{array}{|c|c|c|c|c|c|c|c|}
 \hline
-b7 & b6 & b5 & b4 & b3 & b2 & b1  \\
+b7 & b6 & b5 & b4 & b3 & b2 & b1 & b0 \\
 \hline
 \end{array}
 $$
@@ -464,9 +464,9 @@ $$
 the output is:
 
 $$
-\begin{array}{|c|c|c|c|c|c|c|}
+\begin{array}{|c|c|c|c|c|c|c|c|}
 \hline
-b2 & 0 & 0 & 0 & 0 & 0 & 0  \\
+b2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
 \hline
 \end{array}
 $$
@@ -475,11 +475,31 @@ $$
 
 *Ans.-*
 
+- a. The AND mask `00000010` indicates that machine 2 is busy.
+- b. The OR mask `00100010` indicates that machines 2, 6 are available.
+- c. The AND mask `11111111` turns all machines busy.
+- d. The OR mask `11111111` turns all machines idle.
+- e. We'll have to shift the 2nd bit $b2$ position 5 spots to the left and then apply the AND mask ie. apply: 
+
+$$(\texttt{BUSYNESS AND }00000010)\times 2^5$$
+
 ---
 
 - 2.37 If $n$ and $m$ are both four-bit 2’s complement numbers, and $s$ is the four-bit result of adding them together, how can we determine, using only the logical operations described in Section 2.6, if an overflow occurred during the addition? Develop a “procedure” for doing so. The inputs to the procedure are $n, m$, and $s$, and the output will be a bit pattern of all $0$s (`0000`) if no overflow occurred and `1000` if an overflow did occur.
 
-*Ans.-*
+*Ans.-* A procedure could be `P = ((n XOR s) AND (m XOR s)) AND 1000` where we only care about the bit signs. Each XOR compares the sign of one input to the sign of the output $s$ and returns zero if both signs are the same (returns one otherwise). When no overflow occurs the signs of $n,m,s$ are all the same (wheather its all `0`s or all `1`s) thus ANDing both XORs returns `1` if there overflow and `0` when there is not as shown in the table below. The final AND mask is just to isolate the sign bit.
+
+$$
+\begin{array}{lll|c}
+n & m & s & P \\
+\hline
+0\texttt{\dots} & 0\texttt{\dots} & 0\texttt{\dots} & 0000 \\
+0\texttt{\dots} & 0\texttt{\dots} & 1\texttt{\dots} & 1000 \\
+\vdots & \vdots & \vdots & \vdots \\
+1\texttt{\dots} & 1\texttt{\dots} & 0\texttt{\dots} & 1000 \\
+1\texttt{\dots} & 1\texttt{\dots} & 1\texttt{\dots} & 0000 \\
+\end{array}
+$$
 
 ---
 
@@ -496,6 +516,24 @@ $$
     - d. $64,000$
 
 *Ans.-*
+
+> [!important] IEEE 32-bit floating point representation
+> We can represent a floating number $N$ with less precision digits but greater range if we normalize it as
+> 
+> $N = (-1)^S \times 1.\texttt{fraction}\times 2^{\texttt{exponent}-127}, \quad\quad 1\leq\texttt{exponent}\leq 254$
+> where
+> - $S$ needs one bit for the sign 
+> - $\texttt{fraction}$ takes 23 unisgned bits for precision, can represent numbers from $[1.0,1.99999988079071044921875]$
+> - $\texttt{exponent}$ takes 8 unsigned bits for the range (excluding `0 = 0000 0000` and `255 = 1111 1111` which are reserved for $-\infty, \infty$, respectively)
+
+- a. $11.11 = 1\cdot 2^1 + 1\cdot 2^0 + 1\cdot 2^{-1} + 1\cdot 2^{-2} = 1.111 \times 2^1 \rightarrow$ `0 10000001 11100000000000000000000`
+- b. $-55.359375 = -110111.010111 = 1. \times 2^{5} \rightarrow$ `1 10000100 10111010111000000000000`
+- c. $3.1415927 = 11.0010010000111111011011 = 101 \times 2^{1}$ `0 10000000 10010010000111111011011`
+- d. $64000 = 1111101000000000.0 = 1.111101 \times 2^{15} \rightarrow$ `0 10001110 11110100000000000000000`
+
+
+
+
 
 ---
 
