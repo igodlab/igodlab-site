@@ -9,7 +9,7 @@ date: 2024-11-13
 <img src="../assets/learning/blockchain/ch061-txs-blocks.png" width="75%">
 
 ## 6.2 Safety, Revisited
-- So far we've built a protocol that is safe against *collision attacks, forgery, double spending txs, witholding blocks & adversary forks*. But we can spot another vulnerability in the *read query* functionality of a Ledger - nodes/parties $P_1,P_2$ may not report the exact Ledger version at all times. We'll demand more safety propositions we want to accopmlish 
+- So far we've built a protocol that is safe against *collision attacks, forgery, double spending txs, witholding blocks & adversary forks*. But we can spot another vulnerability in the *read query* functionality of a Ledger - nodes/parties $P_1,P_2$ may not report the exact Ledger version at all times. We'll demand more safety propositions we want to accomplish 
 - We'd like both Ledgers to be exactly the same, so they should report the same element/$\text{tx}$ at position $i$ at time $r_1$: $L_{r_1}^{P_1}[i]=L_{r_1}^{P_2}[i]$, this may fail due to either of the two scenarios below: 
     - *(1) Ledger read query when broadcasting hasn't traversed the whole network yet* - $P_1,P_2$ will report different Ledgers if either one is still catching up to update the latest block while its traversing the network (within $\Delta$ time)
         - **Definition 21** (Ledger Safety). *A protocol is safe if it holds that for any two parties $P_1,P_2$ and any two times $r_1,r_2$, it holds that either $L_{r_1}^{P_1}\preccurlyeq L_{r_2}^{P_2}\vee L_{r_2}^{P_2}\preccurlyeq L_{r_1}^{P_1}$*

@@ -526,24 +526,10 @@ $$
 > - $\texttt{fraction}$ takes 23 unisgned bits for precision, can represent numbers from $[1.0,1.99999988079071044921875]$
 > - $\texttt{exponent}$ takes 8 unsigned bits for the range (excluding `0 = 0000 0000` and `255 = 1111 1111` which are reserved for $-\infty, \infty$, respectively)
 
-- a. $11.11 = 1\cdot 2^1 + 1\cdot 2^0 + 1\cdot 2^{-1} + 1\cdot 2^{-2} = 1.111 \times 2^1 \rightarrow$ `0 10000001 11100000000000000000000`
-- b. $-55.359375 = -110111.010111 = 1. \times 2^{5} \rightarrow$ `1 10000100 10111010111000000000000`
-- c. $3.1415927 = 11.0010010000111111011011 = 101 \times 2^{1}$ `0 10000000 10010010000111111011011`
+- a. $11.11 = 1\cdot 2^1 + 1\cdot 2^0 + 1\cdot 2^{-1} + 1\cdot 2^{-2} = 1.111 \times 2^1 \rightarrow$ `0 10000000 11100000000000000000000`
+- b. $-55.359375 = -110111.010111 = 1.10111010111 \times 2^{5} \rightarrow$ `1 10000100 10111010111000000000000`
+- c. $3.1415927 = 11.0010010000111111011011 \rightarrow$ `0 10000000 10010010000111111011011`
 - d. $64000 = 1111101000000000.0 = 1.111101 \times 2^{15} \rightarrow$ `0 10001110 11110100000000000000000`
-
-
-
-
-
----
-
-- 2.40 Write the decimal equivalents for these IEEE floating point numbers.
-    - a. `0 10000000 00000000000000000000000`
-    - b. `1 10000011 00010000000000000000000`
-    - c. `0 11111111 00000000000000000000000`
-    - d. `1 10000000 10010000000000000000000`
-
-*Ans.-*
 
 ---
 
@@ -551,13 +537,7 @@ $$
     - a. What is the largest exponent the IEEE standard allows for a 32-bit floating point number?
     - b. What is the smallest exponent the IEEE standard allows for a 32-bit floating point number?
 
-*Ans.-*
-
----
-
-- 2.42 A computer programmer wrote a program that adds two numbers. The programmer ran the program and observed that when 5 is added to 8, the result is the character $m$. Explain why this program is behaving erroneously.
-
-*Ans.-*
+*Ans.-* a,b. In IEEE $(\texttt{exponent}-127)\in[-126, 127]$ 
 
 ---
 
@@ -567,13 +547,7 @@ $$
     - c. `x436f6d70757465727321`
     - d. `x4c432d32`
 
-*Ans.-*
-
----
-
-- 2.44 What operation(s) can be used to convert the binary representation for 3 (i.e., `0000 0011`) into the ASCII representation for 3 (i.e., `0011 0011`)? What about the binary 4 into the ASCII 4? What about any digit?
-
-*Ans.-*
+*Ans.-* 
 
 ---
 
@@ -587,32 +561,11 @@ $$
 
 ---
 
-- 2.46 Convert the following hexadecimal numbers to binary.
-    - a. `x10`
-    - b. `x801`
-    - c. `xF731`
-    - d. `x0F1E2D`
-    - e. `xBCAD`
-
-*Ans.-*
-
----
-
 - 2.47 Convert the following hexadecimal representations of 2’s complement binary numbers to decimal numbers.
     - a. `xF0`
     - b. `x7FF`
     - c. `x16`
     - d. `x8000`
-
-*Ans.-*
-
----
-
-- 2.48 Convert the following decimal numbers to hexadecimal representations of 2’s complement numbers.
-    - a. $256$
-    - b. $111$
-    - c. $123,456,789$
-    - d. $−44$
 
 *Ans.-*
 
@@ -629,36 +582,12 @@ $$
 
 ---
 
-- 2.50 Perform the following logical operations. Express your answers in hexadecimal notation.
-    - a. `x5478 AND xFDEA`
-    - b. `xABCD OR x1234`
-    - c. `NOT((NOT(xDEFA)) AND (NOT(xFFFF)))`
-    - d. `x00FF XOR x325C`
-
-*Ans.-*
-
----
-
 - 2.51 What is the hexadecimal representation of the following numbers?
     - a. $25,675$
     - b. $675.625$ (i.e., $675\frac{5}{8}$), in the IEEE 754 floating point standard
     - c. The ASCII string: Hello
 
 *Ans.-*
-
----
-
-- 2.52 Consider two hexadecimal numbers: `x434F4D50` and `x55544552`. What values do they represent for each of the ﬁve data types shown?
-
-*Ans.-*
-
-| | `x434F4D50` | `x55544552` |
-|---|---|---|  
-| Unsigned binary | & | & |
-| 1's complement | & | & |
-| 2's complement | & | & |
-| IEEE 754 floating point | & | & |
-| ASCII string | & | & |
 
 ---
 
@@ -672,43 +601,16 @@ $$
 
 Express $Q_2$ in another way.
 
-*Ans.-*
+*Ans.-* $Q_2$ is exactly DeMorgan's law so we can express it as $Q_2 = \text{A OR B}$
 
 $$
 \begin{array}{cc|cc}
 A & B & Q_1 & Q_2 \\
 \hline
 0 & 0 & 1 & 0 \\
-0 & 1 &   &   \\
-1 & 0 &   &   \\
-1 & 1 &   &   
-\end{array}
-$$
-
----
-
-- 2.54 Fill in the truth table for the equations given. The ﬁrst line is done as an example.
-$$
-\begin{align*}
-&Q_1 = \text{NOT(NOT(X) OR (A AND Y AND Z))} \\
-&Q_2 = \text{NOT((Y OR Z) AND (X AND Y AND Z))} 
-\end{align*}
-$$
-
-*Ans.-*
-
-$$
-\begin{array}{ccc|cc}
-X & Y & Z & Q_1 & Q_2 \\
-\hline
-0 & 0 & 0 & 1 & 0 \\
-0 & 0 & 1 &   &   \\
-0 & 1 & 0 &   &   \\
-0 & 1 & 1 &   &   \\
-1 & 0 & 0 &   &   \\
-1 & 0 & 1 &   &   \\
-1 & 1 & 0 &   &   \\
-1 & 1 & 1 &   &   \\
+0 & 1 & 1 & 1 \\
+1 & 0 & 1 & 1 \\
+1 & 1 & 0 & 1 
 \end{array}
 $$
 
@@ -726,10 +628,3 @@ $$
 *Ans.-*
 
 ---
-
-- 2.56 Deﬁne a new eight-bit ﬂoating point format with one sign bit, four bits of exponent, using an excess-7 code (i.e., the bias is 7), and three bits of fraction. If `xE5` is the bit pattern for a number in this eight-bit ﬂoating point format, what value does it have? (Express as a decimal number.)
-
-*Ans.-*
-
----
-
