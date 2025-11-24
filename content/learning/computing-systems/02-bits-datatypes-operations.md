@@ -487,7 +487,7 @@ $$(\texttt{BUSYNESS AND }00000010)\times 2^5$$
 
 - 2.37 If $n$ and $m$ are both four-bit 2’s complement numbers, and $s$ is the four-bit result of adding them together, how can we determine, using only the logical operations described in Section 2.6, if an overflow occurred during the addition? Develop a “procedure” for doing so. The inputs to the procedure are $n, m$, and $s$, and the output will be a bit pattern of all $0$s (`0000`) if no overflow occurred and `1000` if an overflow did occur.
 
-*Ans.-* A procedure could be `P = ((n XOR s) AND (m XOR s)) AND 1000` where we only care about the bit signs. Each XOR compares the sign of one input to the sign of the output $s$ and returns zero if both signs are the same (returns one otherwise). When no overflow occurs the signs of $n,m,s$ are all the same (wheather its all `0`s or all `1`s) thus ANDing both XORs returns `1` if there overflow and `0` when there is not as shown in the table below. The final AND mask is just to isolate the sign bit.
+*Ans.-* A procedure could be `P = ((n XOR s) AND (m XOR s)) AND 1000` where we only care about the bit signs. Each XOR compares the sign of one input to the sign of the output $s$ and returns `0` if both signs are the same (returns `1` otherwise). When no overflow occurs the signs of $n,m,s$ are all the same (wheather its all `0`s or all `1`s) thus ANDing both XORs returns `1` if there is overflow and `0` when there is not as shown in the table below. The final AND mask is just to isolate the sign bit.
 
 $$
 \begin{array}{lll|c}
@@ -495,7 +495,10 @@ n & m & s & P \\
 \hline
 0\texttt{\dots} & 0\texttt{\dots} & 0\texttt{\dots} & 0000 \\
 0\texttt{\dots} & 0\texttt{\dots} & 1\texttt{\dots} & 1000 \\
-\vdots & \vdots & \vdots & \vdots \\
+0\texttt{\dots} & 1\texttt{\dots} & 0\texttt{\dots} & 0000 \\
+0\texttt{\dots} & 1\texttt{\dots} & 1\texttt{\dots} & 0000 \\
+0\texttt{\dots} & 0\texttt{\dots} & 0\texttt{\dots} & 0000 \\
+1\texttt{\dots} & 0\texttt{\dots} & 1\texttt{\dots} & 0000 \\
 1\texttt{\dots} & 1\texttt{\dots} & 0\texttt{\dots} & 1000 \\
 1\texttt{\dots} & 1\texttt{\dots} & 1\texttt{\dots} & 0000 \\
 \end{array}
@@ -517,14 +520,44 @@ $$
 
 *Ans.-*
 
-> [!important] IEEE 32-bit floating point representation
-> We can represent a floating number $N$ with less precision digits but greater range if we normalize it as
+> [!important] IEEE 754 - 32-bit floating point representation
+> We can represent a floating number with less precision digits but greater range if we normalize it as
 > 
 > $N = (-1)^S \times 1.\texttt{fraction}\times 2^{\texttt{exponent}-127}, \quad\quad 1\leq\texttt{exponent}\leq 254$
+> 
 > where
 > - $S$ needs one bit for the sign 
-> - $\texttt{fraction}$ takes 23 unisgned bits for precision, can represent numbers from $[1.0,1.99999988079071044921875]$
-> - $\texttt{exponent}$ takes 8 unsigned bits for the range (excluding `0 = 0000 0000` and `255 = 1111 1111` which are reserved for $-\infty, \infty$, respectively)
+> - $\texttt{fraction}$ takes 23 unisgned bits for precision
+> - $\texttt{exponent}$ takes 8 unsigned bits for the range (excluding `0 = 0000 0000` and `255 = 1111 1111` which are reserved for *subnormal numbers* and $\pm$infinity $(-1)^S \infty$, respectively)
+> 
+> The largest and smallest number that can be represented in normalized form are:
+> 
+> $$
+> \begin{align*}
+> N_{\text{largest}} &= 1.11111111111111111111111_2\times 2^{127}\sim 2 \times 2^{127} \sim 2^{128} \quad\text{(good approx. bad precision)} \\
+> &= (1\cdot 2^0 + 1\cdot 2^{-1} + 1\cdot 2^{-2} + \ldots + 1\cdot 2^{-23}) \times 2^{127} \\
+> &= (2-2^{-23}) \times 2^{127} = 2^{128}-2^{104} \quad(\sim 3.4028_{10} \times 10^{38} \texttt{ decimal})
+> \end{align*}
+> $$
+> 
+> $N_{\text{smallest}} = 1.00000000000000000000000_2\times 2^{-126} = 2^{-126} \quad (\sim 1.1755_{10} \times 10^{-38}\texttt{ decimal})$
+> 
+> If we divert out of normalization we can squeeze in more representations ie. **subnormal numbers**
+> 
+> $N^{\text{subnorm}} = (0.\texttt{fraction}\times 2^{0000\,0000_2 - 126_{10}})$ 
+>
+> gives us the ability to represent numbers with magnitudes smaller than $2^{-126}$ but larger than 0. Note that the deduction for the exponent is forced to be $-126$ rather than $-127$ for consistency. $\texttt{exponent}=0000\,0000$ is more like a cue that let us know that the number is subnormal. The range is:
+> 
+> $$
+> \begin{align*}
+> N^{\text{subnorm}}_{\text{largest}} &= 0.11111111111111111111111_2 \times 2^{-126} \\
+> &= (1\cdot 2^{-1} + 1\cdot 2^{-2} + \ldots + 1\cdot 2^{-23}) \times 2^{-126} \\
+> &= (1-2^{-23}) \times 2^{-126} = 2^{-126}-2^{-149} \quad (\sim 1.1755_{10} \times 10^{-38}\texttt{ decimal}) \\
+> N^{\text{subnorm}}_{\text{smallest}} &= 0.00000000000000000000001_2 \times 2^{-126} \\
+> &= 2^{-149} \quad (\sim 1.4013_{10} \times 10^{-45}\texttt{ decimal})
+> \end{align*}
+> $$
+> 
 
 - a. $11.11 = 1\cdot 2^1 + 1\cdot 2^0 + 1\cdot 2^{-1} + 1\cdot 2^{-2} = 1.111 \times 2^1 \rightarrow$ `0 10000000 11100000000000000000000`
 - b. $-55.359375 = -110111.010111 = 1.10111010111 \times 2^{5} \rightarrow$ `1 10000100 10111010111000000000000`
@@ -549,6 +582,11 @@ $$
 
 *Ans.-* 
 
+- a. `Hello!`
+- b. `hELLO!`
+- c. `Computers!`
+- d. `LC-2`
+
 ---
 
 - 2.45 Convert the following unsigned binary numbers to hexadecimal.
@@ -559,6 +597,11 @@ $$
 
 *Ans.-*
 
+- a. `xD1AF`
+- b. `x1F`
+- c. `x1`
+- d. `xEDB2`
+
 ---
 
 - 2.47 Convert the following hexadecimal representations of 2’s complement binary numbers to decimal numbers.
@@ -568,6 +611,11 @@ $$
     - d. `x8000`
 
 *Ans.-*
+
+- a. `1111 0000` in 2's complement (number is negative), now lets find the magnitude (-(flip + 1)) `-(0001 0000) = -16`
+- b. `0111 1111 1111` its the upper bound of a 12-bit 2's complement whose range is $[-2048,2047]$, the number is `2047`
+- c. `0001 0110` in 2's complement, its magnitude (flip + 1) is `1110 1010 = 234`
+- d. `1000 0000 0000 0000` in 2's complement, its the lower bound for a 16-bit number $[-32768, 32767]$ so our number is `-32768`
 
 ---
 
@@ -580,6 +628,12 @@ $$
 
 *Ans.-*
 
+- a. `x02939`
+- b. `x6E36`
+- c. `x46F4`
+- d. `xF1A8`
+- We observe that problem c adds two negatives `xA = 1010` (encodes a negative sign bit `1`) and yields a positive sign bit `x4 = 0100`. In the same vein part d adds two positives `x7 = 0111` and returns a negative `xF = 1111`. We have overflow in both cases!
+
 ---
 
 - 2.51 What is the hexadecimal representation of the following numbers?
@@ -587,7 +641,11 @@ $$
     - b. $675.625$ (i.e., $675\frac{5}{8}$), in the IEEE 754 floating point standard
     - c. The ASCII string: Hello
 
-*Ans.-*
+*Ans.-* 
+
+- a. `110 0100 0100 1011 = x644B` 
+- b. $1010100011.101 = 1.010100011101 \times 2^9 \rightarrow$  `0 10001000 01010001110100000000000 = x4428E800`
+- c. `Hello = x48656c6c6f`
 
 ---
 
@@ -623,8 +681,45 @@ $$
     - d. What is the quad representation of the decimal number `42`?
     - e. What is the binary representation of the unsigned quad number `123.3`?
     - f. Express the unsigned quad number `123.3` in IEEE ﬂoating point format.
-    - g. Given a black box that takes m quad digits as input and produces one quad digit for output, what is the maximum number of unique functions this black box can implement?
+    - g. Given a black box that takes $m$ quad digits as input and produces one quad digit for output, what is the maximum number of unique functions this black box can implement?
 
-*Ans.-*
+*Ans.-* 
+
+- a. $4^3-1=63$
+- b. $4^n -1$
+- c. The operation is shown below, where the carrys are noted as `+`s on top of the operand digits. A carry out of the Most Significant Bit (MSB) is noted as `(+)` if present and `( )` if not.
+```
+( )++
+   023
++  221
+------
+   310
+```
+- d. We can build our quad construction basing on the 8-bit binary construction
+$$
+\begin{align*}
+42 &= b_7\cdot 2^7 +b_6\cdot 2^6 + b_5\cdot 2^5 + b_4\cdot 2^4 + b_3\cdot 2^3 + b_2\cdot 2^2 + b_1\cdot 2^1  + b_0\cdot 2^0 \\
+&= 2^6(b_7\cdot 2^1 + b_6\cdot 2^0) + 2^4(b_5\cdot 2^1  + b_4\cdot 2^0) + 2^2(b_3\cdot 2^1 + b_2\cdot 2^0) + 2^0(b_1\cdot 2^1  + b_0\cdot 2^0) \\
+&= 4^3\cdot q_3 + 4^2\cdot q_2 + 4^1\cdot q_1 + 4^0\cdot q_0  && \texttt{42\%4=2}, q_0=2 //-2\&(4^{-1}) \\
+10 &= 4^2\cdot q_3 + 4^1\cdot q_2 + 4^0\cdot q_1 && \texttt{10\%4=2},q_1=2 // -2\&(4^{-1}) \\
+2 &= 4^1\cdot q_3 + 4^0\cdot q_2 && q_3\text{ not needed for representing 42 so }q_3=0 \\ 
+\ldots \\
+\rightarrow 42 &= 222
+\end{align*}
+$$
+
+- e. Lets express $123.3 = q_2\cdot 4^2 + q_1\cdot 4^1 + q_0\cdot 4^0 + q_{-1}\cdot 4^{-1}$ where we know that $q_2=1,q_1=2,q_0=3,q_{-1}=3$
+$$
+\begin{align*}
+q_2 &= b_5\cdot 2^1 + b_4\cdot 2^0 && b_5=0,b_4=1 \\
+q_1 &= b_3\cdot 2^1 + b_2\cdot 2^0 && b_3=1,b_2=0 \\
+q_0 &= b_1\cdot 2^1 + b_0\cdot 2^0 && b_1=1,b_0=1 \\
+q_{-1} &= b_{-1}\cdot 2^1 + b_{-2}\cdot 2^0 && b_{-1}=1,b_{-2}=1
+\end{align*}
+$$
+the number in binary is `011011.11` and in normalized form $1.101111\times 2^4$ which in IEEE is `0 10000011 10111100000000000000000`
+
+- f. Lets use combinatorics reasoning here. We need to find the number of unique functions this black box can implement, since the output can only have 4 digits then the number of possibilities is $4^{f}$. Now, there is $4^m$ possible combinations of unique inputs and for each of these unique inputs we can have $4$ unique outputs or equivalently $4$ unique functions that produce each possible output. So the number of unique functions is $4^f=4^{4^m}$
+
 
 ---
