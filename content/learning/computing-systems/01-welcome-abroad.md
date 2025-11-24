@@ -1,5 +1,5 @@
 ---
-title: Chapter 1 Solutions - Welcome abroad
+title: Chapter 1 solutions - Welcome abroad
 date: 2025-09-28
 ---
 
