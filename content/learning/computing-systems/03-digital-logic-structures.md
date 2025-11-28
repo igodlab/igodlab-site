@@ -186,9 +186,9 @@ A & B & C & D & Z \\
 \end{array}
 $$
 
-- b. Our big NAND circuit is shown below
+- b. Recall that in a *Programmable Array Logic* (PRL) the implementation algorithm is simply to connect the output of an AND gate to the input of an OR gate if the corresponding row of the turth table produces an output `1` for that column. So in our big NAND circuit below, 15 out of the 16 AND gate outputs should be connected to the OR gate except for the $A=B=C=D=1$ case (top AND gate) which responsible for the only `0` output.
 
-<img src="../../assets/learning/computing-systems/ch03-ex23b-sol.png" width="80%">
+<img src="../../assets/learning/computing-systems/ch03-ex23b-sol.png" width="75%">
 
 ---
 
