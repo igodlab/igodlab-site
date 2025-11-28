@@ -527,7 +527,7 @@ $$
 > 
 > where
 > - $S$ needs one bit for the sign 
-> - $\texttt{fraction}$ takes 23 unisgned bits for precision
+> - $\texttt{fraction}\text{ or }\texttt{mantissa}$ takes 23 unisgned bits for precision
 > - $\texttt{exponent}$ takes 8 unsigned bits for the range (excluding `0 = 0000 0000` and `255 = 1111 1111` which are reserved for *subnormal numbers* and $\pm$infinity $(-1)^S \infty$, respectively)
 > 
 > The largest and smallest number that can be represented in normalized form are:

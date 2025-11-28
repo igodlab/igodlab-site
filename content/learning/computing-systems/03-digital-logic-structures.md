@@ -17,9 +17,9 @@ $$
 
 ---
 
-- 3.3 A two-input AND and a two-input OR are both examples of two-input logic functions. How many diﬀerent two-input logic functions are possible?
+- 3.3 A two-input AND and a two-input OR are both examples of two-input logic functions. How many different two-input logic functions are possible?
 
-*Ans.-*
+*Ans.-* Using combinatorics, the number of logic functions match the number of unique output-bit combinations (4 per gate in our case) so with 2 gates (two-input AND & OR) the number of possible logic functions is $2^4=16$
 
 ---
 
@@ -27,19 +27,19 @@ $$
 
 <img src="../../assets/learning/computing-systems/ch03-ex05.png" width="50%">
 
-*Ans.-* 
+*Ans.-* We can quickly fill some outputs considering that if voltage on C's P-type gate is 1 then the circuit above OUT is open so 0. Also if the N-types A and B are supplied with voltage 1 our circuit is grounded
 $$
 \begin{array}{ccc|c}
 A & B & C & \text{OUT} \\
 \hline
-0 & 0 & 0 &  \\
-0 & 0 & 1 &  \\
-0 & 1 & 0 &  \\
-0 & 1 & 1 &  \\
-0 & 0 & 0 &  \\
-1 & 0 & 1 &  \\
-1 & 1 & 0 &  \\
-1 & 1 & 1 &  \\
+0 & 0 & 0 & 1 \\
+0 & 0 & 1 & 0 \\
+0 & 1 & 0 & 1 \\
+0 & 1 & 1 & 0 \\
+1 & 0 & 0 & 1 \\
+1 & 0 & 1 & 0 \\
+1 & 1 & 0 & 0 \\
+1 & 1 & 1 & 0 
 \end{array}
 $$
 
@@ -49,7 +49,17 @@ $$
 
 <img src="../../assets/learning/computing-systems/ch03-ex07.png" width="35%">
 
-*Ans.-*
+*Ans.-* The circuit breaks the complementary rule ie. two parallel P-type transistors must be connected to their N-type transistors in series and vice versa. This causes that for opposing $A,B$ input states we get a *short circuit* and has a useless undetermined $V_{\text{OUT}}$ voltage as we can see in the truth table.
+$$
+\begin{array}{cc|c}
+A & B & \text{OUT} \\
+\hline
+0 & 0 & 1 \\
+0 & 1 & 0< V_{\text{OUT}}< V_{DD} \\
+1 & 0 & 0< V_{\text{OUT}}< V_{DD} \\
+1 & 1 & 0
+\end{array}
+$$
 
 ---
 
@@ -57,7 +67,7 @@ $$
 
 <img src="../../assets/learning/computing-systems/ch03-ex09.png" width="50%">
 
-*Ans.-* 
+*Ans.-* When $A=0$ the circuit is inactive but when $A=1$ we have short circuit on the left causing $V_{\text{OUT}}$ to be undetermined.
 
 ---
 
@@ -68,7 +78,7 @@ $$
 What is the value of Out when $A = 0$?
 What is the value of Out when $A = 1$?
 
-*Ans.-*
+*Ans.-* The student did a critical mistake. An inverter consists of a PMOS and NMOS connected in series not in parllel. In this circuit when $A=0\rightarrow V_{\text{OUT}}\approx V_{DD}=3.3 V$ but when $A=1$ we have a short circuit. 
 
 ---
 
@@ -78,21 +88,21 @@ What is the value of Out when $A = 1$?
 
 What does the value 0 or 1 for OUT signify?
 
-*Ans.-*
+> [!bug] Problem belongs to Chapter 5 (see Errata)
 
 ---
 
 - 3.15 Fill in the truth table for the logical expression `NOT(NOT(A) OR NOT(B))`. What single logic gate has the same truth table?
 
-*Ans.-*
+*Ans.-* Its equivalent to the AND logical gate.
 $$
 \begin{array}{cc|c}
 A & B & \text{NOT(NOT(A) OR NOT(B))} \\
 \hline
-0 & 0 &  \\
-0 & 1 &  \\
-1 & 0 &  \\
-1 & 1 &  \\
+0 & 0 & 0 \\
+0 & 1 & 0 \\
+1 & 0 & 0 \\
+1 & 1 & 1 \\
 \end{array}
 $$
 
@@ -109,51 +119,88 @@ $$
 \end{align*}
 $$
 
-*Ans.-*
+*Ans.-* 
+
+- a. 
+
+<img src="../../assets/learning/computing-systems/ch03-ex17a-sol.png" width="60%">
+
+- b.
+
+<img src="../../assets/learning/computing-systems/ch03-ex17b-sol.png" width="100%">
+
 
 ---
 
 - 3.19 How many output lines will a ﬁve-input decoder have?
 
-*Ans.-*
+*Ans.-* $2^5=32$ outputs.
 
 ---
 
 - 3.21 If $A$ and $B$ are four-bit unsigned binary numbers, `0111` and `1011`, complete the table obtained when using a two-bit full adder from Figure 3.15 to calculate each bit of the sum, $S$, of $A$ and $B$. Check your answer by adding the decimal value of $A$ and $B$ and comparing the sum with $S$. Are the answers the same? Why or why not?
 
-*Ans.-*
+*Ans.-* We will get an overflow because we're adding `7 + 11 = 18` which is out of range for a 4-bit number $[0,15]$. The overflow will be taken into account in the carry out of the MSB (*most significant bit*) ie. leftmost $C_{\text{out}}=1$ value in our table.
 $$
 \begin{array}{lcccc}
-C_{\text{in}} &   &   &   & 0 \\
+C_{\text{in}} & 1 & 1 & 1 & 0 \\
 \hline
 A & 0 & 1 & 1 & 1 \\
 B & 1 & 0 & 1 & 1 \\
-S &   &   &   &   \\
-C_{\text{out}} &   &   &   &   \\
+S & 0 & 0 & 1 & 0 \\
+C_{\text{out}} & 1 & 1 & 1 & 1 \\
 \end{array}
 $$
 
 ---
 
 - 3.23 
-    - a. Given four inputs $A, B, C$, and $D$ and one output $Z$, create a truth table for a circuit with at least seven input combinations generating 1s at the output. (How many rows will this truth table have?)
+    - a. Given four inputs $A, B, C$, and $D$ and one output $Z$, create a truth table for a circuit with at least seven input combinations generating `1`s at the output. (How many rows will this truth table have?)
     - b. Now that you have a truth table, generate the gate-level logic circuit
 that implements this truth table. Use the implementation algorithm
 referred to in Section 3.3.4.
 
+*Ans.-*  Our truth table will have $2^4=16$ rows and for the gate-level circuit implementation we can choose any logic operation eg. NAND has plenty more than seven input combinations that yield `1` as the output.
+
+- a.
+$$
+\begin{array}{cccc|c}
+A & B & C & D & Z \\
+\hline
+0 & 0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 1 & 1 \\
+0 & 0 & 1 & 0 & 1 \\
+0 & 0 & 1 & 1 & 1 \\
+0 & 1 & 0 & 0 & 1 \\
+0 & 1 & 1 & 1 & 1 \\
+0 & 1 & 1 & 0 & 1 \\
+0 & 1 & 0 & 1 & 1 \\
+1 & 0 & 1 & 0 & 1 \\
+1 & 0 & 1 & 1 & 1 \\
+1 & 0 & 0 & 0 & 1 \\
+1 & 0 & 1 & 1 & 1 \\
+1 & 1 & 1 & 0 & 1 \\
+1 & 1 & 0 & 1 & 1 \\
+1 & 1 & 1 & 0 & 1 \\
+1 & 1 & 1 & 1 & 0 \\
+\end{array}
+$$
+
+- b. Our big NAND circuit is shown below
+
+<img src="../../assets/learning/computing-systems/ch03-ex23b-sol.png" width="80%">
+
+---
+
+- 3.26 Logic circuit 1 in Figure 3.39 has inputs $A, B, C$. Logic circuit 2 in Figure 3.40 has inputs $A$ and $B$. Both logic circuits have an output $D$. There is a fundamental difference between the behavioral characteristics of these two circuits. What is it? Hint: What happens when the voltage at input A goes from 0 to 1 in both circuits?
+
+<img src="../../assets/learning/computing-systems/ch03-ex25.png" width="60%">
+
 *Ans.-*
 
 ---
 
-- 3.25 Logic circuit 1 in Figure 3.39 has inputs $A, B, C$. Logic circuit 2 in Figure 3.40 has inputs $A$ and $B$. Both logic circuits have an output $D$. There is a fundamental diﬀerence between the behavioral characteristics of these two circuits. What is it? Hint: What happens when the voltage at input A goes from 0 to 1 in both circuits?
-
-<img src="../../assets/learning/computing-systems/ch03-ex25.png" width="50%">
-
-*Ans.-*
-
----
-
-- 3.27 You know a byte is eight bits. We call a four-bit quantity a nibble. If a byte-addressable memory has a 14-bit address, how many nibbles of storage are in this memory?
+- 3.27 You know a byte is eight bits. We call a four-bit quantity a nibble. If a byte-addressable memory has a 15-bit address, how many nibbles of storage are in this memory?
 
 *Ans.-*
 
@@ -161,7 +208,7 @@ referred to in Section 3.3.4.
 
 - 3.29 Given the logic circuit in Figure 3.41, ﬁll in the truth table for the output value $Z$.
 
-<img src="../../assets/learning/computing-systems/ch03-ex29.png" width="50%">
+<img src="../../assets/learning/computing-systems/ch03-ex29.png" width="60%">
 
 *Ans.-*
 
@@ -274,7 +321,7 @@ $$
 
 ---
 
-- 3.51 We have learned that we can write one bit of information with a logic circuit called a transparent latch and that the bit written is available to be read almost immediately after being written. Sometimes it is useful to be able to store a bit but not be able to read the value of that bit until the next cycle. An example of a logic circuit . that has this property is a `___`.
+- 3.51 We have learned that we can write one bit of information with a logic circuit called a transparent latch and that the bit written is available to be read almost immediately after being written. Sometimes it is useful to be able to store a bit but not be able to read the value of that bit until the next cycle. An example of a logic circuit that has this property is a $\text{\_\_\_\_\_\_}$.
 
 *Ans.-*
 
@@ -415,3 +462,4 @@ S1 & S0 & X & Z & S1' & S0' \\
 $$
 
 --- 
+
