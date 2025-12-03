@@ -140,7 +140,7 @@ $$
 
 - 3.21 If $A$ and $B$ are four-bit unsigned binary numbers, `0111` and `1011`, complete the table obtained when using a two-bit full adder from Figure 3.15 to calculate each bit of the sum, $S$, of $A$ and $B$. Check your answer by adding the decimal value of $A$ and $B$ and comparing the sum with $S$. Are the answers the same? Why or why not?
 
-*Ans.-* We will get an overflow because we're adding `7 + 11 = 18` which is out of range for a 4-bit number $[0,15]$. The overflow will be taken into account in the carry out of the MSB (*most significant bit*) ie. leftmost $C_{\text{out}}=1$ value in our table.
+*Ans.-* We will get an overflow because we're adding $7 + 11 = 18 = 0010_2$ which is out of range for a 4-bit number $[0,15]$. The overflow will be taken into account in the carry out of the MSB (*most significant bit*) ie. leftmost $C_{\text{out}}=1$ value in our table (boxed `1`).
 $$
 \begin{array}{lcccc}
 C_{\text{in}} & 1 & 1 & 1 & 0 \\
@@ -148,7 +148,7 @@ C_{\text{in}} & 1 & 1 & 1 & 0 \\
 A & 0 & 1 & 1 & 1 \\
 B & 1 & 0 & 1 & 1 \\
 S & 0 & 0 & 1 & 0 \\
-C_{\text{out}} & 1 & 1 & 1 & 1 \\
+C_{\text{out}} & \boxed{1} & 1 & 1 & 1 \\
 \end{array}
 $$
 
@@ -192,17 +192,17 @@ $$
 
 ---
 
-- 3.26 Logic circuit 1 in Figure 3.39 has inputs $A, B, C$. Logic circuit 2 in Figure 3.40 has inputs $A$ and $B$. Both logic circuits have an output $D$. There is a fundamental difference between the behavioral characteristics of these two circuits. What is it? Hint: What happens when the voltage at input A goes from 0 to 1 in both circuits?
+- 3.25 Logic circuit 1 in Figure 3.39 has inputs $A, B, C$. Logic circuit 2 in Figure 3.40 has inputs $A$ and $B$. Both logic circuits have an output $D$. There is a fundamental difference between the behavioral characteristics of these two circuits. What is it? Hint: What happens when the voltage at input $A$ goes from `0` to `1` in both circuits?
 
 <img src="../../assets/learning/computing-systems/ch03-ex25.png" width="60%">
 
-*Ans.-*
+*Ans.-* Logic circuit 1 is a **mux** where $A$ acts as the select line . Whereas logic circuit 2 is simply an **R-S Latch** where $A$ sets ($B$ resets) the value of the latch-$D$ to `1` (`0`). Analyzing the case of the hint: *What happens when* $A:0\rightarrow 1$? - In circuit 1 the line selects `D = C` when `A = 0` and `D = B` when `A = 1`. In circuit 2 switching $A$ from `0` to `1` just sets and 'locks' the latch to `1`. 
 
 ---
 
 - 3.27 You know a byte is eight bits. We call a four-bit quantity a nibble. If a byte-addressable memory has a 15-bit address, how many nibbles of storage are in this memory?
 
-*Ans.-*
+*Ans.-* A 14-bit, byte-addressable memory has $2^{14}=16384$ memory locations (each stores one byte or 8-bits or 2 nibbles). So we have $32768$ nibbles of storage.
 
 ---
 
@@ -216,14 +216,14 @@ $$
 \begin{array}{ccc|c}
 A & B & C & Z \\
 \hline
-0 & 0 & 0 &   \\
-0 & 0 & 1 &   \\
-0 & 1 & 0 &   \\
-0 & 1 & 1 &   \\
-1 & 0 & 0 &   \\
-1 & 0 & 1 &   \\
-1 & 1 & 0 &   \\
-1 & 1 & 1 &   \\
+0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 1 & 1 & 0 \\
+1 & 0 & 0 & 0 \\
+1 & 0 & 1 & 0 \\
+1 & 1 & 0 & 0 \\
+1 & 1 & 1 & 0 \\
 \end{array}
 $$
 
@@ -235,30 +235,40 @@ $$
     - c. What is the propagation delay for the four-bit adder shown in Figure 3.16?
     - d. What if the four-bit adder were extended to 32 bits?
 
-*Ans.-*
+<img src="../../assets/learning/computing-systems/ch03-ex31.png" width="100%">
+
+*Ans.-* The key notion to identify the propagation delay is the wording: *LARGEST number of logic gates through which ANY of the inputs MUST propagate*
+- a. $3$
+- b. $3$
+- c. $3\times 4=12$
+- d. $3\times 32=96$
+
 
 ---
 
 - 3.33 For this question, refer to the ﬁgure that follows.
-    - a. Describe the output of this logic circuit when the select line $S$ is a logical 0. That is, what is the output $Z$ for each value of $A$?
-    - b. If the select line S is switched from a logical 0 to 1, what will the output be?
+    - a. Describe the output of this logic circuit when the select line $S$ is a logical `0`. That is, what is the output $Z$ for each value of $A$?
+    - b. If the select line S is switched from a logical `0` to `1`, what will the output be?
     - c. Is this logic circuit a storage element?
 
 <img src="../../assets/learning/computing-systems/ch03-ex33.png" width="35%">
 
-*Ans.-*
+*Ans.-* 
+- a. When `S = 0` and `A = 1` the top AND gate yields `1` which ensures that we'll get `Z = 1` after passing through the OR gate. Whereas, if `S = A = 0` nothing survives the AND gates and the output is `Z = 0`
+- b. If $S:0\rightarrow 1$ the output will be the last value of $Z$ and gets 'locked'
+- c. It is a storage element where the select line $S$ acts as a *writing enable (WE)* element and $A$ is the switch for the latch output $Z$ (`A = 0` resets latch to `0` and `A = 1` sets latch to `1`)
 
 ---
 
 - 3.35 A 16-bit register contains a value. The value x75A2 is written into it. Can the original value be recovered?
 
-*Ans.-*
+*Ans.-* No, there is no physical mechanism to recover the previous stored bits once new ones are written in a register.
 
 ---
 
 - 3.37 If a computer has eight-byte addressability and needs three bits to access a location in memory, what is the total size of memory in bytes?
 
-*Ans.-*
+*Ans.-* This 3-bit address computer has an *address space* (unique memory locations) of $2^3$ and each location stores 8-bytes. Thus, we have a total memory size of $2^3\times (8 \text{ [bytes]})=64 \text{ [bytes]}$
 
 ---
 
