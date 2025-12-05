@@ -188,7 +188,7 @@ $$
 
 - b. Recall that in a *Programmable Array Logic* (PRL) the implementation algorithm is simply to connect the output of an AND gate to the input of an OR gate if the corresponding row of the turth table produces an output `1` for that column. So in our big NAND circuit below, 15 out of the 16 AND gate outputs should be connected to the OR gate except for the $A=B=C=D=1$ case (top AND gate) which responsible for the only `0` output.
 
-<img src="../../assets/learning/computing-systems/ch03-ex23b-sol.png" width="75%">
+<img src="../../assets/learning/computing-systems/ch03-ex23b-sol.png" width="60%">
 
 ---
 
@@ -319,8 +319,8 @@ $$
 ---
 
 - 3.49 The following ﬁgure shows an implementation of a ﬁnite state machine with an input $X$ and output $Z$. S1, S0 speciﬁes the present state. D1, D0 speciﬁes the next state.
-a. Complete the rest of the following table.
-b. Draw the state diagram for the truth table of part a.
+    - a. Complete the rest of the following table.
+    - b. Draw the state diagram for the truth table of part a.
 
 <img src="../../assets/learning/computing-systems/ch03-ex49.png" width="60%">
 
@@ -331,14 +331,14 @@ $$
 \begin{array}{ccc|ccc}
 S1 & S0 & X & D1 & D0 & Z \\
 \hline
-0 & 0 & 0 &   &   &    \\
-0 & 0 & 1 &   &   &    \\
-0 & 1 & 0 &   &   &    \\
-0 & 1 & 1 & 1 & 0 & 1  \\
-1 & 0 & 0 &   &   &    \\
-1 & 0 & 1 &   &   &    \\
-1 & 1 & 0 &   &   &    \\
-1 & 1 & 1 &   &   &    \\
+0 & 0 & 0 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
+0 & 0 & 1 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
+0 & 1 & 0 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
+0 & 1 & 1 & 1               & 0               & 1                \\
+1 & 0 & 0 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
+1 & 0 & 1 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
+1 & 1 & 0 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
+1 & 1 & 1 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
 \end{array}
 $$
 
@@ -404,14 +404,14 @@ $$
 \begin{array}{ccc|ccc}
 S[1] & S[0] & X & S'[1] & S'[0] & Z \\
 \hline
-0 & 0 & 0 &   &   &     \\
-0 & 0 & 1 & 1 & 1 &     \\
-0 & 1 & 0 &   &   &     \\
-0 & 1 & 1 &   &   & 1   \\
-1 & 0 & 0 &   &   & 0   \\
-1 & 0 & 1 & 0 & 1 &     \\
-1 & 1 & 0 & 0 & 0 &     \\
-1 & 1 & 1 &   &   &     \\
+0 & 0 & 0 & \color{Violet}x & \color{Violet}x & \color{Violet}x   \\
+0 & 0 & 1 & 1               & 1               & \color{Violet}x   \\
+0 & 1 & 0 & \color{Violet}x & \color{Violet}x & \color{Violet}x   \\
+0 & 1 & 1 & \color{Violet}x & \color{Violet}x & 1                 \\
+1 & 0 & 0 & \color{Violet}x & \color{Violet}x & 0                 \\
+1 & 0 & 1 & 0               & 1               & \color{Violet}x   \\
+1 & 1 & 0 & 0               & 0               & \color{Violet}x   \\
+1 & 1 & 1 & \color{Violet}x & \color{Violet}x & \color{Violet}x   \\
 \end{array}
 $$
 
