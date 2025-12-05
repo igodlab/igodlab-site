@@ -480,3 +480,88 @@ $$
 *Ans.-*
 
 ---
+
+# Chapter 4 - The von Neumann model
+
+- 4.2 Brieﬂy describe the interface between the memory and the processing unit. That is, describe the method by which the memory and the processing unit communicate.
+
+*Ans.-*
+
+---
+
+- 4.4 What is the word length of a computer? How does the word length of a computer aﬀect what the computer is able to compute? That is, is it a valid argument, in light of what you learned in Chapter 1, to say that a computer with a larger word size can process more information and therefore is capable of computing more than a computer with a smaller word size?
+
+*Ans.-*
+
+---
+
+- 4.6 What are the two components of an instruction? What information do these two components contain?
+
+*Ans.-*
+
+---
+
+- 4.8 Suppose a 32-bit instruction takes the following format: 
+$$
+\begin{array}{|c|c|c|c|c|}
+\hline
+\text{OPCODE} & \text{DR} & \text{SR1} & \text{SR2} & \text{UNUSED} \\
+\hline
+\end{array}
+$$
+- If there are 225 opcodes and 120 registers,
+    - a. What is the minimum number of bits required to represent the OPCODE?
+    - b. What is the minimum number of bits required to represent the destination register (DR)?
+    - c. What is the maximum number of UNUSED bits in the instruction encoding?
+
+*Ans.-*
+
+---
+
+- 4.10 Examples 4.1, 4.2, and 4.5 illustrate the processing of the ADD, LDR, and JMP instructions. The PC, IR, MAR, and MDR are written in various phases of the instruction cycle, depending on the opcode of the particular instruction. In each location in the following table, enter the opcodes that write to the corresponding register (row) during the corresponding phase (column) of the instruction cycle.
+
+*Ans.-*
+
+$$
+\begin{array}{l|c|c|c|c|c|c}
+  & \text{Fetch} &  & \text{Evaluate} & \text{Fetch} &  & \text{Store} \\
+  & \text{Instruction} & \text{Decode} & \text{Address} & \text{Data} & \text{Evaluate} & \text{Result} \\
+\hline
+\text{PC} &  &  &  &  &  &  \\
+\text{IR} &  &  &  &  &  &  \\
+\text{MAR} &  &  &  &  &  &  \\
+\text{MDR} &  &  &  &  &  &  \\
+\end{array}
+$$
+
+---
+
+- 4.12 For the instructions ADD, LDR, and JMP, write the operations that occur in each phase of the instruction cycle.
+
+*Ans.-*
+
+---
+
+- 4.14 Describe the execution of the JMP instruction if R3 contains x369C (refer to Example 4.5).
+
+*Ans.-*
+
+---
+
+- 4.16 
+    - a. If a machine cycle is 2 nanoseconds (i.e., 2 ⋅ 10−9 seconds), how many machine cycles occur each second?
+    - b. If the computer requires on the average eight cycles to process each instruction, and the computer processes instructions one at a time from beginning to end, how many instructions can the computer process in 1 second?
+    - c. Preview of future courses: In today’s microprocessors, many features are added to increase the number of instructions processed each second. One such feature is the computer’s equivalent of an assembly line. Each phase of the instruction cycle is implemented as one or more separate pieces of logic. Each step in the processing of an instruction picks up where the previous step left oﬀ in the previous machine cycle. Using this feature, an instruction can be fetched from memory every machine cycle and handed oﬀ at the end of the machine cycle to the decoder, which performs the decoding function during the next machine cycle while the next instruction is being fetched. Ergo, the assembly line. Assuming instructions are located at sequential addresses in memory, and nothing breaks the sequential ﬂow, how many instructions can the microprocessor execute each second if the assembly line is present? (The assembly line is called a pipeline, which you will encounter in your advanced courses. There are many reasons why the assembly line cannot operate at its maximum rate, a topic you will consider at length in some of these courses.)
+
+*Ans.-*
+
+---
+
+4.18 The $2^2$-by-3 bit memory discussed in class is accessed during ﬁve consecutive clock cycles. The table below shows the values of the two-bit address, one-bit write enable, and three-bit data-in signals during each access.
+
+<img src="../../assets/learning/computing-systems/ch04-ex18.png" width="75%">
+
+Your job: Fill in the value stored in each memory cell and the three data-out lines just before the end of the ﬁfth cycle. Assume initially that all 12 memory cells store the value 1. In the ﬁgure below, each question mark (?) indicates a value that you need to ﬁll in.
+
+*Ans.-*
+
