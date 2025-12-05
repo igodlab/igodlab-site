@@ -237,11 +237,11 @@ $$
 
 <img src="../../assets/learning/computing-systems/ch03-ex31.png" width="100%">
 
-*Ans.-* The key notion to identify the propagation delay is the wording: *LARGEST number of logic gates through which ANY of the inputs MUST propagate*
-- a. $3$
-- b. $3$
-- c. $3\times 4=12$
-- d. $3\times 32=96$
+*Ans.-* The key notion to identify the propagation delay is the wording: "*LARGEST number of logic gates through which ANY of the inputs MUST propagate*".
+- a. Figure 3.12: $3$ gate delays
+- b. Figure 3.15: $3$ gate delays
+- c. Figure 3.16: $3\times 4=12$ gate delays
+- d. Figure 3.16 extended to 32-bit adder: $3\times 32=96$ gate delays
 
 
 ---
@@ -268,34 +268,47 @@ $$
 
 - 3.37 If a computer has eight-byte addressability and needs three bits to access a location in memory, what is the total size of memory in bytes?
 
-*Ans.-* This 3-bit address computer has an *address space* (unique memory locations) of $2^3$ and each location stores 8-bytes. Thus, we have a total memory size of $2^3\times (8 \text{ [bytes]})=64 \text{ [bytes]}$
+*Ans.-* A 3-bit computer has an *address space* (unique memory locations) of $2^3$ and each location stores 8-bytes. Thus, we have a total memory size of $2^3\times (8 \text{ [bytes]})=64 \text{ [bytes]}$
 
 ---
 
-- 3.39 Refer to Figure 3.21, the diagram of the four-entry, 22 -by-3-bit memory.
-    - a. To read from the fourth memory location, what must the values of $A10$ and $WE$ be?
+- 3.39 Refer to Figure 3.21, the diagram of the four-entry, $2^2$-by-3-bit memory.
+    - a. To read from the fourth memory location, what must the values of $A[1:0]$ and $\text{WE}$ be?
     - b. To change the number of entries in the memory from 4 to 60, how many address lines would be needed? What would the addressability of the memory be after this change was made?
     - c. Suppose the minimum width (in bits) of the program counter (the program counter is a special register within a CPU, and we will discuss it in detail in Chapter 4) is the minimum number of bits needed to address all 60 locations in our memory from part b. How many additional memory locations could be added to this memory without having to alter the width of the program counter?
 
-*Ans.-*
+<img src="../../assets/learning/computing-systems/ch03-ex21.png" width="60%">
+
+*Ans.-* Quick recap about Figure 3.21. It shows an $n$-bit machine ($n=2$) with *addressability* of $x$-bits ($x=3$). We have an **address space/unique memory locations** of $2^n=4$ where each location stores 3-bit-digit numbers. Thus we see a memory array of $2^2\times 3$ in the figure. To specify the memory rows we need **address bits** $A[\text{high}:\text{low}]$ which basically acts as a *select line* for a specific memory location ie. a complete $(D[\text{high}]+1)$-digit row in the figure that we can read/write from. Address bits accomplish this by passing through a decoder (a unique mask for each bit-input combination of $A$) which results in `1` ONLY for the selected memory location/row and `0` elsewhere. Then, the line $A$ is:
+
+*(i)* ANDed with a *write enable (WE)/clock* which determines if our memory elements (each being a simple R-S latch in our case, could be D-flip-flop registers) are allowed to change the bit value they store throughout the clock-cycle.
+
+*(ii)* ANDed with all $2^n\times 3$ memory elements in the array so basically it is a row mask of `11...1`s for the selected line and `00...0`s for any other row. Subsequently each positional-digit-bit stored in the $A[\text{high}:\text{low}]$-addressed memory location is selected via a *mux* and the value is finally accessed.
+
+- a. $A[1:0]=11$ and $\text{WE}=0$
+- b. $n$ lines are needed to uniquely address $2^n$ locations. So for 60 entries we need $n=\log_2{60}=5.91\approx6$ lines.
+- c. Minimum width of the program counter refers to the minimum number of bits needed to uniquely address all 60 memory locations which is 6. With 6 bits we can address $2^6=64$ unique memory locations so we only have room to add 4 extra ones.
+
 
 ---
 
 - 3.41 Given a memory that is addressed by 22 bits and is 3-bit addressable, how many bits of storage does the memory contain?
 
-*Ans.-*
+*Ans.-* $2^{22}\times 3 = 12582912 \approx 12\text{ [M-bits]}$
 
 ---
 
-- 3.43 In the case of the lock of Figure 3.23a, there are four states $A, B, C$, and $D$, as described in Section 3.6.2. Either the lock is open (State $D$), or if it is not open, we have already performed either zero (State $A$), one (State $B$), or two (State $C$) correct operations. This is the sum total of all possible states that can exist. Exercise: Why is that the case? That is, what would be the snapshot of a ﬁfth state that describes a possible situation for the combination lock?
+- 3.43 In the case of the lock of Figure 3.23a, there are four states $A, B, C$, and $D$, as described in Section 3.6.2. Either the lock is open $(\text{State }D)$, or if it is not open, we have already performed either zero $(\text{State }A)$, one $(\text{State }B)$, or two $(\text{State }C)$ correct operations. This is the sum total of all possible states that can exist. Exercise: Why is that the case? That is, what would be the snapshot of a ﬁfth state that describes a possible situation for the combination lock?
 
-*Ans.-*
+*Ans.-* The four states are enough to describe any configuration of the system. There's really no possible snapshot that cannot be described as one of the four states.
 
 ---
 
 - 3.45 Recall again Section 3.6.2. Is it possible to have two states, one where Texas is ahead 30-28 and the other where the score is tied 30-30, but no arc between the two? Draw an example of two scoreboards, one where the score is 30-28 and the other where the score is 30-30, but there can be no arc between the two. For each of the three output values, game in progress, Texas wins, Oklahoma wins, draw an example of a scoreboard that corresponds to a state that would produce that output.
 
-*Ans.-*
+*Ans.-* 
+
+<img src="../../assets/learning/computing-systems/ch03-ex45-sol.png" width="100%">
 
 ---
 
@@ -460,14 +473,14 @@ $$
 \begin{array}{ccc||ccc}
 S1 & S0 & X & Z & S1' & S0' \\
 \hline
-0 & 0 & 0 &   &   &  \\
-0 & 0 & 1 &   &   &  \\
-0 & 1 & 0 &   &   &  \\
-0 & 1 & 1 &   &   &  \\
-1 & 0 & 0 &   &   &  \\
-1 & 0 & 1 &   &   &  \\
-1 & 1 & 0 &   &   &  \\
-1 & 1 & 1 &   &   &  \\
+0 & 0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 1 & 0 & 1 \\
+0 & 1 & 0 & 0 & 1 & 0 \\
+0 & 1 & 1 & 0 & 0 & 0 \\
+1 & 0 & 0 & 0 & 0 & 1 \\
+1 & 0 & 1 & 0 & 1 & 0 \\
+1 & 1 & 0 & 0 & 0 & 0 \\
+1 & 1 & 1 & 0 & 0 & 0 \\
 \end{array}
 $$
 
