@@ -5,13 +5,18 @@ date: "2025-12-05"
 
 - 4.1 Name the ﬁve components of the von Neumann model. For each component, state its purpose.
 
-*Ans.-*
+*Ans.-* 
+- **Processing Unit** - Performs the actual arithmetic and logical computations. It uses a fast and small set of registers to hold operands and intermediate results while instructions are being executed.
+- **Control Unit** - Directs the execution of instructions. Fetches & decodes the next instruction from memory (using the PC). Generates control signals to tell ALU, memory and I/O when and how to act.
+- **Memory Unit** - Stores both instructions and data in a single uniform *"address space"*. Holds the program code and the data it operates on. Provides read/write access to words at specified addresses for the CPU.
+- **Input Unit** - Brings information from the outside world into the system.
+- **Output Unit** - Delivers processed information to the outside world ie. users or other systems/devices.
 
 ---
 
 - 4.3 What is misleading about the name *program counter*? Why is the name *instruction pointer* more insightful?
 
-*Ans.-*
+*Ans.-* Because it is actually a pointer to the register containing the next instruction's address rather than a counter.
 
 ---
 
@@ -41,6 +46,24 @@ $$
 $$
 
 *Ans.-*
+- a. Locations 3 and 6 contains `0000 0000 0000 0000` and `1111 1110 1101 0011` respectively.
+- b. 
+    - (1). Locations 0 and 1 as 2's complement are `7747` and `-4059`, respectively.
+    - (2). Location 4 as ASCII is `0x0065 = nul e`
+    - (4). Locations 0 and 1 are unsigned `7747` and `61477`, respectively.
+    - (3). Locations 6 and 7 as IEEE 32-bit floating point is 
+$$
+\begin{align*}
+S &:\quad \texttt{number}[31]=0 \\
+\texttt{exponent} &:\quad \texttt{number}[30:23]=000\;0110\;1_2 = 13_{10} \\
+\texttt{mantissa} &:\quad \texttt{number}[22:0]=101\;1001\;1111\;1110\;1101\;0011_2 \\
+\hline \\
+\rightarrow &\;(-1)^S\times 1.\texttt{mantissa}\times 2^{\texttt{exponent}-127} \\
+=& 1.10110011111111011010011\times 2^{-114}
+\end{align*}
+$$
+- c. $\texttt{ADD R7 R1 R3}$. Breaking it down, $[15:12]=0001$ is an ADD instruction that adds the first operand stored in $[8:6]=001$ register R1 with the second operand stored in $[2:0]=011$ register R3 because we are dealing with the $[5]=0$ case. The the result  will be stored in the seventh register R7 $[11:9]=111$.
+- d. Location 5 stores the address of memory location 6 which is `1111 1110 1101 0011`.
 
 ---
 
@@ -54,7 +77,16 @@ $$
 $$
 If there are 60 opcodes and 32 registers, what is the range of values that can be represented by the immediate (IMM)? Assume IMM is a 2’s complement value.
 
-*Ans.-*
+*Ans.-* 60 opcodes require 6-bits, 32 registers require 5-bits to uniquely address them. So if IMM is 2's complement it can represent a range of $[-2^{n-1}, 2^{n-1}-1]=[-32768, 32767]$.
+$$
+\begin{array}{|c|c|c|c|}
+\hline
+\text{6-bits} & \text{5-bits} & \text{5-bits} & \text{16-bits} \\
+\hline
+\text{OPCODE} & \text{SR} & \text{DR} & \text{IMM} \\
+\hline
+\end{array}
+$$
 
 ---
 

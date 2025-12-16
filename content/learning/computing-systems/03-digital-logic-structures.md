@@ -314,11 +314,11 @@ $$
 
 - 3.47 The IEEE campus society office sells sodas for 35 cents. Suppose they install a soda controller that only takes the following three inputs: nickel, dime, and quarter. After you put in each coin, you push a pushbutton to register the coin. If at least 35 cents has been put in the controller, it will output a soda and proper change (if applicable). Draw a ﬁnite state machine that describes the behavior of the soda controller. Each state will represent how much money has been put in (Hint: There will be seven of these states). Once enough money has been put in, the controller will go to a ﬁnal state where the person will receive a soda and proper change (Hint: There are ﬁve such ﬁnal states). From the ﬁnal state, the next coin that is put in will start the process again.
 
-*Ans.-*
+*Ans.-* 
 
 ---
 
-- 3.49 The following ﬁgure shows an implementation of a ﬁnite state machine with an input $X$ and output $Z$. S1, S0 speciﬁes the present state. D1, D0 speciﬁes the next state.
+- 3.49 The following ﬁgure shows an implementation of a ﬁnite state machine with an input $X$ and output $Z$. $S1, S0$ speciﬁes the present state. $D1, D0$ speciﬁes the next state.
     - a. Complete the rest of the following table.
     - b. Draw the state diagram for the truth table of part a.
 
@@ -331,22 +331,26 @@ $$
 \begin{array}{ccc|ccc}
 S1 & S0 & X & D1 & D0 & Z \\
 \hline
-0 & 0 & 0 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
-0 & 0 & 1 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
-0 & 1 & 0 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
+0 & 0 & 0 & \color{Violet}0 & \color{Violet}0 & \color{Violet}0  \\
+0 & 0 & 1 & \color{Violet}0 & \color{Violet}0 & \color{Violet}0  \\
+0 & 1 & 0 & \color{Violet}0 & \color{Violet}0 & \color{Violet}1  \\
 0 & 1 & 1 & 1               & 0               & 1                \\
-1 & 0 & 0 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
-1 & 0 & 1 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
-1 & 1 & 0 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
-1 & 1 & 1 & \color{Violet}x & \color{Violet}x & \color{Violet}x  \\
+1 & 0 & 0 & \color{Violet}1 & \color{Violet}1 & \color{Violet}1  \\
+1 & 0 & 1 & \color{Violet}1 & \color{Violet}1 & \color{Violet}1  \\
+1 & 1 & 0 & \color{Violet}1 & \color{Violet}0 & \color{Violet}1  \\
+1 & 1 & 1 & \color{Violet}1 & \color{Violet}0 & \color{Violet}1  \\
 \end{array}
 $$
+
+- b.
+
+<img src="../../assets/learning/computing-systems/ch03-ex49b-sol.png" width="50%">
 
 ---
 
 - 3.51 We have learned that we can write one bit of information with a logic circuit called a transparent latch and that the bit written is available to be read almost immediately after being written. Sometimes it is useful to be able to store a bit but not be able to read the value of that bit until the next cycle. An example of a logic circuit that has this property is a $\text{\_\_\_\_\_\_}$.
 
-*Ans.-*
+*Ans.-* **Flip-Flop**.
 
 ---
 
@@ -358,13 +362,11 @@ Shown below is a circuit constructed with three of these ﬂip-ﬂops.
 
 <img src="../../assets/learning/computing-systems/ch03-ex53b.png" width="60%">
 
-Fill in the entries for D2, D1, D0 for each of clock cycles shown
+Fill in the entries for D2, D1, D0 for each of clock cycles shown. In ten words or less, what is this circuit doing?
 
-<img src="../../assets/learning/computing-systems/ch03-ex53c.png" width="60%">
+*Ans.-* The circuit is counting down.
 
-In ten words or less, what is this circuit doing?
-
-*Ans.-*
+<img src="../../assets/learning/computing-systems/ch03-ex53-sol.png" width="60%">
 
 ---
 
@@ -380,14 +382,14 @@ $$
 \begin{array}{ccc||c|c}
 a & b & c & Y & Z \\
 \hline
-0 & 0 & 0 &   &    \\
-0 & 0 & 1 &   &    \\
-0 & 1 & 0 &   &    \\
-0 & 1 & 1 &   &    \\
-1 & 0 & 0 &   &    \\
-1 & 0 & 1 &   &    \\
-1 & 1 & 0 &   &    \\
-1 & 1 & 1 &   &    \\
+0 & 0 & 0 & 0 & 0  \\
+0 & 0 & 1 & 0 & 0  \\
+0 & 1 & 0 & 0 & 1  \\
+0 & 1 & 1 & 0 & 1  \\
+1 & 0 & 0 & 0 & 1  \\
+1 & 0 & 1 & 0 & 1  \\
+1 & 1 & 0 & 0 & 0  \\
+1 & 1 & 1 & 1 & 0  \\
 \end{array}
 $$
 
@@ -397,21 +399,22 @@ $$
 
 Note that the states are labeled `00`, `01`, `10`, and `11` and the output of each state $Z$ (`0` or `1`) is shown in each state. The input is shown as $X$. Your job is to complete both the truth table and the state machine.
 
-<img src="../../assets/learning/computing-systems/ch03-ex57.png" width="60%">
-
 *Ans.-*
+
+<img src="../../assets/learning/computing-systems/ch03-ex57-sol.png" width="75%">
+
 $$
 \begin{array}{ccc|ccc}
 S[1] & S[0] & X & S'[1] & S'[0] & Z \\
 \hline
-0 & 0 & 0 & \color{Violet}x & \color{Violet}x & \color{Violet}x   \\
-0 & 0 & 1 & 1               & 1               & \color{Violet}x   \\
-0 & 1 & 0 & \color{Violet}x & \color{Violet}x & \color{Violet}x   \\
-0 & 1 & 1 & \color{Violet}x & \color{Violet}x & 1                 \\
-1 & 0 & 0 & \color{Violet}x & \color{Violet}x & 0                 \\
-1 & 0 & 1 & 0               & 1               & \color{Violet}x   \\
-1 & 1 & 0 & 0               & 0               & \color{Violet}x   \\
-1 & 1 & 1 & \color{Violet}x & \color{Violet}x & \color{Violet}x   \\
+0 & 0 & 0 & \color{Violet}1 & \color{Violet}0 & \color{Violet}0   \\
+0 & 0 & 1 & 1               & 1               & \color{Violet}1   \\
+0 & 1 & 0 & \color{Violet}0 & \color{Violet}0 & \color{Violet}0   \\
+0 & 1 & 1 & \color{Violet}0 & \color{Violet}1 & 1                 \\
+1 & 0 & 0 & \color{Violet}1 & \color{Violet}0 & 0                 \\
+1 & 0 & 1 & 0               & 1               & \color{Violet}1   \\
+1 & 1 & 0 & 0               & 0               & \color{Violet}0   \\
+1 & 1 & 1 & \color{Violet}0 & \color{Violet}1 & \color{Violet}1   \\
 \end{array}
 $$
 
@@ -465,8 +468,6 @@ But it is a ﬁrst step!
     - a. Construct the truth table for the combinational logic.
     - b. Complete the state machine. (We have provided nine states. You will not need all of them. Use only as many as you need):
 
-<img src="../../assets/learning/computing-systems/ch03-ex61b.png" width="25%">
-
 *Ans.-* 
 - a.
 $$
@@ -483,6 +484,10 @@ S1 & S0 & X & Z & S1' & S0' \\
 1 & 1 & 1 & 0 & 0 & 0 \\
 \end{array}
 $$
+
+- b.
+
+<img src="../../assets/learning/computing-systems/ch03-ex61b-sol.png" width="50%">
 
 --- 
 
