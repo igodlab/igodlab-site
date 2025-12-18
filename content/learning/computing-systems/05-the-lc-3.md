@@ -1,0 +1,294 @@
+---
+title: "Chapter 5 solutions - The LC-3"
+date: "2025-12-18"
+---
+
+- 5.1 Given instructions ADD, JMP, LEA, and NOT, identify whether the instructions are operate instructions, data movement instructions, or control instructions. For each instruction, list the addressing modes that can be used with the instruction.
+
+*Ans.-*
+
+---
+
+- 5.3 There are two common ways to terminate a loop. One way uses a counter to keep track of the number of iterations. The other way uses an element called a $\text{\_\_\_\_\_}$. What is the distinguishing characteristic of this element?
+
+*Ans.-*
+
+---
+
+- 5.5
+    - a. What is an addressing mode?
+    - b. Name three places an instruction’s operands might be located.
+    - c. List the ﬁve addressing modes of the LC-3, and for each one state where the operand is located (from part b).
+    - d. What addressing mode is used by the ADD instruction shown in Section 5.1.2?
+
+*Ans.-*
+
+---
+
+- 5.7What is the largest positive number we can represent literally (i.e., as an immediate value) within an LC-3 ADD instruction?
+
+*Ans.-*
+
+---
+
+- 5.9We would like to have an instruction that does nothing. Many ISAs actually have an opcode devoted to doing nothing. It is usually called NOP, for NO OPERATION. The instruction is fetched, decoded, and executed. The execution phase is to do nothing! Which of the following three instructions could be used for NOP and have the program still work correctly?
+    - a. `0001 001 001 1 00000`
+    - b. `0000 111 000000001`
+    - c. `0000 000 000000000`
+
+What does the ADD instruction do that the others do not do?
+
+*Ans.-*
+
+---
+
+- 5.11 We wish to execute a single LC-3 instruction that will subtract the decimal number 20 from register 1 and put the result into register 2. Can we do it? If yes, do it. If not, explain why not.
+- 5.13 
+    - a. How might one use a single LC-3 instruction to move the value in R2 into R3?
+    - b. The LC-3 has no subtract instruction. How could one perform the following operation using only three LC-3 instructions: $\texttt{R1} \leftarrow \texttt{R2} \leftarrow \texttt{R3}$
+    - c. Using only one LC-3 instruction and without changing the contents of any register, how might one set the condition codes based on the value that resides in R1?
+    - d. Is there a sequence of LC-3 instructions that will cause the condition codes at the end of the sequence to be $N = 1, Z = 1$, and $P = 0$? Explain.
+    - e. Write an LC-3 instruction that clears the contents of R2.
+
+*Ans.-*
+
+---
+
+- 5.13 
+    - a. How might one use a single LC-3 instruction to move the value in R2 into R3?
+    - b. The LC-3 has no subtract instruction. How could one perform the following operation using only three LC-3 instructions: $\texttt{R1} \leftarrow \texttt{R2 - R3}$
+    - c. Using only one LC-3 instruction and without changing the contents of any register, how might one set the condition codes based on the value that resides in R1?
+    - d. Is there a sequence of LC-3 instructions that will cause the condition codes at the end of the sequence to be $N = 1, Z = 1$, and $P = 0$? Explain.
+    - e. Write an LC-3 instruction that clears the contents of R2.
+
+*Ans.-*
+
+---
+
+- 5.15 State the contents of R1, R2, R3, and R4 after the program starting at location `x3100` halts.
+
+$$
+\begin{array}{cc}
+\text{Address} & \text{Data} \\
+\hline
+0011\;0001\;0000\;0000 & 1110\;001\;000100000 \\
+0011\;0001\;0000\;0001 & 0010\;010\;000100000 \\
+0011\;0001\;0000\;0010 & 1010\;011\;000100000 \\
+0011\;0001\;0000\;0011 & 0110\;100\;010\;000001 \\
+0011\;0001\;0000\;0100 & 1111\;0000\;0010\;0101 \\
+\vdots & \vdots \\
+0011\;0001\;0010\;0010 & 0100\;0101\;0110\;0110 \\
+0011\;0001\;0010\;0011 & 0100\;0101\;0110\;0111 \\
+\vdots & \vdots \\
+0100\;0101\;0110\;0111 & 1010\;1011\;1100\;1101 \\
+0100\;0101\;0110\;1000 & 1111\;1110\;1101\;0011
+\end{array}
+$$
+
+*Ans.-*
+
+---
+
+- 5.17 How many times does the LC-3 make a read or write request to memory during the processing of the LD instruction? How many times during the processing of the LDI instruction? How many times during the processing of the LEA instruction? Processing includes all phases of the instruction cycle.
+
+*Ans.-*
+
+---
+
+- 5.19 The LC-3 Instruction Register (IR) is made up of 16 bits, of which the least signiﬁcant nine bits $[8:0]$ represent the PC-relative offset for the LD instruction. If we change the ISA so that bits $[6:0]$ represent the PC-relative offset, what is the new range of addresses we can load data from using the LD instruction?
+
+*Ans.-*
+
+---
+
+- 5.21 What is the maximum number of TRAP service routines that the LC-3 ISA can support? Explain.
+
+*Ans.-*
+
+---
+
+- 5.23 Suppose the following LC-3 program is loaded into memory starting at location x30FF:
+
+$$
+\begin{array}{cc}
+\texttt{x30FF1110} & 0010\;0000\;0001 \\
+\texttt{x31000110} & 0100\;0100\;0010 \\
+\texttt{x31011111} & 0000\;0010\;0101 \\
+\texttt{x31020001} & 0100\;0100\;0001 \\
+\texttt{x31030001} & 0100\;1000\;0010
+\end{array}
+$$
+
+If the program is executed, what is the value in R2 at the end of execution?
+
+*Ans.-*
+
+---
+
+- 5.25 Write an LC-3 program that compares two numbers in R2 and R3 and puts the larger number in R1. If the numbers are equal, then R1 is set equal to 0.
+
+*Ans.-*
+
+---
+
+- 5.27 Before the seven instructions are executed in the example of Section 5.3.4, R2 contains the value xAAAA. How many different values are contained in R2 during the execution of the seven instructions? What are they?
+
+*Ans.-*
+
+---
+
+- 5.29 The LC-3 ISA contains the instruction LDR DR, BaseR, offset. After the instruction is decoded, the following operations (called microinstructions) are carried out to complete the processing of the LDR instruction:
+
+$$
+\begin{align*}
+&\texttt{MAR} \leftarrow \texttt{BaseR + SEXT(Offset6) ; set up the memory address} \\
+&\texttt{MDR} \leftarrow \texttt{Memory[MAR] ; read mem at BaseR + offset} \\
+&\texttt{DR} \leftarrow \texttt{MDR ; load DR}
+\end{align*}
+$$
+
+- Suppose that the architect of the LC-3 wanted to include an instruction $\texttt{MOVE DR, SR}$ that would copy the memory location with address given by SR and store it into the memory location whose address is in DR.
+    - a. The $\texttt{MOVE}$ instruction is not really necessary since it can be accomplished with a sequence of existing LC-3 instructions. What sequence of existing LC-3 instructions implements (also called “emulates”) $\texttt{MOVE R0,R1}$?
+    - b. If the $\texttt{MOVE}$ instruction were added to the LC-3 ISA, what sequence of microinstructions, following the decode operation, would emulate $\texttt{MOVE DR,SR}$?
+
+*Ans.-*
+
+---
+
+5.31 The ﬁgure below shows a snapshot of the eight registers of the LC-3 before and after the instruction at location `x1000` is executed. Fill in the bits of the instruction at location `x1000`.
+
+$$
+\begin{array}{rccrc}
+& \text{BEFORE} &  &  & \text{AFTER} \\
+\texttt{R0} & \texttt{x0000} &  & \texttt{R0} & \texttt{x0000} \\
+\texttt{R1} & \texttt{x1111} &  & \texttt{R1} & \texttt{x1111} \\
+\texttt{R2} & \texttt{x2222} &  & \texttt{R2} & \texttt{x2222} \\
+\texttt{R3} & \texttt{x3333} &  & \texttt{R3} & \texttt{x3333} \\
+\texttt{R4} & \texttt{x4444} &  & \texttt{R4} & \texttt{x4444} \\
+\texttt{R5} & \texttt{x5555} &  & \texttt{R5} & \texttt{x5555} \\
+\texttt{R6} & \texttt{x6666} &  & \texttt{R6} & \texttt{x6666} \\
+\texttt{R7} & \texttt{x7777} &  & \texttt{R7} & \texttt{x7777} \\
+\end{array}
+$$
+
+*Ans.-*
+
+---
+
+5.33 If the value stored in R0 is 5 at the end of the execution of the following instructions, what can be inferred about R5?
+
+*Ans.-*
+
+---
+
+5.35 Using the overall data path in Figure 5.18, identify the elements that implement the ADD instruction of Figure 5.5.
+
+*Ans.-*
+
+---
+
+5.37 Using the overall data path in Figure 5.18, identify the elements that implement the LDI instruction of Figure 5.8.
+
+*Ans.-*
+
+---
+
+5.39 Using the overall data path in Figure 5.18, identify the elements that implement the LEA instruction of Figure 5.6.
+
+*Ans.-*
+
+---
+
+5.41 A part of the implementation of the LC-3 architecture is shown in the following diagram.
+a. What information does Y provide?
+b. The signal X is the control signal that gates the gated D latch. Is there an error in the logic that produces X?
+
+*Ans.-*
+
+---
+
+5.43 When a computer executes an instruction, the state of the computer is changed as a result of that execution. Is there any difference in the state of the LC-3 computer as a result of executing instruction 1 below vs. executing instruction 2 below? Explain. We can assume the state of the LC-3 computer before execution is the same in both cases.
+$$
+\begin{align*}
+&\texttt{instruction 1: 0001 000 000 1 00000 register 0 <-- register 0 + \#0} \\
+&\texttt{instruction 2: 0000 111 000000000 branch to PC' + \#0 if any of N,Z,orP is set}
+\end{align*}
+$$
+
+*Ans.-*
+
+---
+
+
+5.45 In class we showed the ﬁrst few states of the ﬁnite state machine that is required for processing instructions of a computer program written for LC-3. In the ﬁrst state, the computer does two things, represented as:
+$$
+\begin{align*}
+&\texttt{MAR <-- PC} \\
+&\texttt{PC <-- PC+1}
+\end{align*}
+$$
+
+Why does the microarchitecture put the contents of the PC into the MAR? Why does the microarchitecture increment the PC?
+
+*Ans.-*
+
+---
+
+5.47 The following diagram describes a 22 by 16-bit memory. Each of the four muxes has four-bit input sources and a four-bit output, and each four-bit source is the output of a single four-bit memory cell.
+a. Unfortunately, the memory was wired by a student, and he got the inputs to some of the muxes mixed up. That is, instead of the four bits from a memory cell going to the correct four-bit input of the mux, the four bits all went to one of the other four-bit sources of that mux. The result was, as you can imagine, a mess. To ﬁgure out the mix-up in the wiring, the following sequence of memory accesses was performed: Note: On a write, MDR is loaded before the access. On a read, MDR is loaded as a result of the access. Your job is to identify the mix-up in the wiring. Show which memory cells were wired to which mux inputs by ﬁlling in their corresponding addresses in the blanks provided. Note that one address has already been supplied for you.
+b. After rewiring the muxes correctly and initializing all memory cells to xF, the following sequence of accesses was performed. Note that some of the information about each access has been left out. Your job: Fill in the blanks. Show the contents of the memory cells by putting the hex digit that is stored in each after all the accesses have been performed.
+
+*Ans.-*
+
+---
+
+5.49 We wish to know if R0 is being used as the Base Register for computing the address in an LDR instruction. Since the instruction is in memory, we can load it into R4. And, since the Base Register is identiﬁed in bits 8:6 of the instruction, we can load R5 with 0000000111000000 and then execute AND R6,R5,R4. We would know that R0 is the base register if what condition is met?
+
+*Ans.-*
+
+---
+
+5.51 An aggressive young engineer decides to build and sell the LC-3 but is told that if he wants to succeed, he really needs a SUBTRACT instruction. Given the unused opcode 1101, he decides to specify the SUBTRACT instruction as follows: The instruction is deﬁned as: DR \leftarrow SR2 - SR1, and the condition codes are set. Assume DR, SR1, and SR2 are all different registers. To accomplish this, the engineer needs to add three states to the state machine and a mux and register A to the data path. The modiﬁed state machine is shown below, and the modiﬁed data path is shown on the next page. The mux is controlled by a new control signal SR2SEL, which selects one of its two sources.
+$$\texttt{SR2SEL/1: SR2OUT, REGISTER A}$$
+
+Your job: For the state machine shown below, ﬁll in the empty boxes with the control signals that are needed in order to implement the SUBTRACT instruction. For the data path, ﬁll in the value in register A.
+
+*Ans.-*
+
+---
+
+- 5.53 The eight general purpose registers of the LC-3 (R0 to R7) make up the register ﬁle. To write a value to a register, the LC-3 control unit must supply 16 bits of data (BUS[15:0]), a destination register (DR[2:0]), and a write enable signal (LD.REG) to load a register. The combinational logic block shows inputs BUS[15:0], DR[2:0], and LD.REG and outputs DinR0[15:0], DinR1[15:0], DinR2[15:0], ... DinR7[15:0], LD.R0, LD.R1, LD.R2, ... LD.R7. Your job: Add wires, logic gates, and standard logic blocks as necessary to complete the combinational logic block. Note: If you use a standard logic block, it is not necessary to show the individual gates. However, it is necessary to identify the logic block speciﬁcally (e.g., “16-to-1 mux”), along with labels for each relevant input or output, according to its function.
+- 5.55 An LC-3 program starts execution at x3000. During the execution of the program, snapshots of all eight registers were taken at six different times as shown below: before the program executes, after execution of
+    - instruction 1, after execution of instruction 2, after execution of
+    - instruction 3, after execution of instruction 4, after execution of
+    - instruction 5, and after execution of instruction 6.
+Also, during the execution of the program, the PC trace, the MAR trace, and the MDR trace were also recorded as shown below. Note that a PC trace records the addresses of the instructions executed in sequence by the program.
+
+Your job: Fill in the missing entries in the three tables above.
+
+*Ans.-*
+
+---
+
+- 5.57 Note boldface signal lines on the following data path.
+    - 1. What opcodes use IR [11:9] as inputs to SR1?
+    - 2. Where does the control signal of this mux come from? Be speciﬁc!
+    - 3. What opcodes use this input to the MARMUX?
+
+*Ans.-*
+
+---
+
+- 5.59 Every LC-3 instruction takes eight cycles to be fetched and decoded, if we assume every memory access takes ﬁve cycles. The total number of cycles an LC-3 instruction takes to be completely processed, however, depends on what has to be done for that instruction. Assuming every memory access takes ﬁve cycles, and assuming the LC-3 processes one instruction at a time, from beginning to end, how many clock cycles does each instruction take? For each instruction, how many cycles are required to process it?
+
+*Ans.-*
+
+---
+
+- 5.61 During the execution of an LC-3 program, the processor data path was monitored for four instructions in the program that were processed consecutively. The table shows all clock cycles during which the bus was utilized. It shows the clock cycle number, the value on the bus, and the state (from the state machine diagram) for some of these clock cycles. Processing of the ﬁrst instruction starts at clock cycle T. Each memory access in this LC-3 machine takes ﬁve clock cycles. Your job: Fill in the missing entries in the table. You only need to ﬁll in the cells not marked with x. Note: There are ﬁve clock cycles for which you need to provide the control signals. Not all LC-3 control signals are shown in the table. However, all control signals that are required for those ﬁve clock cycles have been included. Note: For the DRMUX signal, write ‘11.9’, ‘R7’, or ‘SP’; for the R.W signal, write an ‘R’ or a ‘W’; for the PCMUX signal, write ‘PC+1’, ‘BUS’, or ‘ADDER’; for all other control signals, write down the actual bit. If a control signal is not relevant in a given cycle, mark it with a dash (i.e., -).
+
+*Ans.-*
+
+---
+
+
