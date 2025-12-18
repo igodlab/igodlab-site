@@ -92,48 +92,67 @@ $$
 
 - 4.9 The FETCH phase of the instruction cycle does two important things. One is that it loads the instruction to be processed next into the IR. What is the other important thing?
 
-*Ans.-*
+*Ans.-* FETCH also loads the address of the next instruction to be followed into the PC.
 
 ---
 
 - 4.11 State the phases of the instruction cycle, and brieﬂy describe what operations occur in each phase.
 
-*Ans.-*
+*Ans.-* 
+- **Fetch** - Does three important steps: 
+    - *i)* Loads the address of the instruction to be followed into $\texttt{MAR}\leftarrow\texttt{PC}$, increment the PC/instruction pointer to follow the next instruction $\texttt{PC}\leftarrow\texttt{PC}+1$. 
+    - *ii)* Loads the actual instruction from RAM to $\texttt{MDR}\leftarrow M[\texttt{MAR}]$. 
+    - *iii)* Loads instruction from step *(ii)* to the instruction register $\texttt{IR}\leftarrow\texttt{MDR}$
+- **Decode** - Evaluates which opcode we're dealing with and what the microarchitecture is required to do.
+- **Evaluate Address** - Computes the address of the memory location that is needed to process the instruction.
+- **Fetch Operands** - Obtains the operands involved in the computation of the current instruction.
+- **Execute** - Performs the actual computations with the ALU.
+- **Store Result** - The result is written in the specified register location.
 
 ---
 
-- 4.13 Say it takes 100 cycles to read from or write to memory and only one cycle to read from or write to a register. Calculate the number of cycles it takes for each phase of the instruction cycle for both the IA-32 instruction “ADD [eax], edx” (refer to) and the LC-3 instruction “ADD R6, R2, R6.” Assume each phase (if required) takes one cycle, unless a memory access is required.
+- 4.13 Say it takes 100 cycles to read from or write to memory and only one cycle to read from or write to a register. Calculate the number of cycles it takes for each phase of the instruction cycle for both the IA-32 instruction $``\texttt{ADD[eax], edx}"$ (refer to) and the LC-3 instruction $``\texttt{ADD R6, R2, R6}"$ Assume each phase (if required) takes one cycle, unless a memory access is required.
 
-*Ans.-*
+*Ans.-* The core difference is that the first instruction requires to *fetch operands* from IMM, likely from RAM and writes the result to memory as well. Whereas the second instruction uses the fast registers ie. ADD operands from R2 and R6 and write to R6.
+$$
+\begin{array}{l|cccccc|c}
+\text{Instruction} & \texttt{F} & \texttt{D} & \texttt{EA} & \texttt{FO} & \texttt{E} & \texttt{SR} & \text{Total cycles} \\
+\hline
+\text{x86\_32 : }\texttt{ADD [eax] edx} & 100 & 1 & 1 & 100 & 1 & 100 & 303 \\
+\text{LC-3 : }\texttt{ADD R6 R2 R6} & 100 & 1 & - & 1 & 1 & 1 & 104 
+\end{array}
+$$
 
 ---
 
 - 4.15 If a HALT instruction can clear the RUN latch, thereby stopping the instruction cycle, what instruction is needed to set the RUN latch, thereby reinitiating the instruction cycle?
 
-*Ans.-*
+*Ans.-* There is no instruction that sets the RUN latch! We need an external mechanism like a hardware interrupt signal.
 
 ---
 
 - 4.17 In this problem we perform ﬁve successive accesses to memory. The following table shows for each access whether it is a read (load) or write (store), and the contents of the MAR and MDR at the completion of the access. Some entries are not shown. Note that we have shortened the addressability to 5 bits, rather than the 16 bits that we are used to in the LC-3, in order to decrease the excess writing you would have to do.
 
-The following three tables show the contents of memory locations x4000 to x4004 before the ﬁrst access, after the third access, and after the ﬁfth access. Again, not all entries are shown. We have added an unusual constraint to this problem in order to get one correct answer. The MDR can ONLY be loaded from memory as a result of a load (read) access.
-
-<img src="../../assets/learning/computing-systems/ch04-ex17.png" width="100%">
+The following three tables show the contents of memory locations `x4000` to `x4004` before the ﬁrst access, after the third access, and after the ﬁfth access. Again, not all entries are shown. We have added an unusual constraint to this problem in order to get one correct answer. The MDR can ONLY be loaded from memory as a result of a load (read) access.
 
 Your job: Fill in the missing entries.
 *Hint:* As you know, writes to memory require MAR to be loaded with the memory address and MDR to loaded with the data to be written (stored). The data in the MDR must come from a previous read (load).
 
 *Ans.-*
 
+<img src="../../assets/learning/computing-systems/ch04-ex17-sol.png" width="100%">
+
 $$
-\begin{array}{l|c|c|rcccc}
-  & \text{R/W} & \text{MAR} & \text{MDR} &  &  &  &  \\
+\begin{array}{|l|c|c|r|}
 \hline
-\text{Operation 1} & \text{W}               & \color{Violet}\text{MAR} & 1               & 1               & 1               & 1               & 0               \\
-\text{Operation 2} & \color{Violet}\text{W} & \color{Violet}\text{MAR} & \color{Violet}1 & \color{Violet}1 & \color{Violet}1 & \color{Violet}1 & \color{Violet}1 \\
-\text{Operation 3} & \text{W}               & \color{Violet}\text{MAR} & 1               & 0               & \color{Violet}1 & \color{Violet}1 & \color{Violet}1 \\
-\text{Operation 4} & \color{Violet}\text{W} & \color{Violet}\text{MAR} & \color{Violet}1 & \color{Violet}1 & \color{Violet}1 & \color{Violet}1 & \color{Violet}1 \\
-\text{Operation 5} & \color{Violet}\text{W} & \color{Violet}\text{MAR} & \color{Violet}1 & \color{Violet}1 & \color{Violet}1 & \color{Violet}1 & \color{Violet}1 
+& \text{R/W} & \text{MAR} & \text{MDR} \\
+\hline
+\text{Operation 1} & \text{W}               & \color{Violet}\texttt{x4000} & 11110                \\
+\text{Operation 2} & \color{Violet}\text{R} & \color{Violet}\texttt{x4003} & \color{Violet}10110  \\
+\text{Operation 3} & \text{W}               & \color{Violet}\texttt{x4001} & 10\color{Violet}110  \\
+\text{Operation 4} & \color{Violet}\text{R} & \color{Violet}\texttt{x4002} & \color{Violet}01101  \\
+\text{Operation 5} & \color{Violet}\text{W} & \color{Violet}\texttt{x4003} & \color{Violet}01101  \\
+\hline
 \end{array}
 $$
 
@@ -158,11 +177,21 @@ $$
 \end{array}
 $$
 
-- Just before the start of cycle 1, MAR contains 000, MDR contains 00010101, and the contents of each memory location is as shown.
+- Just before the start of cycle 1, MAR contains `000`, MDR contains `00010101`, and the contents of each memory location is as shown.
     - a. What do MAR and MDR contain just before the end of cycle 1?
     - b. What does MDR contain just before the end of cycle 4?
 
-*Ans.-*
+*Ans.-* 
+- a. The value loaded into MDR is the one stored in memory location and specified by the binary number that the first three digits in MDR forms. So right before cycle 1 ends we read location `000` from memory into MDR which is location `x0 = 0101 0000` thus MAR is `010`.
+- b. Following the same procedure, at the end of cycle 4 MDR is `0011 1001` as can be seen from the table below:
+
+| Cycle | MAR | Location | MDR |
+|---|---|---|---|
+| 0 | `000` | `x3` | `0001 0101` |
+| 1 | `010` | `x0` | `0101 0000` |
+| 2 | `100` | `x2` | `1000 0011` |
+| 3 | `110` | `x4` | `1100 0110` |
+| 4 | `001` | `x6` | `0011 1001` |
 
 ---
 
