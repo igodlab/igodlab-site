@@ -184,14 +184,17 @@ $$
 *Ans.-* 
 - a. The value loaded into MDR is the one stored in memory location and specified by the binary number that the first three digits in MDR forms. So right before cycle 1 ends we read location `000` from memory into MDR which is location `x0 = 0101 0000` thus MAR is `010`.
 - b. Following the same procedure, at the end of cycle 4 MDR is `0011 1001` as can be seen from the table below:
-
-| Cycle | MAR | Location | MDR |
-|---|---|---|---|
-| 0 | `000` | `x3` | `0001 0101` |
-| 1 | `010` | `x0` | `0101 0000` |
-| 2 | `100` | `x2` | `1000 0011` |
-| 3 | `110` | `x4` | `1100 0110` |
-| 4 | `001` | `x6` | `0011 1001` |
+$$
+\begin{array}{cccc}
+\text{Cycle} & \text{MAR} & \text{Location} & \text{MDR} \\
+\hline
+0 & 000 & \texttt{x3} & 0001\;0101 \\
+1 & 010 & \texttt{x0} & 0101\;0000 \\
+2 & 100 & \texttt{x2} & 1000\;0011 \\
+3 & 110 & \texttt{x4} & 1100\;0110 \\
+4 & 001 & \texttt{x6} & 0011\;1001 
+\end{array}
+$$
 
 ---
 
