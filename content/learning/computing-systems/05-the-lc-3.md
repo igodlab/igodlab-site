@@ -7,6 +7,13 @@ date: "2025-12-18"
 
 *Ans.-*
 
+| Instruction | Type | Addr modes |
+|---|---|---|
+| `ADD` | operate | `0`: reads second operand from memory. `1`: second operand is bits $\texttt{IR[4:0]}$ |
+| `JMP` | control | NA | 
+| `LEA` | data move | NA |
+| `NOT` | operate | `0`: reads second operand from memory. `1`: second operand is bits $\texttt{IR[4:0]}$ |
+
 ---
 
 - 5.3 There are two common ways to terminate a loop. One way uses a counter to keep track of the number of iterations. The other way uses an element called a $\text{\_\_\_\_\_}$. What is the distinguishing characteristic of this element?
