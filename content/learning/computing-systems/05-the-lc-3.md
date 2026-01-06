@@ -172,10 +172,30 @@ $$
 $$
 
 *Ans.-*
+$$
+\begin{array}{lc}
+\texttt{0x1000 :} & \boxed{0001\;\color{Violet}----\;----\;----}
+\end{array}
+$$
 
 ---
 
 5.33 If the value stored in R0 is 5 at the end of the execution of the following instructions, what can be inferred about R5?
+$$
+\begin{array}{ccccc}
+\texttt{x2FFF} & 0101 & 0000 & 0010 & 0000 \\
+\texttt{x3000} & 0101 & 1111 & 1110 & 0000 \\
+\texttt{x3001} & 0001 & 1101 & 1110 & 0001 \\
+\texttt{x3002} & 0101 & 1001 & 0100 & 0110 \\
+\texttt{x3003} & 0000 & 0100 & 0000 & 0001 \\
+\texttt{x3004} & 0001 & 0000 & 0010 & 0001 \\
+\texttt{x3005} & 0001 & 1101 & 1000 & 0110 \\
+\texttt{x3006} & 0001 & 1111 & 1110 & 0001 \\
+\texttt{x3007} & 0001 & 0011 & 1111 & 1000 \\
+\texttt{x3008} & 0000 & 1001 & 1111 & 1001 \\
+\texttt{x3009} & 0101 & 1111 & 1110 & 0000
+\end{array}
+$$
 
 *Ans.-*
 
@@ -199,9 +219,11 @@ $$
 
 ---
 
-5.41 A part of the implementation of the LC-3 architecture is shown in the following diagram.
-a. What information does Y provide?
-b. The signal X is the control signal that gates the gated D latch. Is there an error in the logic that produces X?
+- 5.41 A part of the implementation of the LC-3 architecture is shown in the following diagram.
+    - a. What information does $Y$ provide?
+    - b. The signal $X$ is the control signal that gates the gated D latch. Is there an error in the logic that produces $X$?
+
+<img src="../../assets/learning/computing-systems/ch05-ex41.png" width="60%">
 
 *Ans.-*
 
@@ -210,8 +232,8 @@ b. The signal X is the control signal that gates the gated D latch. Is there an 
 5.43 When a computer executes an instruction, the state of the computer is changed as a result of that execution. Is there any difference in the state of the LC-3 computer as a result of executing instruction 1 below vs. executing instruction 2 below? Explain. We can assume the state of the LC-3 computer before execution is the same in both cases.
 $$
 \begin{align*}
-&\texttt{instruction 1: 0001 000 000 1 00000 register 0 <-- register 0 + \#0} \\
-&\texttt{instruction 2: 0000 111 000000000 branch to PC' + \#0 if any of N,Z,orP is set}
+&\texttt{instruction 1: 0001 000 000 1 00000 register 0 <-- register 0 + \textbackslash\#0} \\
+&\texttt{instruction 2: 0000 111 000000000 branch to PC' + \textbackslash\#0 if any of N, Z, or P is set}
 \end{align*}
 $$
 
@@ -223,8 +245,8 @@ $$
 5.45 In class we showed the ﬁrst few states of the ﬁnite state machine that is required for processing instructions of a computer program written for LC-3. In the ﬁrst state, the computer does two things, represented as:
 $$
 \begin{align*}
-&\texttt{MAR <-- PC} \\
-&\texttt{PC <-- PC+1}
+&\texttt{MAR} \leftarrow \texttt{PC} \\
+&\texttt{PC} \leftarrow \texttt{PC + 1}
 \end{align*}
 $$
 
@@ -234,46 +256,138 @@ Why does the microarchitecture put the contents of the PC into the MAR? Why does
 
 ---
 
-5.47 The following diagram describes a 22 by 16-bit memory. Each of the four muxes has four-bit input sources and a four-bit output, and each four-bit source is the output of a single four-bit memory cell.
-a. Unfortunately, the memory was wired by a student, and he got the inputs to some of the muxes mixed up. That is, instead of the four bits from a memory cell going to the correct four-bit input of the mux, the four bits all went to one of the other four-bit sources of that mux. The result was, as you can imagine, a mess. To ﬁgure out the mix-up in the wiring, the following sequence of memory accesses was performed: Note: On a write, MDR is loaded before the access. On a read, MDR is loaded as a result of the access. Your job is to identify the mix-up in the wiring. Show which memory cells were wired to which mux inputs by ﬁlling in their corresponding addresses in the blanks provided. Note that one address has already been supplied for you.
-b. After rewiring the muxes correctly and initializing all memory cells to xF, the following sequence of accesses was performed. Note that some of the information about each access has been left out. Your job: Fill in the blanks. Show the contents of the memory cells by putting the hex digit that is stored in each after all the accesses have been performed.
+- 5.47 The following diagram describes a 22 by 16-bit memory. Each of the four muxes has four-bit input sources and a four-bit output, and each four-bit source is the output of a single four-bit memory cell.
+
+<img src="../../assets/learning/computing-systems/ch05-ex47.png" width="75%">
+
+- a. Unfortunately, the memory was wired by a student, and he got the inputs to some of the muxes mixed up. That is, instead of the four bits from a memory cell going to the correct four-bit input of the mux, the four bits all went to one of the other four-bit sources of that mux. The result was, as you can imagine, a mess. To ﬁgure out the mix-up in the wiring, the following sequence of memory accesses was performed: 
+$$
+\begin{array}{c|c|c}
+\text{Read/Write} & \text{MDR} & \text{MAR} \\
+\hline
+\text{Write} & \texttt{x134B} & 01 \\
+\text{Write} & \texttt{xFCA2} & 10 \\
+\text{Write} & \texttt{xBEEF} & 11 \\
+\text{Write} & \texttt{x072A} & 00 \\
+\text{Read}  & \texttt{xF34F} & 10 \\
+\text{Read}  & \texttt{x1CAB} & 01 \\
+\text{Read}  & \texttt{x0E2A} & 00 \\
+\end{array}
+$$
+Note: On a write, MDR is loaded before the access. On a read, MDR is loaded as a result of the access. Your job is to identify the mix-up in the wiring. Show which memory cells were wired to which mux inputs by ﬁlling in their corresponding addresses in the blanks provided. Note that one address has already been supplied for you.
+- b. After rewiring the muxes correctly and initializing all memory cells to $\texttt{xF}$, the following sequence of accesses was performed. Note that some of the information about each access has been left out. Your job: Fill in the blanks. Show the contents of the memory cells by putting the hex digit that is stored in each after all the accesses have been performed.
+$$
+\begin{array}{c|c|c}
+\text{Read/Write} & \text{MDR} & \text{MAR} \\
+\hline
+\text{Write} & \texttt{x72{\color{Violet}--}}                 & 0\color{Violet}- \\
+\text{Write} & \texttt{x8FAF}                                 & 11 \\
+\text{Read}  & \texttt{x72A3}                                 & {\color{Violet}-}0 \\
+\text{Read}  & \texttt{xFFFF}                                 & 1\color{Violet}- \\
+\text{Write} & \texttt{x732D}                                 & {\color{Violet}-}1 \\
+\text{Read}  & \texttt{xFFFF}                                 & 0\color{Violet}- \\
+\text{Write} & \texttt{x{\color{Violet}-}7{\color{Violet}--}} & 0\color{Violet}- \\
+\text{Read}  & \texttt{x37A3}                                 & {\color{Violet}-}1 \\
+\text{Read}  & \texttt{x{\color{Violet}---}D}                 & {\color{Violet}-}1 \\
+\end{array}
+$$
+Show the contents of the memory cells by putting the hex digit that is stored in each after all the accesses have been performed.
 
 *Ans.-*
 
 ---
 
-5.49 We wish to know if R0 is being used as the Base Register for computing the address in an LDR instruction. Since the instruction is in memory, we can load it into R4. And, since the Base Register is identiﬁed in bits 8:6 of the instruction, we can load R5 with 0000000111000000 and then execute AND R6,R5,R4. We would know that R0 is the base register if what condition is met?
+5.49 We wish to know if R0 is being used as the Base Register for computing the address in an LDR instruction. Since the instruction is in memory, we can load it into R4. And, since the Base Register is identiﬁed in bits 8:6 of the instruction, we can load R5 with `0000 0001 1100 0000` and then execute $\texttt{AND R6,R5,R4}$. We would know that R0 is the base register if what condition is met?
 
 *Ans.-*
 
 ---
 
-5.51 An aggressive young engineer decides to build and sell the LC-3 but is told that if he wants to succeed, he really needs a SUBTRACT instruction. Given the unused opcode 1101, he decides to specify the SUBTRACT instruction as follows: The instruction is deﬁned as: DR \leftarrow SR2 - SR1, and the condition codes are set. Assume DR, SR1, and SR2 are all different registers. To accomplish this, the engineer needs to add three states to the state machine and a mux and register A to the data path. The modiﬁed state machine is shown below, and the modiﬁed data path is shown on the next page. The mux is controlled by a new control signal SR2SEL, which selects one of its two sources.
-$$\texttt{SR2SEL/1: SR2OUT, REGISTER A}$$
+5.51 An aggressive young engineer decides to build and sell the LC-3 but is told that if he wants to succeed, he really needs a SUBTRACT instruction. Given the unused opcode 1101, he decides to specify the SUBTRACT instruction as follows:
+$$
+\begin{array}{rrrr|rrr|rrr|rrr|rrr}
+15 &  &  & 12 & 11 &  & 9 & 8 &  & 6 & 5 &  & 3 & 2 &  & 0 \\
+\hline
+1 & 1 & 0 & 1 &  & \texttt{DR} &  &  & \texttt{SR1} &  & 0 & 0 & 0 &  & \texttt{SR2} &  \\
+\hline
+\end{array}
+$$
+The instruction is deﬁned as: DR \leftarrow SR2 - SR1, and the condition codes are set. Assume $\texttt{DR, SR1,}$ and $\texttt{SR2}$ are all different registers. To accomplish this, the engineer needs to add three states to the state machine and a mux and register A to the data path. The modiﬁed state machine is shown below, and the modiﬁed data path is shown on the next page. The mux is controlled by a new control signal $\texttt{SR2SEL}$, which selects one of its two sources.
+$$\texttt{SR2SEL/1: SR2OUT, REGISTER\_A}$$
 
-Your job: For the state machine shown below, ﬁll in the empty boxes with the control signals that are needed in order to implement the SUBTRACT instruction. For the data path, ﬁll in the value in register A.
+*Your job:* For the state machine shown below, ﬁll in the empty boxes with the control signals that are needed in order to implement the SUBTRACT instruction. 
+
+For the data path, ﬁll in the value in register A.
 
 *Ans.-*
 
+<img src="../../assets/learning/computing-systems/ch05-ex51.png" width="80%">
+
+<img src="../../assets/learning/computing-systems/ch05-ex51-datapath.png" width="80%">
+
 ---
 
-- 5.53 The eight general purpose registers of the LC-3 (R0 to R7) make up the register ﬁle. To write a value to a register, the LC-3 control unit must supply 16 bits of data (BUS[15:0]), a destination register (DR[2:0]), and a write enable signal (LD.REG) to load a register. The combinational logic block shows inputs BUS[15:0], DR[2:0], and LD.REG and outputs DinR0[15:0], DinR1[15:0], DinR2[15:0], ... DinR7[15:0], LD.R0, LD.R1, LD.R2, ... LD.R7. Your job: Add wires, logic gates, and standard logic blocks as necessary to complete the combinational logic block. Note: If you use a standard logic block, it is not necessary to show the individual gates. However, it is necessary to identify the logic block speciﬁcally (e.g., “16-to-1 mux”), along with labels for each relevant input or output, according to its function.
-- 5.55 An LC-3 program starts execution at x3000. During the execution of the program, snapshots of all eight registers were taken at six different times as shown below: before the program executes, after execution of
+- 5.53 The eight general purpose registers of the LC-3 (R0 to R7) make up the register ﬁle. To write a value to a register, the LC-3 control unit must supply 16 bits of data ($\texttt{BUS[15:0]}$), a destination register ($\texttt{DR[2:0]}$), and a write enable signal (LD.REG) to load a register. The combinational logic block shows inputs $\texttt{BUS[15:0], DR[2:0]}$, and $\texttt{LD.REG}$ and outputs $\texttt{DinR0[15:0], DinR1[15:0], DinR2[15:0],} \ldots \texttt{DinR7[15:0], LD.R0, LD.R1, LD.R2,} \ldots \texttt{LD.R7}$
+
+*Your job:* Add wires, logic gates, and standard logic blocks as necessary to complete the combinational logic block. 
+
+*Note:* If you use a standard logic block, it is not necessary to show the individual gates. However, it is necessary to identify the logic block speciﬁcally (e.g., “16-to-1 mux”), along with labels for each relevant input or output, according to its function.
+
+*Ans.-*
+
+<img src="../../assets/learning/computing-systems/ch05-ex53.png" width="75%">
+
+---
+
+- 5.55 An LC-3 program starts execution at `x3000`. During the execution of the program, snapshots of all eight registers were taken at six different times as shown below: before the program executes, after execution of
     - instruction 1, after execution of instruction 2, after execution of
     - instruction 3, after execution of instruction 4, after execution of
     - instruction 5, and after execution of instruction 6.
 Also, during the execution of the program, the PC trace, the MAR trace, and the MDR trace were also recorded as shown below. Note that a PC trace records the addresses of the instructions executed in sequence by the program.
 
-Your job: Fill in the missing entries in the three tables above.
+Your job: Fill in the missing entries in the three tables.
 
 *Ans.-*
+
+$$
+\begin{array}{l|c|c|c|c|c|c|c}
+\textbf{Registers} & \textbf{Initial} & \textbf{After 1st} &  \textbf{After 2nd} & \textbf{After 3rd} & \textbf{After 4th} & \textbf{After 5th} & \textbf{After 6th} \\
+& \textbf{Value} & \textbf{Instruction} & \textbf{Instruction} & \textbf{Instruction} & \textbf{Instruction} & \textbf{Instruction} & \textbf{Instruction} \\
+\hline
+\textbf{R0} & \texttt{x4006} & \texttt{x4050} & \texttt{x4050} & \texttt{x4050} & \texttt{x4050} & \texttt{x4050} & \texttt{x4050} \\
+\textbf{R1} & \texttt{x5009} & \texttt{x5009} & \texttt{x5009} & \texttt{x5009} & \texttt{x5009} & \texttt{x5009} & \texttt{x5009} \\
+\textbf{R2} & \texttt{x4008} & \texttt{x4008} & \texttt{x4008} & \texttt{x4008} & \texttt{x4008} & \texttt{x4008} & \texttt{xC055} \\
+\textbf{R3} & \texttt{x4002} & \color{Violet}\texttt{-} & \color{Violet}\texttt{-} & \texttt{x8005} & \texttt{x8005} & \texttt{x8005} & \texttt{x8005} \\
+\textbf{R4} & \texttt{x4003} & \texttt{x4003} & \texttt{x4003} & \texttt{x4003} & \color{Violet}\texttt{-} & \color{Violet}\texttt{-} & \texttt{x4003} \\
+\textbf{R5} & \texttt{x400D} & \texttt{x400D} & \color{Violet}\texttt{-} & \color{Violet}\texttt{-} & \texttt{x400D} & \texttt{x400D} & \texttt{x400D} \\
+\textbf{R6} & \texttt{x400C} & \texttt{x400C} & \texttt{x400C} & \texttt{x400C} & \texttt{x400C} & \texttt{x400C} & \texttt{x400C} \\
+\textbf{R7} & \texttt{x6001} & \texttt{x6001} & \texttt{x6001} & \texttt{x6001} & \color{Violet}\texttt{-} & \color{Violet}\texttt{-} & \texttt{x400E} 
+\end{array}
+$$
+
+$$
+\begin{array}{c||c|c}
+\textbf{PC Trace} & \textbf{MAR Trace} & \textbf{MDR Trace} \\
+\hline
+\color{Violet}\texttt{x----} & \color{Violet}\texttt{x----} & \texttt{xA009} \\
+\color{Violet}\texttt{x----} & \color{Violet}\texttt{x----} & \color{Violet}\texttt{x----} \\
+\color{Violet}\texttt{x----} & \texttt{x3025}               & \color{Violet}\texttt{x----} \\
+\texttt{x400D}               & \color{Violet}\texttt{x----} & \texttt{x1703}               \\
+\color{Violet}\texttt{x----} & \color{Violet}\texttt{x----} & \color{Violet}\texttt{x----} \\
+\texttt{x400E}               & \color{Violet}\texttt{x----} & \texttt{x4040}               \\
+& \color{Violet}\texttt{x----} & \color{Violet}\texttt{x----} \\
+& \color{Violet}\texttt{x400E} & \texttt{x1403} 
+\end{array}
+$$
 
 ---
 
 - 5.57 Note boldface signal lines on the following data path.
-    - 1. What opcodes use IR [11:9] as inputs to SR1?
+    - 1. What opcodes use $\texttt{IR }[11:9]$ as inputs to $\texttt{SR1}$?
     - 2. Where does the control signal of this mux come from? Be speciﬁc!
     - 3. What opcodes use this input to the MARMUX?
+
+<img src="../../assets/learning/computing-systems/ch05-ex57.png" width="90%">
 
 *Ans.-*
 
@@ -282,12 +396,34 @@ Your job: Fill in the missing entries in the three tables above.
 - 5.59 Every LC-3 instruction takes eight cycles to be fetched and decoded, if we assume every memory access takes ﬁve cycles. The total number of cycles an LC-3 instruction takes to be completely processed, however, depends on what has to be done for that instruction. Assuming every memory access takes ﬁve cycles, and assuming the LC-3 processes one instruction at a time, from beginning to end, how many clock cycles does each instruction take? For each instruction, how many cycles are required to process it?
 
 *Ans.-*
+$$
+\begin{array}{r|c}
+\text{Instruction} & \text{Num. of cycles} \\
+\hline
+\texttt{ADD} & \color{Violet}- \\
+\texttt{ADD} & \color{Violet}- \\
+\texttt{LD} & \color{Violet}- \\
+\texttt{LEA} & \color{Violet}- \\
+\texttt{LDI} & \color{Violet}- \\
+\texttt{NOT} & \color{Violet}- \\
+\texttt{BTnzp} & \color{Violet}- \\
+\texttt{TRAP} & \color{Violet}- 
+\end{array}
+$$
 
 ---
 
-- 5.61 During the execution of an LC-3 program, the processor data path was monitored for four instructions in the program that were processed consecutively. The table shows all clock cycles during which the bus was utilized. It shows the clock cycle number, the value on the bus, and the state (from the state machine diagram) for some of these clock cycles. Processing of the ﬁrst instruction starts at clock cycle T. Each memory access in this LC-3 machine takes ﬁve clock cycles. Your job: Fill in the missing entries in the table. You only need to ﬁll in the cells not marked with x. Note: There are ﬁve clock cycles for which you need to provide the control signals. Not all LC-3 control signals are shown in the table. However, all control signals that are required for those ﬁve clock cycles have been included. Note: For the DRMUX signal, write ‘11.9’, ‘R7’, or ‘SP’; for the R.W signal, write an ‘R’ or a ‘W’; for the PCMUX signal, write ‘PC+1’, ‘BUS’, or ‘ADDER’; for all other control signals, write down the actual bit. If a control signal is not relevant in a given cycle, mark it with a dash (i.e., -).
+- 5.61 During the execution of an LC-3 program, the processor data path was monitored for four instructions in the program that were processed consecutively. The table shows all clock cycles during which the bus was utilized. It shows the clock cycle number, the value on the bus, and the state (from the state machine diagram) for some of these clock cycles. Processing of the ﬁrst instruction starts at clock cycle T. Each memory access in this LC-3 machine takes ﬁve clock cycles. 
+
+Your job: Fill in the missing entries in the table. You only need to ﬁll in the cells not marked with x. 
+
+*Note:* There are ﬁve clock cycles for which you need to provide the control signals. Not all LC-3 control signals are shown in the table. However, all control signals that are required for those ﬁve clock cycles have been included. 
+
+*Note:* For the DRMUX signal, write ‘11.9’, ‘R7’, or ‘SP’; for the R.W signal, write an ‘R’ or a ‘W’; for the PCMUX signal, write ‘PC+1’, ‘BUS’, or ‘ADDER’; for all other control signals, write down the actual bit. If a control signal is not relevant in a given cycle, mark it with a dash (i.e., -).
 
 *Ans.-*
+
+<img src="../../assets/learning/computing-systems/ch05-ex61.png" width="100%">
 
 ---
 
