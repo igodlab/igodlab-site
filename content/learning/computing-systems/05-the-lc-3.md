@@ -9,10 +9,10 @@ date: "2025-12-18"
 
 | Instruction | Type | Addr modes |
 |---|---|---|
-| `ADD` | operate | Depending on $\texttt{IR[5]}=0\wedge 1$, the second operand is either *(i)* the value stored in the address of the register specified by $\texttt{IR[2:0]}$. Or *(ii)* an immediate value specified by bits $\texttt{IR[4:0]}$. |
-| `JMP` | control |  | 
-| `LEA` | data move | Bits $\texttt{IR[8:0]}$ are the offset to compute the effective address that will be loaded into fast register $\texttt{IR[11:9]}$ |
-| `NOT` | operate | Bits $\texttt{IR[8:03k]}$ |
+| `ADD` | operate | Depending on $\texttt{IR[5]}=0^{(i)}\wedge 1^{(ii)}$, the second operand is either *(i)* the value stored in the address of the register specified by $\texttt{IR[2:0]}$. Or *(ii)* an immediate value specified by bits $\texttt{IR[4:0]}$. |
+| `JMP` | control | Jumps to instruction located in Base Register specified by bits $\texttt{IR[8:6]}$ | 
+| `LEA` | data move | Bits in $\texttt{IR[8:0]}$ are the offset to compute the effective address that will be loaded into fast register $\texttt{IR[11:9]}$ |
+| `NOT` | operate | Inverts the operand stored in $\texttt{IR[8:6]}$ |
 
 ---
 
@@ -32,7 +32,7 @@ date: "2025-12-18"
 
 ---
 
-- 5.7What is the largest positive number we can represent literally (i.e., as an immediate value) within an LC-3 ADD instruction?
+- 5.7 What is the largest positive number we can represent literally (i.e., as an immediate value) within an LC-3 ADD instruction?
 
 *Ans.-*
 
