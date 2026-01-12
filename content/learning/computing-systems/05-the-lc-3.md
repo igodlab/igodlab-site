@@ -18,7 +18,7 @@ date: "2025-12-18"
 
 - 5.3 There are two common ways to terminate a loop. One way uses a counter to keep track of the number of iterations. The other way uses an element called a $\text{\_\_\_\_\_}$. What is the distinguishing characteristic of this element?
 
-*Ans.-*
+*Ans.-* 
 
 ---
 
@@ -30,11 +30,16 @@ date: "2025-12-18"
 
 *Ans.-*
 
+- a. Its a variant out of a limited number of variants of using an instruction.
+- b. Memory, General Purpose Registers (GPRs) and immediate bits within current instruction.
+- c. 
+- d. The addressing mode is $\texttt{IR[5]}=0$, which indicates a register 2nd operand.
+
 ---
 
 - 5.7 What is the largest positive number we can represent literally (i.e., as an immediate value) within an LC-3 ADD instruction?
 
-*Ans.-*
+*Ans.-* The `ADD` istruction has 5 bits reserved in its immediate value addressing mode which allows to represent a range of $[-16,15]$ decimal values.
 
 ---
 
