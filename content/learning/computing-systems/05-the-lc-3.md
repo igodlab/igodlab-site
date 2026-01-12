@@ -9,10 +9,10 @@ date: "2025-12-18"
 
 | Instruction | Type | Addr modes |
 |---|---|---|
-| `ADD` | operate | `0`: reads second operand from memory. `1`: second operand is bits $\texttt{IR[4:0]}$ |
-| `JMP` | control | NA | 
-| `LEA` | data move | NA |
-| `NOT` | operate | `0`: reads second operand from memory. `1`: second operand is bits $\texttt{IR[4:0]}$ |
+| `ADD` | operate | Depending on $\texttt{IR[5]}=0\wedge 1$, the second operand is either *(i)* the value stored in the address of the register specified by $\texttt{IR[2:0]}$. Or *(ii)* an immediate value specified by bits $\texttt{IR[4:0]}$. |
+| `JMP` | control |  | 
+| `LEA` | data move | Bits $\texttt{IR[8:0]}$ are the offset to compute the effective address that will be loaded into fast register $\texttt{IR[11:9]}$ |
+| `NOT` | operate | Bits $\texttt{IR[8:03k]}$ |
 
 ---
 
