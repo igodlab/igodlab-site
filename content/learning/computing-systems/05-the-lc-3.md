@@ -11,14 +11,14 @@ date: "2025-12-18"
 |---|---|---|
 | `ADD` | operate | Depending on $\texttt{IR[5]}=0^{(i)}\wedge 1^{(ii)}$, the second operand is either *(i)* the value stored in the address of the register specified by $\texttt{IR[2:0]}$. Or *(ii)* an immediate value specified by bits $\texttt{IR[4:0]}$. |
 | `JMP` | control | Jumps to instruction located in Base Register specified by bits $\texttt{IR[8:6]}$ | 
-| `LEA` | data move | Bits in $\texttt{IR[8:0]}$ are the offset to compute the effective address that will be loaded into fast register $\texttt{IR[11:9]}$ |
+| `LEA` | data move | Value stored in $\texttt{IR[8:0]}$ is the offset to compute the effective address that will be loaded into GPR $\texttt{IR[11:9]}$ |
 | `NOT` | operate | Inverts the operand stored in $\texttt{IR[8:6]}$ |
 
 ---
 
 - 5.3 There are two common ways to terminate a loop. One way uses a counter to keep track of the number of iterations. The other way uses an element called a $\text{\_\_\_\_\_}$. What is the distinguishing characteristic of this element?
 
-*Ans.-* 
+*Ans.-* **Sentinel** signals the end of input data depending on a specific flag.
 
 ---
 
@@ -30,10 +30,26 @@ date: "2025-12-18"
 
 *Ans.-*
 
-- a. Its a variant out of a limited number of variants of using an instruction.
-- b. Memory, General Purpose Registers (GPRs) and immediate bits within current instruction.
+- a. Its a mechanism for specifying where the operand is located.
+- b. Memory, General Purpose Registers (GPRs) and immediate values (bits within current instruction).
 - c. 
-- d. The addressing mode is $\texttt{IR[5]}=0$, which indicates a register 2nd operand.
+    - *Register* - operand located in any of the $\texttt{R0-R8}$ GPRs
+    - *Immediate* - operand located within the instruction ($\texttt{SEXT(imm)}$)
+    - *PC Relative* - operand located in memory which address is obtained by a $\texttt{PC + SEXT(offset)}$ calculation
+    - *Base + Offset* - operand located in memory ie. is the contents of GPR $\texttt{BaseR + SEXT(offset)}$
+    - *Indirect* - operand located in memory which is the **contents** of the **address of the address** of $\texttt{PC + SEXT(offset)}$
+- d. The instruction is $\texttt{ADD R2, R0, R1}$ 
+
+$$
+\begin{array}{cccc|ccc|ccc|c|cc|ccc}
+15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\
+\hline
+ 0 &  0 &  0 &  1 &  0 &  1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+\hline
+\end{array}
+$$
+
+where the $\texttt{IR[5]}=0$ addressing mode is being used ie. register 2nd operand.
 
 ---
 
@@ -43,7 +59,7 @@ date: "2025-12-18"
 
 ---
 
-- 5.9We would like to have an instruction that does nothing. Many ISAs actually have an opcode devoted to doing nothing. It is usually called NOP, for NO OPERATION. The instruction is fetched, decoded, and executed. The execution phase is to do nothing! Which of the following three instructions could be used for NOP and have the program still work correctly?
+- 5.9 We would like to have an instruction that does nothing. Many ISAs actually have an opcode devoted to doing nothing. It is usually called NOP, for NO OPERATION. The instruction is fetched, decoded, and executed. The execution phase is to do nothing! Which of the following three instructions could be used for NOP and have the program still work correctly?
     - a. `0001 001 001 1 00000`
     - b. `0000 111 000000001`
     - c. `0000 000 000000000`
@@ -51,10 +67,18 @@ date: "2025-12-18"
 What does the ADD instruction do that the others do not do?
 
 *Ans.-*
+- a. Not equivalent to NOP. Although $\texttt{ADD R1, R1, R0}$ leaves everything unchaged (because adding zero is an identity operation) it changes the **Condition Codes (CC)** as a side effect. Also the computer spends energy performing the computation.
+- b. Not equivalent to NOP $\texttt{BRnzp}$ is an unconditional branch meaning that it will always branch.
+- c. Yes, $\texttt{BR}$ is a branch that will never be taken so it is equivalent to NOP.
 
 ---
 
 - 5.11 We wish to execute a single LC-3 instruction that will subtract the decimal number 20 from register 1 and put the result into register 2. Can we do it? If yes, do it. If not, explain why not.
+
+*Ans.-* We can only do it in one instruction $\texttt{ADD R2, R1, R}$ in register addressing mode where the 2nd operand is $\texttt{R}=-20$. 
+
+---
+
 - 5.13 
     - a. How might one use a single LC-3 instruction to move the value in R2 into R3?
     - b. The LC-3 has no subtract instruction. How could one perform the following operation using only three LC-3 instructions: $\texttt{R1} \leftarrow \texttt{R2} \leftarrow \texttt{R3}$
