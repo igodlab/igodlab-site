@@ -67,67 +67,83 @@ where the $\texttt{IR[5]}=0$ addressing mode is being used ie. register 2nd oper
 What does the ADD instruction do that the others do not do?
 
 *Ans.-*
-- a. Not equivalent to NOP. Although $\texttt{ADD R1, R1, R0}$ leaves everything unchaged (because adding zero is an identity operation) it changes the **Condition Codes (CC)** as a side effect. Also the computer spends energy performing the computation.
-- b. Not equivalent to NOP $\texttt{BRnzp}$ is an unconditional branch meaning that it will always branch.
+- a. Not equivalent to NOP. Although $\texttt{ADD R1, R1, R0}$ leaves everything unchaged (because adding zero is an identity operation) it changes the **Condition Codes (CC)** as a side effect. Also the computer spends energy performing a useless computation.
+- b. Not equivalent to NOP, $\texttt{BRnzp}$ is an unconditional branch meaning that it will always jump to another instruction.
 - c. Yes, $\texttt{BR}$ is a branch that will never be taken so it is equivalent to NOP.
 
 ---
 
 - 5.11 We wish to execute a single LC-3 instruction that will subtract the decimal number 20 from register 1 and put the result into register 2. Can we do it? If yes, do it. If not, explain why not.
 
-*Ans.-* We can only do it in one instruction $\texttt{ADD R2, R1, R}$ in register addressing mode where the 2nd operand is $\texttt{R}=-20$. 
+*Ans.-* We can ONLY do it in one instruction if we already have the value of the 2nd operand in a register eg. $\texttt{R}_{2nd}=1111\;1111\;1110\;1100_2=-20_{10}$. Otherwise we need more than one instruction as we typically would use an immediate value $\texttt{ADD R2, R1, \#imm5}$ but we're limited to represent 5-bit numbers ie. $[-16,15]$ and thus $-20$ is out or that range. 
 
 ---
 
 - 5.13 
     - a. How might one use a single LC-3 instruction to move the value in R2 into R3?
-    - b. The LC-3 has no subtract instruction. How could one perform the following operation using only three LC-3 instructions: $\texttt{R1} \leftarrow \texttt{R2} \leftarrow \texttt{R3}$
+    - b. The LC-3 has no subtract instruction. How could one perform the following operation using only three LC-3 instructions: $\texttt{R1} \leftarrow \texttt{R2} - \texttt{R3}$
     - c. Using only one LC-3 instruction and without changing the contents of any register, how might one set the condition codes based on the value that resides in R1?
     - d. Is there a sequence of LC-3 instructions that will cause the condition codes at the end of the sequence to be $N = 1, Z = 1$, and $P = 0$? Explain.
     - e. Write an LC-3 instruction that clears the contents of R2.
 
-*Ans.-*
-
----
-
-- 5.13 
-    - a. How might one use a single LC-3 instruction to move the value in R2 into R3?
-    - b. The LC-3 has no subtract instruction. How could one perform the following operation using only three LC-3 instructions: $\texttt{R1} \leftarrow \texttt{R2 - R3}$
-    - c. Using only one LC-3 instruction and without changing the contents of any register, how might one set the condition codes based on the value that resides in R1?
-    - d. Is there a sequence of LC-3 instructions that will cause the condition codes at the end of the sequence to be $N = 1, Z = 1$, and $P = 0$? Explain.
-    - e. Write an LC-3 instruction that clears the contents of R2.
-
-*Ans.-*
+*Ans.-* 
+- a. $0101\;011\;010\;1\;11111\quad(\texttt{AND R3, R2, \#-1})$
+- b. 
+$$
+\begin{array}{rl}
+1001\;011\;011\;111111 & (\texttt{NOT R3, R3}) \\
+0001\;011\;011\;1\;00001 & (\texttt{ADD R3, R3, \#1}) \\
+0001\;001\;010\;0\;00011 & (\texttt{ADD R1, R2, R3})
+\end{array}
+$$
+- c. $0101\;001\;001\;1\;11111\quad(\texttt{AND R1, R1, \#-1})$
+- d. There is no way to set $N=1,Z=1,P=0$ condition codes because that would mean a number that is both negative and zero
+- e. $0101\;010\;010\;1\;00000\quad(\texttt{AND R2, R2, \#0})$
 
 ---
 
 - 5.15 State the contents of R1, R2, R3, and R4 after the program starting at location `x3100` halts.
 
+*Ans.-*
+
 $$
-\begin{array}{cc}
-\text{Address} & \text{Data} \\
+\begin{array}{cccl||l}
+ & \text{Address} & \text{Data} & & \color{Violet}\texttt{Contents}\\
 \hline
-0011\;0001\;0000\;0000 & 1110\;001\;000100000 \\
-0011\;0001\;0000\;0001 & 0010\;010\;000100000 \\
-0011\;0001\;0000\;0010 & 1010\;011\;000100000 \\
-0011\;0001\;0000\;0011 & 0110\;100\;010\;000001 \\
-0011\;0001\;0000\;0100 & 1111\;0000\;0010\;0101 \\
-\vdots & \vdots \\
-0011\;0001\;0010\;0010 & 0100\;0101\;0110\;0110 \\
-0011\;0001\;0010\;0011 & 0100\;0101\;0110\;0111 \\
-\vdots & \vdots \\
-0100\;0101\;0110\;0111 & 1010\;1011\;1100\;1101 \\
-0100\;0101\;0110\;1000 & 1111\;1110\;1101\;0011
+\color{Violet}\texttt{x3100} & 0011\;0001\;0000\;0000 & 1110\;001\;000100000 & \color{Violet}(\texttt{ LEA R1 0x20 }) & \color{Violet}\texttt{R1 <- 0x3121} \\
+\color{Violet}\texttt{x3101} & 0011\;0001\;0000\;0001 & 0010\;010\;000100000 & \color{Violet}(\texttt{ LD R2, 0x20 }) & \color{Violet}\texttt{R2 <- M[0x3122] = 0x4566} \\
+\color{Violet}\texttt{x3102} & 0011\;0001\;0000\;0010 & 1010\;011\;000100000 & \color{Violet}(\texttt{ LDI R3, 0x20 }) & \color{Violet}\texttt{R3 <- M[M[0x3123]] = M[0x4567] = 0xabcd} \\
+\color{Violet}\texttt{x3103} & 0011\;0001\;0000\;0011 & 0110\;100\;010\;000001 & \color{Violet}(\texttt{ LDR R4, R2 0x1 }) & \color{Violet}\texttt{R4 <- M[R2 + 0x0001] = M[0x4567] = 0xabcd} \\
+\color{Violet}\texttt{x3104} & 0011\;0001\;0000\;0100 & 1111\;0000\;0010\;0101 & \color{Violet}(\texttt{ TRAP 0x25}) & \\
+ & \vdots & \vdots & & \\
+\color{Violet}\texttt{x3122} & 0011\;0001\;0010\;0010 & 0100\;0101\;0110\;0110 & \color{Violet}(\texttt{ 0x4566 }) & \\
+\color{Violet}\texttt{x3123} & 0011\;0001\;0010\;0011 & 0100\;0101\;0110\;0111 & \color{Violet}(\texttt{ 0x4567 }) & \\
+ & \vdots & \vdots & & \\
+\color{Violet}\texttt{x4567} & 0100\;0101\;0110\;0111 & 1010\;1011\;1100\;1101 & \color{Violet}(\texttt{ 0xabcd }) & \\
+\color{Violet}\texttt{x4568} & 0100\;0101\;0110\;1000 & 1111\;1110\;1101\;0011 & \color{Violet}(\texttt{ 0xfed3 }) & 
 \end{array}
 $$
-
-*Ans.-*
 
 ---
 
 - 5.17 How many times does the LC-3 make a read or write request to memory during the processing of the LD instruction? How many times during the processing of the LDI instruction? How many times during the processing of the LEA instruction? Processing includes all phases of the instruction cycle.
 
-*Ans.-*
+*Ans.-* All three `LD, LDI & LEA` instructions make one memory read at the FETCH stage of the instruction itself ie. $\texttt{MDR <- M[MAR]}$. We have to add the extra memory access on top of it.
+$$
+\begin{array}{l}
+\texttt{MAR <- PC}          \\
+\texttt{PC <- PC + 1}       \\
+\texttt{MDR <- M[MAR]}      \\
+\texttt{IR <- MDR}          \\
+\hline
+\texttt{DR <- IR[11:9]}     \\
+\texttt{BaseR <- IR[8:6]}   \\
+\texttt{offset6 <- IR[5:0]} \\
+
+\end{array}
+$$
+
+`LD` makes another memory read at the $\texttt{MDR <- M[MAR] = M[PC + offset]}$ location. `LDI`  One for fetching data and one for loading to destination GPR.
 
 ---
 
