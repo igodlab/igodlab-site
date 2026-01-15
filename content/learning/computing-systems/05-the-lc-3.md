@@ -41,7 +41,7 @@ date: "2025-12-18"
 - d. The instruction is $\texttt{ADD R2, R0, R1}$ 
 
 $$
-\begin{array}{cccc|ccc|ccc|c|cc|ccc}
+\begin{array}{|cccc|ccc|ccc|c|cc|ccc|}
 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\
 \hline
  0 &  0 &  0 &  1 &  0 &  1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
@@ -128,58 +128,78 @@ $$
 
 - 5.17 How many times does the LC-3 make a read or write request to memory during the processing of the LD instruction? How many times during the processing of the LDI instruction? How many times during the processing of the LEA instruction? Processing includes all phases of the instruction cycle.
 
-*Ans.-* All three `LD, LDI & LEA` instructions make one memory read at the FETCH stage of the instruction itself ie. $\texttt{MDR <- M[MAR]}$. We have to add the extra memory access on top of it.
+*Ans.-* Since `LD, LDI` are **Destination Register** type of instructions and `LEA` only handles addresses, all memory access will be *writes* ($\dagger$) and no store. See the table and count the daggers for each instruction:
 $$
-\begin{array}{l}
-\texttt{MAR <- PC}          \\
-\texttt{PC <- PC + 1}       \\
-\texttt{MDR <- M[MAR]}      \\
-\texttt{IR <- MDR}          \\
+\begin{array}{c|l|l|l}
+\textbf{Phase} & \texttt{LD} & \texttt{LDI} & \texttt{LEA} \\
 \hline
-\texttt{DR <- IR[11:9]}     \\
-\texttt{BaseR <- IR[8:6]}   \\
-\texttt{offset6 <- IR[5:0]} \\
-
+             & \texttt{MAR <- PC} & \texttt{MAR <- PC} & \texttt{MAR <- PC}  \\
+\text{FETCH} & \texttt{PC <- PC + 1} & \texttt{PC <- PC + 1} & \texttt{PC <- PC + 1}  \\
+             & \texttt{MDR <- M[MAR]}(\dagger^1) & \texttt{MDR <- M[MAR]}(\dagger^1) & \texttt{MDR <- M[MAR]}(\dagger^1)  \\
+             & \texttt{IR <- MDR} & \texttt{IR <- MDR} &\texttt{IR <- MDR}  \\
+\hline
+\text{DECODE} & \text{Decode instruction} & \text{Decode instruction} & \text{Decode instruction}  \\
+              & \text{into }\texttt{IR} & \text{into }\texttt{IR} & \text{into }\texttt{IR}  \\
+\hline
+\text{EVALUATE} & \texttt{MAR <- PC + SEXT(offset9)} & \texttt{MAR <- PC + SEXT(offset9)} & \texttt{MAR <- PC + SEXT(offset9)}  \\
+\text{ADDRESS}  &  & \texttt{MDR <- M[MAR]}(\dagger^2) & \\
+                &  & \texttt{MAR <- MDR} & \\
+\hline
+\text{FETCH}    & \texttt{MDR <- M[MAR]}(\dagger^2) & \texttt{MDR <- M[MAR]}(\dagger^3) & \texttt{LEA}\text{ fetches no operands} \\
+\text{OPERANDS} &  &  &  \\
+\hline
+\text{EXECUTE} & \texttt{DR <- MDR} & \texttt{DR <- MDR} & \texttt{DR <- MAR} \\
+\hline
+\text{STORE RESULT} & \text{Set CCs} & \text{Set CCs} & \text{Set CCs} \\
+\hline
+\hline
+\textbf{Total }(\dagger) & \textbf{2 memory reads} & \textbf{3 memory reads} & \textbf{1 memory read} 
 \end{array}
 $$
-
-`LD` makes another memory read at the $\texttt{MDR <- M[MAR] = M[PC + offset]}$ location. `LDI`  One for fetching data and one for loading to destination GPR.
 
 ---
 
 - 5.19 The LC-3 Instruction Register (IR) is made up of 16 bits, of which the least signiﬁcant nine bits $[8:0]$ represent the PC-relative offset for the LD instruction. If we change the ISA so that bits $[6:0]$ represent the PC-relative offset, what is the new range of addresses we can load data from using the LD instruction?
 
-*Ans.-*
+*Ans.-* The reduced $\texttt{offset7}$-bits allow to represent a range of $[\texttt{PC}-64, \texttt{PC}+63]$
 
 ---
 
 - 5.21 What is the maximum number of TRAP service routines that the LC-3 ISA can support? Explain.
 
-*Ans.-*
+*Ans.-* The TRAP vector is an 8-bit number so LC-3 ISA can support $2^8=256$ TRAP routines.
 
 ---
 
 - 5.23 Suppose the following LC-3 program is loaded into memory starting at location x30FF:
 
-$$
-\begin{array}{cc}
-\texttt{x30FF1110} & 0010\;0000\;0001 \\
-\texttt{x31000110} & 0100\;0100\;0010 \\
-\texttt{x31011111} & 0000\;0010\;0101 \\
-\texttt{x31020001} & 0100\;0100\;0001 \\
-\texttt{x31030001} & 0100\;1000\;0010
-\end{array}
-$$
-
 If the program is executed, what is the value in R2 at the end of execution?
 
-*Ans.-*
+*Ans.-* 
+
+$$
+\begin{array}{cc||ll}
+\texttt{x30FF} & 1110\;0010\;0000\;0001 & \color{Violet}\texttt{( LEA R1, 0x1)} & \color{Violet}\texttt{R1 <- 0x3101} \\
+\texttt{x3100} & 0110\;0100\;0100\;0010 & \color{Violet}\texttt{( LDR R2, R1, 0x2 )} & \color{Violet}\texttt{R2 <- M[R1 + 0x0002] = M[0x3103] = 0x1482} \\
+\texttt{x3101} & 1111\;0000\;0010\;0101 & \color{Violet}\texttt{( TRAP 0x25 )} & \color{Violet}\text{HALTS the program} \\
+\texttt{x3102} & 0001\;0100\;0100\;0001 &  & \\
+\texttt{x3103} & 0001\;0100\;1000\;0010 &  &  
+\end{array}
+$$
 
 ---
 
 - 5.25 Write an LC-3 program that compares two numbers in R2 and R3 and puts the larger number in R1. If the numbers are equal, then R1 is set equal to 0.
 
-*Ans.-*
+*Ans.-* 
+$$
+\begin{array}{cc||ll}
+\texttt{0x---0} & 0000\;0000\;0000\;0000 & \color{Violet}\texttt{(  )} & \color{Violet}\texttt{} \\
+\texttt{0x---0} & 0000\;0000\;0000\;0000 & \color{Violet}\texttt{(  )} & \color{Violet}\texttt{} \\
+\texttt{0x---0} & 0000\;0000\;0000\;0000 & \color{Violet}\texttt{(  )} & \color{Violet}\texttt{} \\
+\texttt{0x---0} & 0000\;0000\;0000\;0000 & \color{Violet}\texttt{(  )} & \color{Violet}\texttt{} \\
+\end{array}
+$$
 
 ---
 
