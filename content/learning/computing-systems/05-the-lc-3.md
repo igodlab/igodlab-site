@@ -221,21 +221,20 @@ $$
 \begin{array}{cc||ll}
 \texttt{0x---0} & 1001\;1000\;1111\;1111 & \texttt{( NOT R4, R3 )} & \texttt{R4 <- NOT(R3)} \\
 \texttt{0x---1} & 0001\;0000\;0010\;0001 & \texttt{( ADD R4, R4, \#1 )} & \texttt{R4 <- R4 + 0x0001 = -R3} \\
-\texttt{0x---2} & 0001\;0010\;1000\;0011 & \texttt{( ADD R1, R2, R3 )} & \texttt{R1 <- R2 + R3} \\
-\texttt{0x---3} & 0000\;0100\;0000\;0010 & \texttt{( BRz 0x002)} & \texttt{done, jump to 0x---6} \\
-\texttt{0x---4} & 0000\;1000\;0000\;0010 & \texttt{( BRn 0x002)} & \texttt{break to 0x---7} \\
-\texttt{0x---5} & 0000\;0010\;0000\;0011 & \texttt{( BRp 0x003)} & \texttt{break to 0x---9} \\
-\texttt{0x---6} & 0101\;0010\;0110\;0000 & \texttt{( AND R1, R1, \#0)} & \texttt{R1 <- 0x0000} \\
-\texttt{0x---7} & 0101\;0010\;1011\;1111 & \texttt{( AND R1, R2, \#-1 )} & \texttt{R1 <- R2} \\
-\texttt{0x---8} & 0000\;1110\;0000\;0001 & \texttt{( BRnzp 0x001)} & \texttt{break to 0x---a} \\
-\texttt{0x---9} & 0101\;0010\;1111\;1111 & \texttt{( AND R1, R3, \#-1 )} & \texttt{R1 <- R3} \\
-\texttt{0x---a} & 1111\;0000\;0010\;0101 & \texttt{( TRAP 0x25 )} & \texttt{HALT} \\
+\texttt{0x---2} & 0001\;0010\;1000\;0011 & \texttt{( ADD R1, R2, R3 )} & \texttt{R1 <- R2 + R4} \\
+\texttt{0x---3} & 0000\;0100\;0000\;0101 & \texttt{( BRz 0x005)} & \texttt{break to 0x---9} \\
+\texttt{0x---4} & 0000\;1000\;0000\;0011 & \texttt{( BRn 0x003)} & \texttt{break to 0x---8} \\
+\texttt{0x---5} & 0000\;0010\;0000\;0000 & \texttt{( BRp 0x000)} & \texttt{break to 0x---6} \\
+\texttt{0x---6} & 0101\;0010\;1011\;1111 & \texttt{( AND R1, R2, \#-1 )} & \texttt{R1 <- R2} \\
+\texttt{0x---7} & 0000\;1110\;0000\;0001 & \texttt{( BRnzp 0x001)} & \texttt{break to 0x---9} \\
+\texttt{0x---8} & 0101\;0010\;1111\;1111 & \texttt{( AND R1, R3, \#-1 )} & \texttt{R1 <- R3} \\
+\texttt{0x---9} & 1111\;0000\;0010\;0101 & \texttt{( TRAP 0x25 )} & \texttt{HALT} \\
 \end{array}
 $$
 
 ---
 
-- 5.27 Before the seven instructions are executed in the example of Section 5.3.4, R2 contains the value xAAAA. How many different values are contained in R2 during the execution of the seven instructions? What are they?
+- 5.27 Before the seven instructions are executed in the example of Section 5.3.4, R2 contains the value `xAAAA`. How many different values are contained in R2 during the execution of the seven instructions? What are they?
 
 *Ans.-*
 
