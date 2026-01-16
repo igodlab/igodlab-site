@@ -191,13 +191,45 @@ $$
 
 - 5.25 Write an LC-3 program that compares two numbers in R2 and R3 and puts the larger number in R1. If the numbers are equal, then R1 is set equal to 0.
 
-*Ans.-* 
+*Ans.-* Since the problem doesn't specify if the numbers stored in R2, R3 are positive or negative we have to account for all cases before writing our program. Typically to identify which number is greater we rely on substracting the numbers and then based on the sign of the difference we can achieve what we want (LC-3 achieves substraction by changing the sign of one of the operands and `ADD`ing). 
+
+$$
+\begin{array}{cc|lc|l}
+\texttt{R2} & \texttt{R3} & \texttt{ADD R1, R2, (-R3)} & \texttt{CC} & \textbf{simplified}\\
+\hline
++ & + & \texttt{R2 + (-R3) < 0} & \texttt{( n )} & \texttt{R2 < R3} \\
++ & + & \texttt{R2 + (-R3) = 0} & \texttt{( z )} & \texttt{R2 = R3} \\
++ & + & \texttt{R2 + (-R3) > 0} & \texttt{( p )} & \texttt{R2 > R3} \\
+\hline
++ & - & \texttt{R2 + (-(-R3)) < 0} & \texttt{( n )} & \texttt{R2 < (-R3)}\text{ (never occurs)} \\
++ & - & \texttt{R2 + (-(-R3)) = 0} & \texttt{( z )} & \texttt{R2 = (-R3)} \\
++ & - & \texttt{R2 + (-(-R3)) > 0} & \texttt{( p )} & \texttt{R2 > (-R3)} \\
+\hline
+- & + & \texttt{(-R2) + (-R3) < 0} & \texttt{( n )} & \texttt{(-R2) < R3} \\
+- & + & \texttt{(-R2) + (-R3) = 0} & \texttt{( z )} & \texttt{(-R2) = R3} \\
+- & + & \texttt{(-R2) + (-R3) > 0} & \texttt{( p )} & \texttt{(-R2) > R3}\text{ (never occurs)} \\
+\hline
+- & - & \texttt{(-R2) + (-(-R3)) < 0} & \texttt{( n )} & \texttt{(-R2) < (-R3)} \\
+- & - & \texttt{(-R2) + (-(-R3)) = 0} & \texttt{( z )} & \texttt{(-R2) = (-R3)} \\
+- & - & \texttt{(-R2) + (-(-R3)) > 0} & \texttt{( p )} & \texttt{(-R2) > (-R3)} 
+\end{array}
+$$
+
+Fortunately, as we can see from the table above the *Condition Codes* CC will indicate the greater number following the same inequality pattern, so the $\texttt{ADD R1, R2, (-R3)}$ 2's complement arithmetic works! The program is written below
+
 $$
 \begin{array}{cc||ll}
-\texttt{0x---0} & 0000\;0000\;0000\;0000 & \color{Violet}\texttt{(  )} & \color{Violet}\texttt{} \\
-\texttt{0x---0} & 0000\;0000\;0000\;0000 & \color{Violet}\texttt{(  )} & \color{Violet}\texttt{} \\
-\texttt{0x---0} & 0000\;0000\;0000\;0000 & \color{Violet}\texttt{(  )} & \color{Violet}\texttt{} \\
-\texttt{0x---0} & 0000\;0000\;0000\;0000 & \color{Violet}\texttt{(  )} & \color{Violet}\texttt{} \\
+\texttt{0x---0} & 1001\;1000\;1111\;1111 & \texttt{( NOT R4, R3 )} & \texttt{R4 <- NOT(R3)} \\
+\texttt{0x---1} & 0001\;0000\;0010\;0001 & \texttt{( ADD R4, R4, \#1 )} & \texttt{R4 <- R4 + 0x0001 = -R3} \\
+\texttt{0x---2} & 0001\;0010\;1000\;0011 & \texttt{( ADD R1, R2, R3 )} & \texttt{R1 <- R2 + R3} \\
+\texttt{0x---3} & 0000\;0100\;0000\;0010 & \texttt{( BRz 0x002)} & \texttt{done, jump to 0x---6} \\
+\texttt{0x---4} & 0000\;1000\;0000\;0010 & \texttt{( BRn 0x002)} & \texttt{break to 0x---7} \\
+\texttt{0x---5} & 0000\;0010\;0000\;0011 & \texttt{( BRp 0x003)} & \texttt{break to 0x---9} \\
+\texttt{0x---6} & 0101\;0010\;0110\;0000 & \texttt{( AND R1, R1, \#0)} & \texttt{R1 <- 0x0000} \\
+\texttt{0x---7} & 0101\;0010\;1011\;1111 & \texttt{( AND R1, R2, \#-1 )} & \texttt{R1 <- R2} \\
+\texttt{0x---8} & 0000\;1110\;0000\;0001 & \texttt{( BRnzp 0x001)} & \texttt{break to 0x---a} \\
+\texttt{0x---9} & 0101\;0010\;1111\;1111 & \texttt{( AND R1, R3, \#-1 )} & \texttt{R1 <- R3} \\
+\texttt{0x---a} & 1111\;0000\;0010\;0101 & \texttt{( TRAP 0x25 )} & \texttt{HALT} \\
 \end{array}
 $$
 
