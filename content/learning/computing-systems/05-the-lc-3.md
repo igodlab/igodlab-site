@@ -171,7 +171,7 @@ $$
 
 ---
 
-- 5.23 Suppose the following LC-3 program is loaded into memory starting at location x30FF:
+- 5.23 Suppose the following LC-3 program is loaded into memory starting at location `x30FF`:
 
 If the program is executed, what is the value in R2 at the end of execution?
 
@@ -236,11 +236,11 @@ $$
 
 - 5.27 Before the seven instructions are executed in the example of Section 5.3.4, R2 contains the value `xAAAA`. How many different values are contained in R2 during the execution of the seven instructions? What are they?
 
-*Ans.-*
+*Ans.-* There are 4 different values stored in R2 during the modified Section 5.3.4's program. It begins with `R2 <- 0xAAAA`; then at `IR[0x30F]7` we rewrite `R2 <- 0x3102`; then `R <- 0x0000` at `IR[0x30F9]`; followed by ADDing 5 at `IR[0x30FA]` changing `R2 <- 0x0005`.
 
 ---
 
-- 5.29 The LC-3 ISA contains the instruction LDR DR, BaseR, offset. After the instruction is decoded, the following operations (called microinstructions) are carried out to complete the processing of the LDR instruction:
+- 5.29 The LC-3 ISA contains the instruction $\texttt{LDR DR, BaseR, offset}$. After the instruction is decoded, the following operations (called microinstructions) are carried out to complete the processing of the LDR instruction:
 
 $$
 \begin{align*}
@@ -255,6 +255,27 @@ $$
     - b. If the $\texttt{MOVE}$ instruction were added to the LC-3 ISA, what sequence of microinstructions, following the decode operation, would emulate $\texttt{MOVE DR,SR}$?
 
 *Ans.-*
+
+- a. A `MOVE` can be written as a sequence of the following LC-3 existing instructions:
+$$
+\begin{align*}
+&\texttt{AND <- DR, SR, \#-1} \\
+&\texttt{AND <- SR, SR, \#0}
+\end{align*}
+$$
+
+- b. The post-DECODE microinstructions to be followed are:
+$$
+\begin{array}{l}
+\texttt{SR1MUX <- IR[8:6]} \\
+\texttt{SR2MUX <- 1} \\
+\texttt{SEXT5 <- IR[4:0]} \\
+\texttt{ALUK <- AND} \\
+\texttt{GateALU <- 1} \\
+\texttt{LD.CC <- 1} \\
+\texttt{LD.REG <- 1; DR <- IR[11:9]}
+\end{array}
+$$
 
 ---
 

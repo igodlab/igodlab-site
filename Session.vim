@@ -13,7 +13,7 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +27 ~/Documents/igodlab-site/content/learning/computing-systems/05-the-lc-3.md
+badd +239 ~/Documents/igodlab-site/content/learning/computing-systems/05-the-lc-3.md
 argglobal
 %argdel
 edit ~/Documents/igodlab-site/content/learning/computing-systems/05-the-lc-3.md
@@ -35,12 +35,12 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 27 - ((24 * winheight(0) + 16) / 32)
+let s:l = 239 - ((23 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 27
-normal! 0
+keepjumps 239
+normal! 06|
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
