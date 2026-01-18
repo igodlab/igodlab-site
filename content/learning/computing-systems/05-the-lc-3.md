@@ -260,7 +260,6 @@ $$
 $$
 \begin{align*}
 &\texttt{AND <- DR, SR, \#-1} \\
-&\texttt{AND <- SR, SR, \#0}
 \end{align*}
 $$
 
@@ -289,16 +288,16 @@ $$
 \texttt{R2} & \texttt{x2222} &  & \texttt{R2} & \texttt{x2222} \\
 \texttt{R3} & \texttt{x3333} &  & \texttt{R3} & \texttt{x3333} \\
 \texttt{R4} & \texttt{x4444} &  & \texttt{R4} & \texttt{x4444} \\
-\texttt{R5} & \texttt{x5555} &  & \texttt{R5} & \texttt{x5555} \\
+\texttt{R5} & \texttt{x5555} &  & \texttt{R5} & \texttt{xFFF8} \\
 \texttt{R6} & \texttt{x6666} &  & \texttt{R6} & \texttt{x6666} \\
 \texttt{R7} & \texttt{x7777} &  & \texttt{R7} & \texttt{x7777} \\
 \end{array}
 $$
 
-*Ans.-*
+*Ans.-* Since the instruction at `0x1000` is an `ADD` operation and the only change is R5 we must find what possible operations yield `0xFFF8 = -8`. Fortunately the only way we can get a decimal -8 is with an immediate addressing mode $\texttt{IR[4:0]}=11000_2=-8_{10}$. The instruction is $\texttt{ADD R5, R0, \#-8}$
 $$
 \begin{array}{lc}
-\texttt{0x1000 :} & \boxed{0001\;\color{Violet}----\;----\;----}
+\texttt{0x1000 :} & \boxed{0001\;\color{Violet}1010\;0011\;1000}
 \end{array}
 $$
 
@@ -306,22 +305,22 @@ $$
 
 5.33 If the value stored in R0 is 5 at the end of the execution of the following instructions, what can be inferred about R5?
 $$
-\begin{array}{ccccc}
-\texttt{x2FFF} & 0101 & 0000 & 0010 & 0000 \\
-\texttt{x3000} & 0101 & 1111 & 1110 & 0000 \\
-\texttt{x3001} & 0001 & 1101 & 1110 & 0001 \\
-\texttt{x3002} & 0101 & 1001 & 0100 & 0110 \\
-\texttt{x3003} & 0000 & 0100 & 0000 & 0001 \\
-\texttt{x3004} & 0001 & 0000 & 0010 & 0001 \\
-\texttt{x3005} & 0001 & 1101 & 1000 & 0110 \\
-\texttt{x3006} & 0001 & 1111 & 1110 & 0001 \\
-\texttt{x3007} & 0001 & 0011 & 1111 & 1000 \\
-\texttt{x3008} & 0000 & 1001 & 1111 & 1001 \\
-\texttt{x3009} & 0101 & 1111 & 1110 & 0000
+\begin{array}{ccccc|l}
+\texttt{x2FFF} & 0101 & 0000 & 0010 & 0000 & \color{Violet}\texttt{( AND R0, R0, \#0 ) ; R0 <- 0x0000}  \\
+\texttt{x3000} & 0101 & 1111 & 1110 & 0000 & \color{Violet}\texttt{( AND R7, R7, \#0 ) ; R7 <- 0x0000}  \\
+\texttt{x3001} & 0001 & 1101 & 1110 & 0001 & \color{Violet}\texttt{( ADD R6, R7, \#1 ) ; R6 <- R7 + 0x0001}  \\
+\texttt{x3002} & 0101 & 1001 & 0100 & 0110 & \color{Violet}\texttt{( AND R4, R5, R6 ) ; R4 <- R5 + R6}  \\
+\texttt{x3003} & 0000 & 0100 & 0000 & 0001 & \color{Violet}\texttt{( BRz 0x001 ) ; break to 0x3005}  \\
+\texttt{x3004} & 0001 & 0000 & 0010 & 0001 & \color{Violet}\texttt{( ADD R0, R0, \#1 ) ; R0 <- R0 + 0x0001}  \\
+\texttt{x3005} & 0001 & 1101 & 1000 & 0110 & \color{Violet}\texttt{( ADD R6, R6, R6 ) ; R6 <- R6 + R6}  \\
+\texttt{x3006} & 0001 & 1111 & 1110 & 0001 & \color{Violet}\texttt{( ADD R7, R7, \#1 ) ; R7 <- R7 + 0x0001}  \\
+\texttt{x3007} & 0001 & 0011 & 1111 & 1000 & \color{Violet}\texttt{( ADD R1, R7, \#-8) ; R1 <- R7 + 0xFFF8}  \\
+\texttt{x3008} & 0000 & 1001 & 1111 & 1001 & \color{Violet}\texttt{( BRn 0xFF7 ) ; break to 0x3002}  \\
+\texttt{x3009} & 0101 & 1111 & 1110 & 0000 & \color{Violet}\texttt{( AND R7, R7, \#0 ) ; R7 <- 0x0000} 
 \end{array}
 $$
 
-*Ans.-*
+*Ans.-* A quick look into the instruction bits' `DR`-bits ie. $\texttt{IR[11:9]}$ we can see that none points to R5 as the destination register so we can claim that R5 hasn't changed during this program.
 
 ---
 
