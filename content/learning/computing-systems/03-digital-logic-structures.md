@@ -260,7 +260,7 @@ $$
 
 ---
 
-- 3.35 A 16-bit register contains a value. The value x75A2 is written into it. Can the original value be recovered?
+- 3.35 A 16-bit register contains a value. The value `x75A2` is written into it. Can the original value be recovered?
 
 *Ans.-* No, there is no physical mechanism to recover the previous stored bits once new ones are written in a register.
 

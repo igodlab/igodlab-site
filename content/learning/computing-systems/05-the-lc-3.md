@@ -7,9 +7,9 @@ date: "2025-12-18"
 
 *Ans.-*
 
-| Instruction | Type | Addr modes |
+| Instruction | Type | Addressing modes |
 |---|---|---|
-| `ADD` | operate | Depending on $\texttt{IR[5]}=0^{(i)}\wedge 1^{(ii)}$, the second operand is either *(i)* the value stored in the address of the register specified by $\texttt{IR[2:0]}$. Or *(ii)* an immediate value specified by bits $\texttt{IR[4:0]}$. |
+| `ADD` | operate | Depending on $\texttt{IR[5]}=0^{(i)}\vee 1^{(ii)}$, the second operand is either *(i)* the value stored in the address of the register specified by $\texttt{IR[2:0]}$. Or *(ii)* an immediate value specified by bits $\texttt{IR[4:0]}$. |
 | `JMP` | control | Jumps to instruction located in Base Register specified by bits $\texttt{IR[8:6]}$ | 
 | `LEA` | data move | Value stored in $\texttt{IR[8:0]}$ is the offset to compute the effective address that will be loaded into GPR $\texttt{IR[11:9]}$ |
 | `NOT` | operate | Inverts the operand stored in $\texttt{IR[8:6]}$ |
@@ -220,13 +220,13 @@ Fortunately, as we can see from the table above the *Condition Codes* CC will in
 $$
 \begin{array}{cc||ll}
 \texttt{0x---0} & 1001\;1000\;1111\;1111 & \texttt{( NOT R4, R3 )} & \texttt{R4 <- NOT(R3)} \\
-\texttt{0x---1} & 0001\;0000\;0010\;0001 & \texttt{( ADD R4, R4, \#1 )} & \texttt{R4 <- R4 + 0x0001 = -R3} \\
+\texttt{0x---1} & 0001\;0000\;0010\;0001 & \texttt{( ADD R4, R4, \#1 )} & \texttt{R4 <- R4 + 0x0001 = (-R3)} \\
 \texttt{0x---2} & 0001\;0010\;1000\;0011 & \texttt{( ADD R1, R2, R3 )} & \texttt{R1 <- R2 + R4} \\
-\texttt{0x---3} & 0000\;0100\;0000\;0101 & \texttt{( BRz 0x005)} & \texttt{break to 0x---9} \\
-\texttt{0x---4} & 0000\;1000\;0000\;0011 & \texttt{( BRn 0x003)} & \texttt{break to 0x---8} \\
-\texttt{0x---5} & 0000\;0010\;0000\;0000 & \texttt{( BRp 0x000)} & \texttt{break to 0x---6} \\
+\texttt{0x---3} & 0000\;0100\;0000\;0101 & \texttt{( BRz 0x005 )} & \texttt{break to 0x---9} \\
+\texttt{0x---4} & 0000\;1000\;0000\;0011 & \texttt{( BRn 0x003 )} & \texttt{break to 0x---8} \\
+\texttt{0x---5} & 0000\;0010\;0000\;0000 & \texttt{( BRp 0x000 )} & \texttt{break to 0x---6} \\
 \texttt{0x---6} & 0101\;0010\;1011\;1111 & \texttt{( AND R1, R2, \#-1 )} & \texttt{R1 <- R2} \\
-\texttt{0x---7} & 0000\;1110\;0000\;0001 & \texttt{( BRnzp 0x001)} & \texttt{break to 0x---9} \\
+\texttt{0x---7} & 0000\;1110\;0000\;0001 & \texttt{( BRnzp 0x001 )} & \texttt{break to 0x---9} \\
 \texttt{0x---8} & 0101\;0010\;1111\;1111 & \texttt{( AND R1, R3, \#-1 )} & \texttt{R1 <- R3} \\
 \texttt{0x---9} & 1111\;0000\;0010\;0101 & \texttt{( TRAP 0x25 )} & \texttt{HALT} \\
 \end{array}
@@ -236,7 +236,7 @@ $$
 
 - 5.27 Before the seven instructions are executed in the example of Section 5.3.4, R2 contains the value `xAAAA`. How many different values are contained in R2 during the execution of the seven instructions? What are they?
 
-*Ans.-* There are 4 different values stored in R2 during the modified Section 5.3.4's program. It begins with `R2 <- 0xAAAA`; then at `IR[0x30F]7` we rewrite `R2 <- 0x3102`; then `R <- 0x0000` at `IR[0x30F9]`; followed by ADDing 5 at `IR[0x30FA]` changing `R2 <- 0x0005`.
+*Ans.-* There are 4 different values stored in R2 during the modified Section 5.3.4's program. It begins with `R2 <- 0xAAAA`; then at `IR[0x30F7]` we rewrite `R2 <- 0x3102`; then `R2 <- 0x0000` at `IR[0x30F9]`; followed by ADDing 5 at `IR[0x30FA]` changing `R2 <- 0x0005`.
 
 ---
 
@@ -309,7 +309,7 @@ $$
 \texttt{x2FFF} & 0101 & 0000 & 0010 & 0000 & \color{Violet}\texttt{( AND R0, R0, \#0 ) ; R0 <- 0x0000}  \\
 \texttt{x3000} & 0101 & 1111 & 1110 & 0000 & \color{Violet}\texttt{( AND R7, R7, \#0 ) ; R7 <- 0x0000}  \\
 \texttt{x3001} & 0001 & 1101 & 1110 & 0001 & \color{Violet}\texttt{( ADD R6, R7, \#1 ) ; R6 <- R7 + 0x0001}  \\
-\texttt{x3002} & 0101 & 1001 & 0100 & 0110 & \color{Violet}\texttt{( AND R4, R5, R6 ) ; R4 <- R5 + R6}  \\
+\texttt{x3002} & 0101 & 1001 & 0100 & 0110 & \color{Violet}\texttt{( AND R4, R5, R6 ) ; R4 <- R5 }\wedge\texttt{ R6}  \\
 \texttt{x3003} & 0000 & 0100 & 0000 & 0001 & \color{Violet}\texttt{( BRz 0x001 ) ; break to 0x3005}  \\
 \texttt{x3004} & 0001 & 0000 & 0010 & 0001 & \color{Violet}\texttt{( ADD R0, R0, \#1 ) ; R0 <- R0 + 0x0001}  \\
 \texttt{x3005} & 0001 & 1101 & 1000 & 0110 & \color{Violet}\texttt{( ADD R6, R6, R6 ) ; R6 <- R6 + R6}  \\
@@ -320,11 +320,21 @@ $$
 \end{array}
 $$
 
-*Ans.-* A quick look into the instruction bits' `DR`-bits ie. $\texttt{IR[11:9]}$ we can see that none points to R5 as the destination register so we can claim that R5 hasn't changed during this program.
+*Ans.-* We can infer that R5 is a constant value throughout the whole program and exactly 5 out of its 8 leftmost digits are equal to one. Reasoning below:
+- A quick look into the instruction's (destination register) `DR`-bits ie. $\texttt{IR[11:9]}$ tell us that none points to $\texttt{R5}(=101)$ as the DR so we know that R5 hasn't changed during this program. 
+    - This can be seen in Figure B), R5 row stays the same $\left( \|\texttt{R5}\| \right)$ throughout all iterations. 
+- Figure A), shows that R0 serves as a counter that increments in value of 1 each time the BReak-z instruction at `0x3003` is NOT taken and the BReak-n instruction at `0x3008` is. R7 is an incremental counter that indicates when the program ends, it goes from $-7$ to $0$ in 8-iterations. 
+- All this reveals that the program takes 8-iterations to complete and because we know beforehand that at the EOP (end of the program) $\texttt{R0}=5$ this means that the BR-z at `0x3003` was skipped exactly three times. 
+    - The only way these skips can occur is when instruction `0x3002` $\texttt{R4 <- R5 }\wedge\texttt{ R6 = 0x0000}$. 
+    - Which, since R5 is a constant and R6 acts as a permutating mask (see Figure C) we deduce that R5 must have EXACTLY 5 non-zero values in any of its 8 leftmost digits.
+
+<img src="../../assets/learning/computing-systems/ch05-ex33-sol.png" width="80%">
 
 ---
 
-5.35 Using the overall data path in Figure 5.18, identify the elements that implement the ADD instruction of Figure 5.5.
+535 Using the overall data path in Figure 5.18, identify the elements that implement the ADD instruction of Figure 5.5.
+
+<img src="../../assets/learning/computing-systems/Fig5_18.png" width="100%">
 
 *Ans.-*
 
