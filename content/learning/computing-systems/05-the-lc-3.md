@@ -128,24 +128,24 @@ $$
 
 - 5.17 How many times does the LC-3 make a read or write request to memory during the processing of the LD instruction? How many times during the processing of the LDI instruction? How many times during the processing of the LEA instruction? Processing includes all phases of the instruction cycle.
 
-*Ans.-* Since `LD, LDI` are **Destination Register** type of instructions and `LEA` only handles addresses, all memory access will be *writes* ($\dagger$) and no store. See the table and count the daggers for each instruction:
+*Ans.-* Since `LD, LDI` are **Destination Register** type of instructions and `LEA` only handles addresses, all memory access will be *reads* ($\dagger_R$) and no writes ($\dagger_W$). See the table and count the daggers for each instruction:
 $$
 \begin{array}{c|l|l|l}
 \textbf{Phase} & \texttt{LD} & \texttt{LDI} & \texttt{LEA} \\
 \hline
              & \texttt{MAR <- PC} & \texttt{MAR <- PC} & \texttt{MAR <- PC}  \\
 \text{FETCH} & \texttt{PC <- PC + 1} & \texttt{PC <- PC + 1} & \texttt{PC <- PC + 1}  \\
-             & \texttt{MDR <- M[MAR]}(\dagger^1) & \texttt{MDR <- M[MAR]}(\dagger^1) & \texttt{MDR <- M[MAR]}(\dagger^1)  \\
+             & \texttt{MDR <- M[MAR]}(\dagger_R^1) & \texttt{MDR <- M[MAR]}(\dagger_R^1) & \texttt{MDR <- M[MAR]}(\dagger_R^1)  \\
              & \texttt{IR <- MDR} & \texttt{IR <- MDR} &\texttt{IR <- MDR}  \\
 \hline
 \text{DECODE} & \text{Decode instruction} & \text{Decode instruction} & \text{Decode instruction}  \\
               & \text{into }\texttt{IR} & \text{into }\texttt{IR} & \text{into }\texttt{IR}  \\
 \hline
 \text{EVALUATE} & \texttt{MAR <- PC + SEXT(offset9)} & \texttt{MAR <- PC + SEXT(offset9)} & \texttt{MAR <- PC + SEXT(offset9)}  \\
-\text{ADDRESS}  &  & \texttt{MDR <- M[MAR]}(\dagger^2) & \\
+\text{ADDRESS}  &  & \texttt{MDR <- M[MAR]}(\dagger_R^2) & \\
                 &  & \texttt{MAR <- MDR} & \\
 \hline
-\text{FETCH}    & \texttt{MDR <- M[MAR]}(\dagger^2) & \texttt{MDR <- M[MAR]}(\dagger^3) & \texttt{LEA}\text{ fetches no operands} \\
+\text{FETCH}    & \texttt{MDR <- M[MAR]}(\dagger_R^2) & \texttt{MDR <- M[MAR]}(\dagger_R^3) & \texttt{LEA}\text{ fetches no operands} \\
 \text{OPERANDS} &  &  &  \\
 \hline
 \text{EXECUTE} & \texttt{DR <- MDR} & \texttt{DR <- MDR} & \texttt{DR <- MAR} \\
@@ -153,7 +153,7 @@ $$
 \text{STORE RESULT} & \text{Set CCs} & \text{Set CCs} & \text{Set CCs} \\
 \hline
 \hline
-\textbf{Total }(\dagger) & \textbf{2 memory reads} & \textbf{3 memory reads} & \textbf{1 memory read} 
+\textbf{Total }(\dagger_R) & \textbf{2 memory reads} & \textbf{3 memory reads} & \textbf{1 memory read} 
 \end{array}
 $$
 
@@ -240,13 +240,13 @@ $$
 
 ---
 
-- 5.29 The LC-3 ISA contains the instruction $\texttt{LDR DR, BaseR, offset}$. After the instruction is decoded, the following operations (called microinstructions) are carried out to complete the processing of the LDR instruction:
+- 5.29 The LC-3 ISA contains the instruction $\texttt{LDR DR, BaseR, offset6}$. After the instruction is decoded, the following operations (called microinstructions) are carried out to complete the processing of the LDR instruction:
 
 $$
 \begin{align*}
-&\texttt{MAR} \leftarrow \texttt{BaseR + SEXT(Offset6) ; set up the memory address} \\
-&\texttt{MDR} \leftarrow \texttt{Memory[MAR] ; read mem at BaseR + offset} \\
-&\texttt{DR} \leftarrow \texttt{MDR ; load DR}
+&\texttt{MAR <- BaseR + SEXT(offset6)} && \texttt{; set up the memory address} \\
+&\texttt{MDR <- Memory[MAR]} && \texttt{; read memory at BaseR + offset} \\
+&\texttt{DR <- MDR} && \texttt{; load DR}
 \end{align*}
 $$
 
@@ -256,23 +256,21 @@ $$
 
 *Ans.-*
 
-- a. A `MOVE` can be written as a sequence of the following LC-3 existing instructions:
+- a. `MOVE` is a memory-to-memory rather than a register-to-register operation, meaning that it ultimately aims for the following data move $\texttt{M[DR] <- M[SR]}$ . It can be written as a sequence of the following LC-3 existing instructions:
 $$
-\begin{align*}
-&\texttt{AND <- DR, SR, \#-1} \\
-\end{align*}
+\begin{array}{l||l}
+\texttt{LDR RTemp, SR, \#0} & \texttt{RTemp <- M[SR] ; read from SR and write its contents into RTemp} \\
+\texttt{STR RTemp, DR, \#0} & \texttt{M[DR] <- RTemp ; write RTemp into DR's memory}
+\end{array}
 $$
 
-- b. The post-DECODE microinstructions to be followed are:
+- b. We need 4 post-DECODE microinstructions with one write and one read from and to memory:
 $$
-\begin{array}{l}
-\texttt{SR1MUX <- IR[8:6]} \\
-\texttt{SR2MUX <- 1} \\
-\texttt{SEXT5 <- IR[4:0]} \\
-\texttt{ALUK <- AND} \\
-\texttt{GateALU <- 1} \\
-\texttt{LD.CC <- 1} \\
-\texttt{LD.REG <- 1; DR <- IR[11:9]}
+\begin{array}{c|ll}
+1. & \texttt{MAR <- BaseR + SEXT(offset6) = SR} & \texttt{; calculate SR address} \\
+2. & \texttt{MDR <- M[MAR]} & \texttt{; }(\dagger_R^1)\texttt{ read from memory} \\
+3. & \texttt{MAR <- BaseR + SEXT(offset6) = DR} & \texttt{; calculate DR address} \\
+4. & \texttt{M[MAR] <- MDR} & \texttt{; }(\dagger_W^1)\texttt{ write to memory} \\
 \end{array}
 $$
 
@@ -332,9 +330,9 @@ $$
 
 ---
 
-535 Using the overall data path in Figure 5.18, identify the elements that implement the ADD instruction of Figure 5.5.
+5.35 Using the overall data path in Figure 5.18, identify the elements that implement the ADD instruction of Figure 5.5.
 
-<img src="../../assets/learning/computing-systems/Fig5_18.png" width="100%">
+<img src="../../assets/learning/computing-systems/Fig5_18.png" width="85%">
 
 *Ans.-*
 

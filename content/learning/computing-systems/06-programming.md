@@ -15,7 +15,7 @@ date: "2999-11-24"
 
 ---
 
-- 6.5 Which of the two algorithms for multiplying two numbers is preferable and why? $88 \cdot 3 = 88 + 88 + 88 \texttt{ OR } 3 + 3 + 3 + 3 + \ldots + 3$?
+- 6.5 Which of the two algorithms for multiplying two numbers is preferable and why? $88 \cdot 3 = 88 + 88 + 88 \text{ or } 3 + 3 + 3 + 3 + \ldots + 3$?
 
 *Ans.-*
 
@@ -79,25 +79,25 @@ $$
 \begin{array}{l|l|l}
   & \text{Before} & \text{After} \\
 \hline
-R0: & \texttt{x3208} & \texttt{x3208}  \\
-R1: & \texttt{x2d7c} & \texttt{x2d7c}  \\
-R2: & \texttt{xe373} & \texttt{xe373}  \\
-R3: & \texttt{x2053} & \texttt{x2053}  \\
-R4: & \texttt{x33ff} & \texttt{x33ff}  \\
-R5: & \texttt{x3f1f} & \texttt{x3f1f}  \\
-R6: & \texttt{xf4a2} & \texttt{xf4a2}  \\
-R7: & \texttt{x5220} & \texttt{x5220}  \\
+\texttt{R0 :} & \texttt{x3208} & \texttt{x3208}  \\
+\texttt{R1 :} & \texttt{x2d7c} & \texttt{x2d7c}  \\
+\texttt{R2 :} & \texttt{xe373} & \texttt{xe373}  \\
+\texttt{R3 :} & \texttt{x2053} & \texttt{x2053}  \\
+\texttt{R4 :} & \texttt{x33ff} & \texttt{x33ff}  \\
+\texttt{R5 :} & \texttt{x3f1f} & \texttt{x3f1f}  \\
+\texttt{R6 :} & \texttt{xf4a2} & \texttt{xf4a2}  \\
+\texttt{R7 :} & \texttt{x5220} & \texttt{x5220}  \\
 \hline
 \ldots &  & \\
-\texttt{x3400}:  & \texttt{x3001} & \texttt{x3001} \\
-\texttt{x3401}:  & \texttt{x7a00} & \texttt{x7a00} \\
-\texttt{x3402}:  & \texttt{x7a2b} & \texttt{x7a2b} \\
-\texttt{x3403}:  & \texttt{xa700} & \texttt{xa700} \\
-\texttt{x3404}:  & \texttt{xf011} & \texttt{xf011} \\
-\texttt{x3405}:  & \texttt{x2003} & \texttt{x2003} \\
-\texttt{x3406}:  & \texttt{x31ba} & \texttt{xe373} \\
-\texttt{x3407}:  & \texttt{xc100} & \texttt{xc100} \\
-\texttt{x3408}:  & \texttt{xefef} & \texttt{xefef} \\
+\texttt{x3400 :}  & \texttt{x3001} & \texttt{x3001} \\
+\texttt{x3401 :}  & \texttt{x7a00} & \texttt{x7a00} \\
+\texttt{x3402 :}  & \texttt{x7a2b} & \texttt{x7a2b} \\
+\texttt{x3403 :}  & \texttt{xa700} & \texttt{xa700} \\
+\texttt{x3404 :}  & \texttt{xf011} & \texttt{xf011} \\
+\texttt{x3405 :}  & \texttt{x2003} & \texttt{x2003} \\
+\texttt{x3406 :}  & \texttt{x31ba} & \texttt{xe373} \\
+\texttt{x3407 :}  & \texttt{xc100} & \texttt{xc100} \\
+\texttt{x3408 :}  & \texttt{xefef} & \texttt{xefef} \\
 \ldots &  & 
 \end{array}
 $$
