@@ -259,7 +259,7 @@ $$
 - a. `MOVE` is a memory-to-memory rather than a register-to-register operation, meaning that it ultimately aims for the following data move $\texttt{M[DR] <- M[SR]}$ . It can be written as a sequence of the following LC-3 existing instructions:
 $$
 \begin{array}{l||l}
-\texttt{LDR RTemp, SR, \#0} & \texttt{RTemp <- M[SR] ; read from SR and write its contents into RTemp} \\
+\texttt{LDR RTemp, SR, \#0} & \texttt{RTemp <- M[SR] ; read SR contents and write them into RTemp} \\
 \texttt{STR RTemp, DR, \#0} & \texttt{M[DR] <- RTemp ; write RTemp into DR's memory}
 \end{array}
 $$
@@ -269,7 +269,10 @@ $$
 \begin{array}{c|ll}
 1. & \texttt{MAR <- BaseR + SEXT(offset6) = SR} & \texttt{; calculate SR address} \\
 2. & \texttt{MDR <- M[MAR]} & \texttt{; }(\dagger_R^1)\texttt{ read from memory} \\
+- & \texttt{RTemp <- MDR} & \ldots\text{omitted due to redundancy}\\
+\hline
 3. & \texttt{MAR <- BaseR + SEXT(offset6) = DR} & \texttt{; calculate DR address} \\
+- & \texttt{MDR <- RTemp} & \ldots\text{omitted due to redundancy}\\
 4. & \texttt{M[MAR] <- MDR} & \texttt{; }(\dagger_W^1)\texttt{ write to memory} \\
 \end{array}
 $$
@@ -436,7 +439,7 @@ Show the contents of the memory cells by putting the hex digit that is stored in
 
 5.51 An aggressive young engineer decides to build and sell the LC-3 but is told that if he wants to succeed, he really needs a SUBTRACT instruction. Given the unused opcode 1101, he decides to specify the SUBTRACT instruction as follows:
 $$
-\begin{array}{rrrr|rrr|rrr|rrr|rrr}
+\begin{array}{|rrrr|rrr|rrr|rrr|rrr|}
 15 &  &  & 12 & 11 &  & 9 & 8 &  & 6 & 5 &  & 3 & 2 &  & 0 \\
 \hline
 1 & 1 & 0 & 1 &  & \texttt{DR} &  &  & \texttt{SR1} &  & 0 & 0 & 0 &  & \texttt{SR2} &  \\
