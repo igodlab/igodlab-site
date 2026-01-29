@@ -1,6 +1,6 @@
 ---
-title: "Chapter 6 solutions - Programming"
-date: "2999-11-24"
+title: LC-3 Ch6 solutions - Programming
+date: 2999-11-24
 ---
 
 - 6.1 Can a procedure that is not an algorithm be constructed from the three basic constructs of structured programming? If so, demonstrate through an example.
@@ -153,7 +153,7 @@ $$
 
 ---
 
-- 6.21 You have been asked to design the volume control system in a stereo. The user controls the volume by using Volume Up and Volume Down buttons on the stereo. When the user presses the Volume Up button, the volume should increase by 1; when the user presses the Volume Down button, the volume should decrease by 1. The volume level is represented as a four-bit unsigned value, ranging from 0 to 15. If the user presses Volume Up when the volume is already at the maximum level of 15, the volume should remain at 15; similarly, if the user presses Volume Down when the volume is already at the minimum level of 0, the volume should remain at 0. The memory location `x3100` has been directly hooked up to the speakers so that reading bits 3 through 0 from that memory location will give the current speaker volume, while writing bits $[3:0]$ of that memory location will set the new speaker volume. When the user presses one of the volume buttons, the stereo hardware will reset the PC of the processor to `x3000` and begin execution. If the user presses Volume Up, then memory location `x3101` will be set to 1; otherwise, if the user presses Volume Down, then the memory location `x3101` will be set to 0. Below is the program that controls the volume on the stereo. Two of the instructions in the program have been left out. Your job: Fill in the missing instructions so that the program controls the volume correctly as speciﬁed.
+- 6.21 You have been asked to design the volume control system in a stereo. The user controls the volume by using Volume Up and Volume Down buttons on the stereo. When the user presses the Volume Up button, the volume should increase by 1; when the user presses the Volume Down button, the volume should decrease by 1. The volume level is represented as a four-bit unsigned value, ranging from 0 to 15. If the user presses Volume Up when the volume is already at the maximum level of 15, the volume should remain at 15; similarly, if the user presses Volume Down when the volume is already at the minimum level of 0, the volume should remain at 0. The memory location `x3100` has been directly hooked up to the speakers so that reading bits 3 through 0 from that memory location will give the current speaker volume, while writing bits $[3:0]$ of that memory location will set the new speaker volume. When the user presses one of the volume buttons, the stereo hardware will reset the PC of the processor to `x3000` and begin execution. If the user presses Volume Up, then memory location `x3101` will be set to 1; otherwise, if the user presses Volume Down, then the memory location `x3101` will be set to 0. Below is the program that controls the volume on the stereo. Two of the instructions in the program have been left out. Your job: Fill in the missing instructions so that the program controls the volume correctly as specified.
 $$
 \begin{array}{c|c|l}
 \text{Address} & \text{Contents} & \text{Description} \\
@@ -177,7 +177,7 @@ $$
 
 ---
 
-- 6.23 The PC is loaded with `x3000`, and the instruction at address `x3000` is executed. In fact, execution continues and four more instructions are executed. The table below contains the contents of various registers at the end of execution for each of the ﬁve (total) instructions. Your job: Complete the table. Let’s start execution again, starting with `PC = x3000`. First, we re-initialize R0 and R1 to 0, and set a breakpoint at `x3004`. We press RUN eleven times, and each time the program executes until the breakpoint. What are the ﬁnal values of R0 and R1?
+- 6.23 The PC is loaded with `x3000`, and the instruction at address `x3000` is executed. In fact, execution continues and four more instructions are executed. The table below contains the contents of various registers at the end of execution for each of the five (total) instructions. Your job: Complete the table. Let’s start execution again, starting with `PC = x3000`. First, we re-initialize R0 and R1 to 0, and set a breakpoint at `x3004`. We press RUN eleven times, and each time the program executes until the breakpoint. What are the final values of R0 and R1?
 
 *Ans.-*
 $$

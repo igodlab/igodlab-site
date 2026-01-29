@@ -54,7 +54,7 @@
 
 ---
 
-- 2.52 Consider two hexadecimal numbers: `x434F4D50` and `x55544552`. What values do they represent for each of the ﬁve data types shown?
+- 2.52 Consider two hexadecimal numbers: `x434F4D50` and `x55544552`. What values do they represent for each of the five data types shown?
 
 *Ans.-*
 
@@ -68,7 +68,7 @@
 
 ---
 
-- 2.54 Fill in the truth table for the equations given. The ﬁrst line is done as an example.
+- 2.54 Fill in the truth table for the equations given. The first line is done as an example.
 $$
 \begin{align*}
 &Q_1 = \text{NOT(NOT(X) OR (A AND Y AND Z))} \\
@@ -95,7 +95,7 @@ $$
 
 ---
 
-- 2.56 Deﬁne a new eight-bit ﬂoating point format with one sign bit, four bits of exponent, using an excess-7 code (i.e., the bias is 7), and three bits of fraction. If `xE5` is the bit pattern for a number in this eight-bit ﬂoating point format, what value does it have? (Express as a decimal number.)
+- 2.56 Define a new eight-bit ﬂoating point format with one sign bit, four bits of exponent, using an excess-7 code (i.e., the bias is 7), and three bits of fraction. If `xE5` is the bit pattern for a number in this eight-bit ﬂoating point format, what value does it have? (Express as a decimal number.)
 
 *Ans.-*
 
@@ -120,7 +120,7 @@ $$
 
 ---
 
-- 3.6 For the transistor-level circuit in Figure 3.38, ﬁll in the truth table. What is Z in terms of A and B?
+- 3.6 For the transistor-level circuit in Figure 3.38, fill in the truth table. What is Z in terms of A and B?
 
 <img src="../../assets/learning/computing-systems/ch03-ex06.png" width="60%">
 
@@ -278,7 +278,7 @@ $$
 
 ---
 
-- 3.32 Recall that the adder was built with individual “**slices**” that produced a sum bit and a carry-out bit based on the two operand bits $A$ and $B$ and the carry-in bit. We called such an element a full adder. Suppose we have a 3-to-8 decoder and two 6-input OR gates, as shown below. Can we connect them so that we have a full adder? If so, please do. (Hint: If an input to an OR gate is not needed, we can simply put an input 0 on it and it will have no eﬀect on anything. For example, see the following ﬁgure.)
+- 3.32 Recall that the adder was built with individual “**slices**” that produced a sum bit and a carry-out bit based on the two operand bits $A$ and $B$ and the carry-in bit. We called such an element a full adder. Suppose we have a 3-to-8 decoder and two 6-input OR gates, as shown below. Can we connect them so that we have a full adder? If so, please do. (Hint: If an input to an OR gate is not needed, we can simply put an input 0 on it and it will have no eﬀect on anything. For example, see the following figure.)
 
 <img src="../../assets/learning/computing-systems/ch03-ex32.png" width="50%">
 
@@ -350,7 +350,7 @@ $$
 
 ---
 
-- 3.46 Refer to Section 3.6.2. Draw a partial ﬁnite state machine for the game of tic-tac-toe.
+- 3.46 Refer to Section 3.6.2. Draw a partial finite state machine for the game of tic-tac-toe.
 
 *Ans.-*
 
@@ -392,7 +392,7 @@ We can implement an 8-to-1 mux with a logic circuit of 2-to-1 muxes, as shown be
 
 ---
 
-- 3.56 Shown below is the partially completed state diagram of a ﬁnite state machine that takes an input string of H (heads) and T (tails) and produces an output of 1 every time the string `HTHH` occurs.
+- 3.56 Shown below is the partially completed state diagram of a finite state machine that takes an input string of H (heads) and T (tails) and produces an output of 1 every time the string `HTHH` occurs.
 
 <img src="../../assets/learning/computing-systems/ch03-ex56.png" width="60%">
 
@@ -402,16 +402,16 @@ if the input string is:  H H H H H T H H T H H H H H T H H T
 the output would be:     0 0 0 0 0 0 0 1 0 0 1 0 0 0 0 0 1 0
 ``` 
 - Note that the eighth coin toss (`H`) is part of two `HTHH` sequences.
-    - a. Complete the state diagram of the ﬁnite state machine that will do this for any input sequence of any length.
-    - b. If we decide to implement this ﬁnite state machine with a sequential logic circuit (similar to the danger sign we designed in class), how many state variables would we need?
+    - a. Complete the state diagram of the finite state machine that will do this for any input sequence of any length.
+    - b. If we decide to implement this finite state machine with a sequential logic circuit (similar to the danger sign we designed in class), how many state variables would we need?
 
 *Ans.-*
 
 ---
 
-- 3.58 The following transistor circuit produces the accompanying truth table. The inputs to some of the gates of the transistors are not speciﬁed. Also, the outputs for some of the input combinations of the truth table are not speciﬁed.
+- 3.58 The following transistor circuit produces the accompanying truth table. The inputs to some of the gates of the transistors are not specified. Also, the outputs for some of the input combinations of the truth table are not specified.
 
-Your job: Complete both speciﬁcations. That is, all transistors will have their gates properly labeled with either $A, B$, or $C$, and all rows of the truth table will have a 0 or 1 speciﬁed as the output.
+Your job: Complete both specifications. That is, all transistors will have their gates properly labeled with either $A, B$, or $C$, and all rows of the truth table will have a 0 or 1 specified as the output.
 
 Note that this is not a problematic circuit. For every input combination, the output is either connected to ground (i.e., $\text{OUT=0}$) or to the positive end of the battery (i.e., $\text{OUT=1}$).
 
@@ -436,7 +436,7 @@ $$
 
 ---
 
-- 3.60 A ﬁnite state machine is connected to a 23 -by-2-bit memory as shown below:
+- 3.60 A finite state machine is connected to a 23 -by-2-bit memory as shown below:
 
 <img src="../../assets/learning/computing-systems/ch03-ex60.png" width="50%">
 
@@ -459,7 +459,7 @@ A[2:0] & D[1:0] &   & S[2:0] & D[1:0] & D[1:0] & D[1:0] & D[1:0] \\
 \end{array}
 $$
 
-- The output $Z0, Z1, Z2$ is the current state of the ﬁnite state machine. That is, $Z0=S0, Z1=S1, Z2=S2$. The cycle time of the ﬁnite state machine is long enough so that during a single cycle, the following happens: The output of the ﬁnite state machine accesses the memory, and the values supplied by the memory are input to the combinational logic, which determines the next state of the machine.
+- The output $Z0, Z1, Z2$ is the current state of the finite state machine. That is, $Z0=S0, Z1=S1, Z2=S2$. The cycle time of the finite state machine is long enough so that during a single cycle, the following happens: The output of the finite state machine accesses the memory, and the values supplied by the memory are input to the combinational logic, which determines the next state of the machine.
 
     - a. Complete the following table.
     - b. What will the state of the FSM be just before the end of cycle 100? Why?
@@ -470,9 +470,9 @@ $$
 
 ---
 
-- 3.62 You are taking three courses, one each in computing (C), engineering (E), and math (M). In each course, you periodically receive assignments. You never receive more than one assignment at a time. You also never receive another assignment in a course if you currently have an assignment in that course that has not been completed. You must procrastinate (i.e., do nothing) unless you have unﬁnished assignments in both computing and engineering. Design a ﬁnite state machine to describe the state of the work you have to do and whether you are working or procrastinating.
-    - a. Label each state with the unﬁnished assignments (with letters C,E,M) for when you are in that state. There are far more states provided than you actually need. Use only what you need.
-    - b. There are six inputs: $c, e, m, \overline{c}, \overline{e}, \overline{m}.$ $c, e, m$ refer to you receiving an assignment. $\overline{c}, \overline{e}, \overline{m}$ refer to you completing an assignment. Draw the transition arc for each state/input pair. For example, if you had previously only had an unﬁnished assignment in math and you received an assignment in computing, you would transition from state M to state CM, as shown below.
+- 3.62 You are taking three courses, one each in computing (C), engineering (E), and math (M). In each course, you periodically receive assignments. You never receive more than one assignment at a time. You also never receive another assignment in a course if you currently have an assignment in that course that has not been completed. You must procrastinate (i.e., do nothing) unless you have unfinished assignments in both computing and engineering. Design a finite state machine to describe the state of the work you have to do and whether you are working or procrastinating.
+    - a. Label each state with the unfinished assignments (with letters C,E,M) for when you are in that state. There are far more states provided than you actually need. Use only what you need.
+    - b. There are six inputs: $c, e, m, \overline{c}, \overline{e}, \overline{m}.$ $c, e, m$ refer to you receiving an assignment. $\overline{c}, \overline{e}, \overline{m}$ refer to you completing an assignment. Draw the transition arc for each state/input pair. For example, if you had previously only had an unfinished assignment in math and you received an assignment in computing, you would transition from state M to state CM, as shown below.
     - c. The output of each state is your behavior, 1 if you are working on an assignment, 0 if you are procrastinating. Label the outputs of each state.
 
 <img src="../../assets/learning/computing-systems/ch03-ex62.png" width="50%">
@@ -557,11 +557,11 @@ $$
 
 ---
 
-4.18 The $2^2$-by-3 bit memory discussed in class is accessed during ﬁve consecutive clock cycles. The table below shows the values of the two-bit address, one-bit write enable, and three-bit data-in signals during each access.
+4.18 The $2^2$-by-3 bit memory discussed in class is accessed during five consecutive clock cycles. The table below shows the values of the two-bit address, one-bit write enable, and three-bit data-in signals during each access.
 
 <img src="../../assets/learning/computing-systems/ch04-ex18.png" width="75%">
 
-Your job: Fill in the value stored in each memory cell and the three data-out lines just before the end of the ﬁfth cycle. Assume initially that all 12 memory cells store the value 1. In the ﬁgure below, each question mark (?) indicates a value that you need to ﬁll in.
+Your job: Fill in the value stored in each memory cell and the three data-out lines just before the end of the fifth cycle. Assume initially that all 12 memory cells store the value 1. In the figure below, each question mark (?) indicates a value that you need to fill in.
 
 *Ans.-*
 

@@ -1,5 +1,5 @@
 ---
-title: Chapter 1 solutions - Welcome abroad
+title: LC-3 Ch1 solutions - Welcome abroad
 date: 2025-09-28
 ---
 

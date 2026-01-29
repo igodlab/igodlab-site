@@ -1,6 +1,6 @@
 ---
-title: "Chapter 5 solutions - The LC-3"
-date: "2025-12-18"
+title: LC-3 Ch5 solutions - The LC-3
+date: 2025-12-18
 ---
 
 - 5.1 Given instructions ADD, JMP, LEA, and NOT, identify whether the instructions are operate instructions, data movement instructions, or control instructions. For each instruction, list the addressing modes that can be used with the instruction.
@@ -25,7 +25,7 @@ date: "2025-12-18"
 - 5.5
     - a. What is an addressing mode?
     - b. Name three places an instruction’s operands might be located.
-    - c. List the ﬁve addressing modes of the LC-3, and for each one state where the operand is located (from part b).
+    - c. List the five addressing modes of the LC-3, and for each one state where the operand is located (from part b).
     - d. What addressing mode is used by the ADD instruction shown in Section 5.1.2?
 
 *Ans.-*
@@ -159,7 +159,7 @@ $$
 
 ---
 
-- 5.19 The LC-3 Instruction Register (IR) is made up of 16 bits, of which the least signiﬁcant nine bits $[8:0]$ represent the PC-relative offset for the LD instruction. If we change the ISA so that bits $[6:0]$ represent the PC-relative offset, what is the new range of addresses we can load data from using the LD instruction?
+- 5.19 The LC-3 Instruction Register (IR) is made up of 16 bits, of which the least significant nine bits $[8:0]$ represent the PC-relative offset for the LD instruction. If we change the ISA so that bits $[6:0]$ represent the PC-relative offset, what is the new range of addresses we can load data from using the LD instruction?
 
 *Ans.-* The reduced $\texttt{offset7}$-bits allow to represent a range of $[\texttt{PC}-64, \texttt{PC}+63]$
 
@@ -269,17 +269,17 @@ $$
 \begin{array}{c|ll}
 1. & \texttt{MAR <- BaseR + SEXT(offset6) = SR} & \texttt{; calculate SR address} \\
 2. & \texttt{MDR <- M[MAR]} & \texttt{; }(\dagger_R^1)\texttt{ read from memory} \\
-- & \texttt{RTemp <- MDR} & \ldots\text{omitted due to redundancy}\\
+- & \texttt{RTemp <- MDR} & \text{...redundant}\\
 \hline
 3. & \texttt{MAR <- BaseR + SEXT(offset6) = DR} & \texttt{; calculate DR address} \\
-- & \texttt{MDR <- RTemp} & \ldots\text{omitted due to redundancy}\\
+- & \texttt{MDR <- RTemp} & \text{...redundant}\\
 4. & \texttt{M[MAR] <- MDR} & \texttt{; }(\dagger_W^1)\texttt{ write to memory} \\
 \end{array}
 $$
 
 ---
 
-5.31 The ﬁgure below shows a snapshot of the eight registers of the LC-3 before and after the instruction at location `x1000` is executed. Fill in the bits of the instruction at location `x1000`.
+5.31 The figure below shows a snapshot of the eight registers of the LC-3 before and after the instruction at location `x1000` is executed. Fill in the bits of the instruction at location `x1000`.
 
 $$
 \begin{array}{rccrc}
@@ -335,21 +335,56 @@ $$
 
 5.35 Using the overall data path in Figure 5.18, identify the elements that implement the ADD instruction of Figure 5.5.
 
-<img src="../../assets/learning/computing-systems/Fig5_18.png" width="85%">
+<img src="../../assets/learning/computing-systems/ch05-ex35-sol.png" width="80%">
 
-*Ans.-*
+*Ans.-* Figure 5.5 implements the $\texttt{ADD R1, R4, \#-2}$ instruction. It requires the folloing elements (red color in Figure 5.18): 
+- `REG FILE (SR1 OUT)`: Outputs R4 value to the ALU (source register)
+- `SR2MUX`: Selects the immediate value `#-2` (instead of a second register)
+- `SEXT [4:0]`: Sign-extends the 5-bit immediate value `#-2` to 16 bits
+- `ALU`: Performs the addition operation `R4 + (-2)`
+- `ALUK`: Set to `ADD` mode to configure `ALU` operation
+- `GateALU`: Enables `ALU` output onto the global bus
+- `Global Bus`: Carries the result from `ALU` to destination
+- `REG FILE (DR input)`: Receives result from bus and stores into `R1`
+- `LD.REG`: Control signal to load the result into `R1`
+- `LOGIC`: Updates condition codes (`N, Z, P`) based on result
+- `LD.CC`: Control signal to update condition code CC registers
 
 ---
 
 5.37 Using the overall data path in Figure 5.18, identify the elements that implement the LDI instruction of Figure 5.8.
 
-*Ans.-*
+*Ans.-* Figure 5.8 implements the $\texttt{LDI R3, x1CC}$ instruction. It requires the following elements (blue color in Figure 5.18):
 
+| 1. Calculate pointer address | 2. Read pointer from memory | 3. Use pointer to get final data | 4. Read final data | 5. Store in register |                          
+|---|---|---|---|---| 
+| `PC`: Provides current `PC` value for address calculation     | `MEMORY`: Reads the pointer value at address in `MAR`         | `GateMDR`: Enables `MDR` (containing pointer) onto the bus  | `MEMORY`: Reads data at the address specified by the pointer  | `GateMDR`: Enables MDR onto the bus                |
+| `SEXT [8:0]`: Sign-extends the 9-bit offset `x1CC` to 16 bits | `MDR`: Receives the pointer (the actual address) from memory  | `Global Bus`: Carries pointer address back to `MAR`         | `MDR`: Receives the final data from memory                    | `Global Bus`: Carries final data to register file  | 
+| `ADDR1MUX`: Selects `PC` as base address                      | `MEM.EN R/W`: Control signals for memory read operation       | `MAR`: Stores the final target address                      | `MEM.EN, R/W`: Control signals for second memory read         | `REG FILE (DR input)`: Stores data into R3         |
+| `ADDR2MUX`: Selects `SEXT[8:0] offset`                        | `LD.MDR`: Control signal to load `MDR`                        | `LD.MAR`: Control signal to load `MAR` again                | `LD.MDR`: Control signal to load MDR                          | `LD.REG`: Control signal to load R3                |                                     
+| `Adder (+)`: Computes `PC + SEXT(offset) = pointer address`       |                                                               |                                                             |                                                             | `LOGIC`: Updates condition codes                   |
+| `MARMUX`: Selects the computed address                        |                                                               |                                                             |                                                             | `LD.CC`: Control signal to update condition codes  |
+| `GateMARMUX`: Enables `MARMUX` output onto the bus            |                                                               |                                                             |                                                             |                                                  |
+| `Global Bus`: Carries pointer address to `MAR`                |                                                               |                                                             |                                                             |                                                  |
+| `MAR`: Stores the pointer address                             |                                                               |                                                             |                                                             |                                                  |
+| `LD.MAR`: Control signal to load MAR                          |                                                               |                                                             |                                                             |                                                  |
 ---
 
 5.39 Using the overall data path in Figure 5.18, identify the elements that implement the LEA instruction of Figure 5.6.
 
-*Ans.-*
+*Ans.-* Figure 5.6 implements the $\texttt{LEAD R5, \#-3}$ instruction. It requires the following elements (green color in Figure 5.18):
+- `PC`: Provides current `PC` value as base for address calculation
+- `SEXT [8:0]`: Sign-extends the 9-bit offset `#-3` to 16 bits
+- `ADDR1MUX`: Selects `PC` as the base address
+- `ADDR2MUX`: Selects `SEXT[8:0] offset`
+- `Adder (+)`: Computes `PC + SEXT(-3) = effective address`
+- `MARMUX`: Selects the computed address (even though we won't use `MAR`)
+- `GateMARMUX`: Enables the computed address onto the global bus
+- `Global Bus`: Carries the effective address to destination register
+- `REG FILE (DR input)`: Stores the computed address into `R5`
+- `LD.REG`: Control signal to load `R5`
+- `LOGIC`: Updates condition codes based on the address value
+- `LD.CC`: Control signal to update condition codes
 
 ---
 
@@ -359,24 +394,35 @@ $$
 
 <img src="../../assets/learning/computing-systems/ch05-ex41.png" width="60%">
 
-*Ans.-*
+*Ans.-* 
+- a. Ausming the Write Enable (WE) is ON then $Y$ is the P Condition Code $\boxed{N}\boxed{Z}\boxed{P}$. More specifically $Y=1$ means that the 16-bit number fed by the globbal bus is positive & non-zero only if the `AND` produces 1. Unwrapping this: `OR=1` if $\texttt{bits[14:0]}\neq 000\;0000\;0000\;0000$ and `NOT=1` if $\texttt{bit[15]}=0$.
+- b. The WE in the gated D-latch is ON if the `OR`ed output of the decoder $X=1$ which occurs only for the following opcodes: 
+
+$$
+\begin{align*}
+\texttt{IR[15:12]}=\{\;&\texttt{0000 (BR), 0101 (AND), 0010 (LD), 1010 (LDI),} \\
+&\texttt{0110 (LDR), 1110 (LEA), 1001 (NOT)}\;\}
+\end{align*}
+$$
+As we can see there is inedeed an error in the logic for $X$ because it should ON the latch only for opcodes that change the CCs ie: *operate-type* opcodes `NOT, AND` (we're missing $\texttt{0001 (ADD)}$) and *load (data-move)-type* opcodes `LD, LDI, LDR, LEA`. The `BR` opcode is of *control-type* and doesn't change the CCs so it shouldn't be there.
+
 
 ---
 
 5.43 When a computer executes an instruction, the state of the computer is changed as a result of that execution. Is there any difference in the state of the LC-3 computer as a result of executing instruction 1 below vs. executing instruction 2 below? Explain. We can assume the state of the LC-3 computer before execution is the same in both cases.
 $$
 \begin{align*}
-&\texttt{instruction 1: 0001 000 000 1 00000 register 0 <-- register 0 + \textbackslash\#0} \\
-&\texttt{instruction 2: 0000 111 000000000 branch to PC' + \textbackslash\#0 if any of N, Z, or P is set}
+&\text{instruction 1: }\texttt{0001 000 000 1 00000} && \texttt{register 0}\leftarrow\texttt{register 0 + \textbackslash\#0} \\
+&\text{instruction 2: }\texttt{0000 111 000000000}   && \texttt{branch to PC}^\prime\texttt{ + \textbackslash\#0 if any of N, Z, or P is set}
 \end{align*}
 $$
 
-*Ans.-*
+*Ans.-* Yes, the difference is that instruction 1 sets the condition codes to whatever `register 0`'s CC is. Whereas the unconditional branch (instruction 2) simply steps into the next instruction pointed by PC$^\prime$.
 
 ---
 
 
-5.45 In class we showed the ﬁrst few states of the ﬁnite state machine that is required for processing instructions of a computer program written for LC-3. In the ﬁrst state, the computer does two things, represented as:
+5.45 In class we showed the first few states of the finite state machine that is required for processing instructions of a computer program written for LC-3. In the first state, the computer does two things, represented as:
 $$
 \begin{align*}
 &\texttt{MAR} \leftarrow \texttt{PC} \\
@@ -386,15 +432,15 @@ $$
 
 Why does the microarchitecture put the contents of the PC into the MAR? Why does the microarchitecture increment the PC?
 
-*Ans.-*
+*Ans.-* These microinstructions belong to the FETCH phase and for such purpose we need to load the instruction into the IR by means of $\texttt{IR = MDR <- M[MAR]}$ and the PC is incremented because the program must move on to its next instruction.
 
 ---
 
-- 5.47 The following diagram describes a 22 by 16-bit memory. Each of the four muxes has four-bit input sources and a four-bit output, and each four-bit source is the output of a single four-bit memory cell.
+- 5.47 The following diagram describes a $2^2$ by 16-bit memory. Each of the four muxes has four-bit input sources and a four-bit output, and each four-bit source is the output of a single four-bit memory cell.
 
 <img src="../../assets/learning/computing-systems/ch05-ex47.png" width="75%">
 
-- a. Unfortunately, the memory was wired by a student, and he got the inputs to some of the muxes mixed up. That is, instead of the four bits from a memory cell going to the correct four-bit input of the mux, the four bits all went to one of the other four-bit sources of that mux. The result was, as you can imagine, a mess. To ﬁgure out the mix-up in the wiring, the following sequence of memory accesses was performed: 
+- a. Unfortunately, the memory was wired by a student, and he got the inputs to some of the muxes mixed up. That is, instead of the four bits from a memory cell going to the correct four-bit input of the mux, the four bits all went to one of the other four-bit sources of that mux. The result was, as you can imagine, a mess. To figure out the mix-up in the wiring, the following sequence of memory accesses was performed: 
 $$
 \begin{array}{c|c|c}
 \text{Read/Write} & \text{MDR} & \text{MAR} \\
@@ -408,7 +454,7 @@ $$
 \text{Read}  & \texttt{x0E2A} & 00 \\
 \end{array}
 $$
-Note: On a write, MDR is loaded before the access. On a read, MDR is loaded as a result of the access. Your job is to identify the mix-up in the wiring. Show which memory cells were wired to which mux inputs by ﬁlling in their corresponding addresses in the blanks provided. Note that one address has already been supplied for you.
+Note: On a write, MDR is loaded before the access. On a read, MDR is loaded as a result of the access. Your job is to identify the mix-up in the wiring. Show which memory cells were wired to which mux inputs by filling in their corresponding addresses in the blanks provided. Note that one address has already been supplied for you.
 - b. After rewiring the muxes correctly and initializing all memory cells to $\texttt{xF}$, the following sequence of accesses was performed. Note that some of the information about each access has been left out. Your job: Fill in the blanks. Show the contents of the memory cells by putting the hex digit that is stored in each after all the accesses have been performed.
 $$
 \begin{array}{c|c|c}
@@ -431,7 +477,7 @@ Show the contents of the memory cells by putting the hex digit that is stored in
 
 ---
 
-5.49 We wish to know if R0 is being used as the Base Register for computing the address in an LDR instruction. Since the instruction is in memory, we can load it into R4. And, since the Base Register is identiﬁed in bits 8:6 of the instruction, we can load R5 with `0000 0001 1100 0000` and then execute $\texttt{AND R6,R5,R4}$. We would know that R0 is the base register if what condition is met?
+5.49 We wish to know if R0 is being used as the Base Register for computing the address in an LDR instruction. Since the instruction is in memory, we can load it into R4. And, since the Base Register is identified in bits 8:6 of the instruction, we can load R5 with `0000 0001 1100 0000` and then execute $\texttt{AND R6,R5,R4}$. We would know that R0 is the base register if what condition is met?
 
 *Ans.-*
 
@@ -446,12 +492,12 @@ $$
 \hline
 \end{array}
 $$
-The instruction is deﬁned as: DR \leftarrow SR2 - SR1, and the condition codes are set. Assume $\texttt{DR, SR1,}$ and $\texttt{SR2}$ are all different registers. To accomplish this, the engineer needs to add three states to the state machine and a mux and register A to the data path. The modiﬁed state machine is shown below, and the modiﬁed data path is shown on the next page. The mux is controlled by a new control signal $\texttt{SR2SEL}$, which selects one of its two sources.
+The instruction is defined as: DR \leftarrow SR2 - SR1, and the condition codes are set. Assume $\texttt{DR, SR1,}$ and $\texttt{SR2}$ are all different registers. To accomplish this, the engineer needs to add three states to the state machine and a mux and register A to the data path. The modified state machine is shown below, and the modified data path is shown on the next page. The mux is controlled by a new control signal $\texttt{SR2SEL}$, which selects one of its two sources.
 $$\texttt{SR2SEL/1: SR2OUT, REGISTER\_A}$$
 
-*Your job:* For the state machine shown below, ﬁll in the empty boxes with the control signals that are needed in order to implement the SUBTRACT instruction. 
+*Your job:* For the state machine shown below, fill in the empty boxes with the control signals that are needed in order to implement the SUBTRACT instruction. 
 
-For the data path, ﬁll in the value in register A.
+For the data path, fill in the value in register A.
 
 *Ans.-*
 
@@ -461,11 +507,11 @@ For the data path, ﬁll in the value in register A.
 
 ---
 
-- 5.53 The eight general purpose registers of the LC-3 (R0 to R7) make up the register ﬁle. To write a value to a register, the LC-3 control unit must supply 16 bits of data ($\texttt{BUS[15:0]}$), a destination register ($\texttt{DR[2:0]}$), and a write enable signal (LD.REG) to load a register. The combinational logic block shows inputs $\texttt{BUS[15:0], DR[2:0]}$, and $\texttt{LD.REG}$ and outputs $\texttt{DinR0[15:0], DinR1[15:0], DinR2[15:0],} \ldots \texttt{DinR7[15:0], LD.R0, LD.R1, LD.R2,} \ldots \texttt{LD.R7}$
+- 5.53 The eight general purpose registers of the LC-3 (R0 to R7) make up the register file. To write a value to a register, the LC-3 control unit must supply 16 bits of data ($\texttt{BUS[15:0]}$), a destination register ($\texttt{DR[2:0]}$), and a write enable signal (LD.REG) to load a register. The combinational logic block shows inputs $\texttt{BUS[15:0], DR[2:0]}$, and $\texttt{LD.REG}$ and outputs $\texttt{DinR0[15:0], DinR1[15:0], DinR2[15:0],} \ldots \texttt{DinR7[15:0], LD.R0, LD.R1, LD.R2,} \ldots \texttt{LD.R7}$
 
 *Your job:* Add wires, logic gates, and standard logic blocks as necessary to complete the combinational logic block. 
 
-*Note:* If you use a standard logic block, it is not necessary to show the individual gates. However, it is necessary to identify the logic block speciﬁcally (e.g., “16-to-1 mux”), along with labels for each relevant input or output, according to its function.
+*Note:* If you use a standard logic block, it is not necessary to show the individual gates. However, it is necessary to identify the logic block specifically (e.g., “16-to-1 mux”), along with labels for each relevant input or output, according to its function.
 
 *Ans.-*
 
@@ -518,7 +564,7 @@ $$
 
 - 5.57 Note boldface signal lines on the following data path.
     - 1. What opcodes use $\texttt{IR }[11:9]$ as inputs to $\texttt{SR1}$?
-    - 2. Where does the control signal of this mux come from? Be speciﬁc!
+    - 2. Where does the control signal of this mux come from? Be specific!
     - 3. What opcodes use this input to the MARMUX?
 
 <img src="../../assets/learning/computing-systems/ch05-ex57.png" width="90%">
@@ -527,7 +573,7 @@ $$
 
 ---
 
-- 5.59 Every LC-3 instruction takes eight cycles to be fetched and decoded, if we assume every memory access takes ﬁve cycles. The total number of cycles an LC-3 instruction takes to be completely processed, however, depends on what has to be done for that instruction. Assuming every memory access takes ﬁve cycles, and assuming the LC-3 processes one instruction at a time, from beginning to end, how many clock cycles does each instruction take? For each instruction, how many cycles are required to process it?
+- 5.59 Every LC-3 instruction takes eight cycles to be fetched and decoded, if we assume every memory access takes five cycles. The total number of cycles an LC-3 instruction takes to be completely processed, however, depends on what has to be done for that instruction. Assuming every memory access takes five cycles, and assuming the LC-3 processes one instruction at a time, from beginning to end, how many clock cycles does each instruction take? For each instruction, how many cycles are required to process it?
 
 *Ans.-*
 $$
@@ -547,11 +593,11 @@ $$
 
 ---
 
-- 5.61 During the execution of an LC-3 program, the processor data path was monitored for four instructions in the program that were processed consecutively. The table shows all clock cycles during which the bus was utilized. It shows the clock cycle number, the value on the bus, and the state (from the state machine diagram) for some of these clock cycles. Processing of the ﬁrst instruction starts at clock cycle T. Each memory access in this LC-3 machine takes ﬁve clock cycles. 
+- 5.61 During the execution of an LC-3 program, the processor data path was monitored for four instructions in the program that were processed consecutively. The table shows all clock cycles during which the bus was utilized. It shows the clock cycle number, the value on the bus, and the state (from the state machine diagram) for some of these clock cycles. Processing of the first instruction starts at clock cycle T. Each memory access in this LC-3 machine takes five clock cycles. 
 
-Your job: Fill in the missing entries in the table. You only need to ﬁll in the cells not marked with x. 
+Your job: Fill in the missing entries in the table. You only need to fill in the cells not marked with x. 
 
-*Note:* There are ﬁve clock cycles for which you need to provide the control signals. Not all LC-3 control signals are shown in the table. However, all control signals that are required for those ﬁve clock cycles have been included. 
+*Note:* There are five clock cycles for which you need to provide the control signals. Not all LC-3 control signals are shown in the table. However, all control signals that are required for those five clock cycles have been included. 
 
 *Note:* For the DRMUX signal, write ‘11.9’, ‘R7’, or ‘SP’; for the R.W signal, write an ‘R’ or a ‘W’; for the PCMUX signal, write ‘PC+1’, ‘BUS’, or ‘ADDER’; for all other control signals, write down the actual bit. If a control signal is not relevant in a given cycle, mark it with a dash (i.e., -).
 

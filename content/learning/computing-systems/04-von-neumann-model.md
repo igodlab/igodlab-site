@@ -1,9 +1,9 @@
 ---
-title: "Chapter 4 solutions - The von Neumann Model"
-date: "2025-12-05"
+title: LC-3 Ch4 solutions - The von Neumann Model
+date: 2025-12-05
 ---
 
-- 4.1 Name the ﬁve components of the von Neumann model. For each component, state its purpose.
+- 4.1 Name the five components of the von Neumann model. For each component, state its purpose.
 
 *Ans.-* 
 - **Processing Unit** - Performs the actual arithmetic and logical computations. It uses a fast and small set of registers to hold operands and intermediate results while instructions are being executed.
@@ -83,7 +83,7 @@ $$
 \hline
 \text{6-bits} & \text{5-bits} & \text{5-bits} & \text{16-bits} \\
 \hline
-\text{OPCODE} & \text{SR} & \text{DR} & \text{IMM} \\
+\text{OPCODE} & \text{DR} & \text{SR} & \text{IMM} \\
 \hline
 \end{array}
 $$
@@ -131,9 +131,9 @@ $$
 
 ---
 
-- 4.17 In this problem we perform ﬁve successive accesses to memory. The following table shows for each access whether it is a read (load) or write (store), and the contents of the MAR and MDR at the completion of the access. Some entries are not shown. Note that we have shortened the addressability to 5 bits, rather than the 16 bits that we are used to in the LC-3, in order to decrease the excess writing you would have to do.
+- 4.17 In this problem we perform five successive accesses to memory. The following table shows for each access whether it is a read (load) or write (store), and the contents of the MAR and MDR at the completion of the access. Some entries are not shown. Note that we have shortened the addressability to 5 bits, rather than the 16 bits that we are used to in the LC-3, in order to decrease the excess writing you would have to do.
 
-The following three tables show the contents of memory locations `x4000` to `x4004` before the ﬁrst access, after the third access, and after the ﬁfth access. Again, not all entries are shown. We have added an unusual constraint to this problem in order to get one correct answer. The MDR can ONLY be loaded from memory as a result of a load (read) access.
+The following three tables show the contents of memory locations `x4000` to `x4004` before the first access, after the third access, and after the fifth access. Again, not all entries are shown. We have added an unusual constraint to this problem in order to get one correct answer. The MDR can ONLY be loaded from memory as a result of a load (read) access.
 
 Your job: Fill in the missing entries.
 *Hint:* As you know, writes to memory require MAR to be loaded with the memory address and MDR to loaded with the data to be written (stored). The data in the MDR must come from a previous read (load).

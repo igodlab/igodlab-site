@@ -1,5 +1,5 @@
 ---
-title: Chapter 2 solutions - Bits, datatypes and operations
+title: LC-3 Ch2 solutions - Bits, datatypes and operations
 date: 2025-11-17
 ---
 
@@ -32,7 +32,7 @@ date: 2025-11-17
 
 ---
 
-- 2.5 Using ﬁve bits to represent each number, write the representations of 7 and -7 in 1’s complement, signed magnitude, and 2’s complement integers.
+- 2.5 Using five bits to represent each number, write the representations of 7 and -7 in 1’s complement, signed magnitude, and 2’s complement integers.
 
 *Ans.-*
 
@@ -649,7 +649,7 @@ $$
 
 ---
 
-- 2.53 Fill in the truth table for the equations given. The ﬁrst line is done as an example.
+- 2.53 Fill in the truth table for the equations given. The first line is done as an example.
 $$
 \begin{align*}
 &Q_1 = \text{NOT (A AND B)} \\

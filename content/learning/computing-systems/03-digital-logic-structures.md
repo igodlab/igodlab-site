@@ -1,6 +1,6 @@
 ---
-title: "Chapter 3 solutions - Digital logic structures"
-date: "2025-11-24"
+title: LC-3 Ch3 solutions - Digital logic structures
+date: 2025-11-24
 ---
 
 - 3.1 In the following table, write whether each type of transistor will act as an open circuit or a closed circuit.
@@ -132,7 +132,7 @@ $$
 
 ---
 
-- 3.19 How many output lines will a ﬁve-input decoder have?
+- 3.19 How many output lines will a five-input decoder have?
 
 *Ans.-* $2^5=32$ outputs.
 
@@ -206,7 +206,7 @@ $$
 
 ---
 
-- 3.29 Given the logic circuit in Figure 3.41, ﬁll in the truth table for the output value $Z$.
+- 3.29 Given the logic circuit in Figure 3.41, fill in the truth table for the output value $Z$.
 
 <img src="../../assets/learning/computing-systems/ch03-ex29.png" width="60%">
 
@@ -246,7 +246,7 @@ $$
 
 ---
 
-- 3.33 For this question, refer to the ﬁgure that follows.
+- 3.33 For this question, refer to the figure that follows.
     - a. Describe the output of this logic circuit when the select line $S$ is a logical `0`. That is, what is the output $Z$ for each value of $A$?
     - b. If the select line S is switched from a logical `0` to `1`, what will the output be?
     - c. Is this logic circuit a storage element?
@@ -298,7 +298,7 @@ $$
 
 ---
 
-- 3.43 In the case of the lock of Figure 3.23a, there are four states $A, B, C$, and $D$, as described in Section 3.6.2. Either the lock is open $(\text{State }D)$, or if it is not open, we have already performed either zero $(\text{State }A)$, one $(\text{State }B)$, or two $(\text{State }C)$ correct operations. This is the sum total of all possible states that can exist. Exercise: Why is that the case? That is, what would be the snapshot of a ﬁfth state that describes a possible situation for the combination lock?
+- 3.43 In the case of the lock of Figure 3.23a, there are four states $A, B, C$, and $D$, as described in Section 3.6.2. Either the lock is open $(\text{State }D)$, or if it is not open, we have already performed either zero $(\text{State }A)$, one $(\text{State }B)$, or two $(\text{State }C)$ correct operations. This is the sum total of all possible states that can exist. Exercise: Why is that the case? That is, what would be the snapshot of a fifth state that describes a possible situation for the combination lock?
 
 *Ans.-* The four states are enough to describe any configuration of the system. There's really no possible snapshot that cannot be described as one of the four states.
 
@@ -312,13 +312,13 @@ $$
 
 ---
 
-- 3.47 The IEEE campus society office sells sodas for 35 cents. Suppose they install a soda controller that only takes the following three inputs: nickel, dime, and quarter. After you put in each coin, you push a pushbutton to register the coin. If at least 35 cents has been put in the controller, it will output a soda and proper change (if applicable). Draw a ﬁnite state machine that describes the behavior of the soda controller. Each state will represent how much money has been put in (Hint: There will be seven of these states). Once enough money has been put in, the controller will go to a ﬁnal state where the person will receive a soda and proper change (Hint: There are ﬁve such ﬁnal states). From the ﬁnal state, the next coin that is put in will start the process again.
+- 3.47 The IEEE campus society office sells sodas for 35 cents. Suppose they install a soda controller that only takes the following three inputs: nickel, dime, and quarter. After you put in each coin, you push a pushbutton to register the coin. If at least 35 cents has been put in the controller, it will output a soda and proper change (if applicable). Draw a finite state machine that describes the behavior of the soda controller. Each state will represent how much money has been put in (Hint: There will be seven of these states). Once enough money has been put in, the controller will go to a final state where the person will receive a soda and proper change (Hint: There are five such final states). From the final state, the next coin that is put in will start the process again.
 
 *Ans.-* 
 
 ---
 
-- 3.49 The following ﬁgure shows an implementation of a ﬁnite state machine with an input $X$ and output $Z$. $S1, S0$ speciﬁes the present state. $D1, D0$ speciﬁes the next state.
+- 3.49 The following figure shows an implementation of a finite state machine with an input $X$ and output $Z$. $S1, S0$ specifies the present state. $D1, D0$ specifies the next state.
     - a. Complete the rest of the following table.
     - b. Draw the state diagram for the truth table of part a.
 
@@ -372,7 +372,7 @@ Fill in the entries for D2, D1, D0 for each of clock cycles shown. In ten words 
 
 - 3.55 We wish to implement two logic functions $Y(a,b,c)$ and $Z(a,b)$. $Y$ is 1 in exactly those cases where an odd number of $a, b$, and $c$ equal 1. $Z$ is the exclusive-OR of $a$ and $b$.
     - a. Construct the truth tables for $Y$ and $Z$.
-    - b. Implement the two logic functions $Y$ and $Z$ described above using ONLY the logic circuits provided below: a 3-to-8 decoder and two OR gates. That is, draw the wires from the outputs of the decoder to the inputs of the OR gates as necessary to do the job. You can assume you have as many inputs to each OR gate as you ﬁnd necessary.
+    - b. Implement the two logic functions $Y$ and $Z$ described above using ONLY the logic circuits provided below: a 3-to-8 decoder and two OR gates. That is, draw the wires from the outputs of the decoder to the inputs of the OR gates as necessary to do the job. You can assume you have as many inputs to each OR gate as you find necessary.
 
 <img src="../../assets/learning/computing-systems/ch03-ex55.png" width="75%">
 
@@ -420,22 +420,22 @@ $$
 
 ---
 
-- 3.59 Most word processors will correct simple errors in spelling and grammar. Your job is to specify a ﬁnite state machine that will capitalize the personal pronoun $\text{I}$ in certain instances if it is entered as a lowercase $\text{i}$. For example,
+- 3.59 Most word processors will correct simple errors in spelling and grammar. Your job is to specify a finite state machine that will capitalize the personal pronoun $\text{I}$ in certain instances if it is entered as a lowercase $\text{i}$. For example,
 
 $$
 \textbf{i think i’m in love} \text{ will be corrected to } \textbf{I think I’m in love}.
 $$
 
-Input to your ﬁnite state machine will be any sequence of characters from a standard keyboard. Your job is to replace the $\textbf{i}$ with an $\textbf{I}$ if
+Input to your finite state machine will be any sequence of characters from a standard keyboard. Your job is to replace the $\textbf{i}$ with an $\textbf{I}$ if
 
 $$
 \begin{align*}
-& \text{the i is the ﬁrst character input or is preceded by a *space*, and} \\
+& \text{the i is the first character input or is preceded by a *space*, and} \\
 & \text{the i is followed by a *space* or by an *apostrophe*.}
 \end{align*}
 $$
 
-Shown below is a ﬁnite state machine with some of the inputs and some of the outputs unspeciﬁed. Your job is to complete the speciﬁcation.
+Shown below is a finite state machine with some of the inputs and some of the outputs unspecified. Your job is to complete the specification.
 
 Inputs are from the set $\{i, A, S, O\}$, where
 $$
@@ -448,11 +448,11 @@ $$
 
 The output $Z$ corresponding to each state is `0` or `1`, where `0` means “do nothing,” `1` means “change the most recent $\textbf{i}$ to an $\textbf{I}$.” 
 
-*Note*: This exercise in developing a ﬁnite state machine word processor is only a ﬁrst step since a lot of “$\text{i}$ to $\text{I}$” will not ﬁx the problem. For example,
+*Note*: This exercise in developing a finite state machine word processor is only a first step since a lot of “$\text{i}$ to $\text{I}$” will not fix the problem. For example,
 $$
 \text{i’ am }\rightarrow \text{ I’ am, i’abcd  I’abcd, and i’i } \rightarrow \text{ I’i are all bad!}
 $$
-But it is a ﬁrst step!
+But it is a first step!
 
 <img src="../../assets/learning/computing-systems/ch03-ex59.png" width="75%">
 
@@ -460,7 +460,7 @@ But it is a ﬁrst step!
 
 ---
 
-- 3.61 The logic diagram shown below is a ﬁnite state machine.
+- 3.61 The logic diagram shown below is a finite state machine.
 
 <img src="../../assets/learning/computing-systems/ch03-ex61.png" width="40%">
 
