@@ -455,29 +455,46 @@ $$
 \end{array}
 $$
 Note: On a write, MDR is loaded before the access. On a read, MDR is loaded as a result of the access. Your job is to identify the mix-up in the wiring. Show which memory cells were wired to which mux inputs by filling in their corresponding addresses in the blanks provided. Note that one address has already been supplied for you.
+
+<img src="../../assets/learning/computing-systems/ch05-ex47a-sol.png" width="100%">
+
 - b. After rewiring the muxes correctly and initializing all memory cells to $\texttt{xF}$, the following sequence of accesses was performed. Note that some of the information about each access has been left out. Your job: Fill in the blanks. Show the contents of the memory cells by putting the hex digit that is stored in each after all the accesses have been performed.
 $$
 \begin{array}{c|c|c}
 \text{Read/Write} & \text{MDR} & \text{MAR} \\
 \hline
-\text{Write} & \texttt{x72{\color{Violet}--}}                 & 0\color{Violet}- \\
+\text{Write} & \texttt{x72{\color{Violet}A3}}                 & 0\color{Violet}0 \\
 \text{Write} & \texttt{x8FAF}                                 & 11 \\
-\text{Read}  & \texttt{x72A3}                                 & {\color{Violet}-}0 \\
-\text{Read}  & \texttt{xFFFF}                                 & 1\color{Violet}- \\
-\text{Write} & \texttt{x732D}                                 & {\color{Violet}-}1 \\
-\text{Read}  & \texttt{xFFFF}                                 & 0\color{Violet}- \\
-\text{Write} & \texttt{x{\color{Violet}-}7{\color{Violet}--}} & 0\color{Violet}- \\
-\text{Read}  & \texttt{x37A3}                                 & {\color{Violet}-}1 \\
-\text{Read}  & \texttt{x{\color{Violet}---}D}                 & {\color{Violet}-}1 \\
+\text{Read}  & \texttt{x72A3}                                 & {\color{Violet}0}0 \\
+\text{Read}  & \texttt{xFFFF}                                 & 1\color{Violet}0 \\
+\text{Write} & \texttt{x732D}                                 & {\color{Violet}1}1 \\
+\text{Read}  & \texttt{xFFFF}                                 & 0\color{Violet}1 \\
+\text{Write} & \texttt{x{\color{Violet}3}7{\color{Violet}A3}} & 0\color{Violet}1 \\
+\text{Read}  & \texttt{x37A3}                                 & {\color{Violet}0}1 \\
+\text{Read}  & \texttt{x{\color{Violet}732}D}                 & {\color{Violet}1}1 \\
 \end{array}
 $$
 Show the contents of the memory cells by putting the hex digit that is stored in each after all the accesses have been performed.
 
+<img src="../../assets/learning/computing-systems/ch05-ex47b-sol.png" width="45%">
+
+
 *Ans.-*
+- a. Recall that the fetch phase has the following memory accesses for read and write procedures:
+$$
+\begin{array}{l|l}
+\text{Load-type (read)} & \text{Store-type (write)} \\
+\texttt{LD DR, EAddr} & \texttt{ST SR, EAddr} \\
+\hline
+\texttt{MAR <- SEXT(EAddr)} & \texttt{MAR <- SEXT(EAddr)} \\
+\texttt{MDR <- M[MAR]}\quad(\dagger^1_R) & \texttt{MDR <- SR} \\
+\texttt{DR <- MDR} & \texttt{M[MAR] <- MDR}\quad(\dagger^1_W)
+\end{array}
+$$
 
 ---
 
-5.49 We wish to know if R0 is being used as the Base Register for computing the address in an LDR instruction. Since the instruction is in memory, we can load it into R4. And, since the Base Register is identified in bits 8:6 of the instruction, we can load R5 with `0000 0001 1100 0000` and then execute $\texttt{AND R6,R5,R4}$. We would know that R0 is the base register if what condition is met?
+5.49 We wish to know if R0 is being used as the Base Register for computing the address in an LDR instruction. Since the instruction is in memory, we can load it into R4. And, since the Base Register is identified in $\texttt{bits[8:6]}$ of the instruction, we can load R5 with `0000 0001 1100 0000` and then execute $\texttt{AND R6,R5,R4}$. We would know that R0 is the base register if what condition is met?
 
 *Ans.-*
 
@@ -492,7 +509,7 @@ $$
 \hline
 \end{array}
 $$
-The instruction is defined as: DR \leftarrow SR2 - SR1, and the condition codes are set. Assume $\texttt{DR, SR1,}$ and $\texttt{SR2}$ are all different registers. To accomplish this, the engineer needs to add three states to the state machine and a mux and register A to the data path. The modified state machine is shown below, and the modified data path is shown on the next page. The mux is controlled by a new control signal $\texttt{SR2SEL}$, which selects one of its two sources.
+The instruction is defined as: $\texttt{DR}\leftarrow\texttt{SR2 - SR1}$, and the condition codes are set. Assume $\texttt{DR, SR1,}$ and $\texttt{SR2}$ are all different registers. To accomplish this, the engineer needs to add three states to the state machine and a mux and register A to the data path. The modified state machine is shown below, and the modified data path is shown on the next page. The mux is controlled by a new control signal $\texttt{SR2SEL}$, which selects one of its two sources.
 $$\texttt{SR2SEL/1: SR2OUT, REGISTER\_A}$$
 
 *Your job:* For the state machine shown below, fill in the empty boxes with the control signals that are needed in order to implement the SUBTRACT instruction. 
