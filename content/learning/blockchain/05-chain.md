@@ -26,7 +26,7 @@ date: 2024-10-26
 
     - *Blocktrees* - An adversary can still create split truth scenarios eg. from Fig.5.1 party-5 could hold a block (red) just enoguh time $t_A$ before a new party-6 broadcasts his (actually legitimate) next freshest block. Then if party-7 receives the red block (paty-5's) before party-6's block at $t_B$ (because $t_B-t_A=\Delta$, theres enough spacing to traverse the network) he would split the chain, and even worse yet reject party-6's block afterwards (Fig.5.2)
     
-    <img src="../assets/learning/blockchain/ch052-blocktree.png" width="75%">
+    <img src="/static/assets/learning/blockchain/ch052-blocktree.png" width="75%">
     
 - We can use the *lenght of a chain* as a reference parameter because its correlated to the time it took to produce it
     - **Longest Chain Rule**. Among the all chains on the network adopt the longest chain (the one w/ most blocks) as the *canonical chain*. If there are multiple competing chains w/ the same length choose any chain arbitrarily

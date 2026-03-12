@@ -35,7 +35,7 @@ date: 2024-09-30
     - Each node in the network appends new transtactions and stores the whole transaction graph ie. everyone knows *who owns what* by looking at their local UTXO set
     - To know *how much* a particular party has, he must collect and sum the value of all of the UTXOs (from the current UTXO set) marked with a pub-key whose respective private-key is in his possesion 
 
-<img src="../assets/learning/blockchain/ch036-dag-utxo-set.png" width="75%">
+<img src="/static/assets/learning/blockchain/ch036-dag-utxo-set.png" width="75%">
 
 
 ## 3.7 Transaction signatures

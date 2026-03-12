@@ -140,7 +140,7 @@ Your job: Fill in the missing entries.
 
 *Ans.-*
 
-<img src="../../assets/learning/computing-systems/ch04-ex17-sol.png" width="100%">
+<img src="/static/assets/learning/computing-systems/ch04-ex17-sol.png" width="100%">
 
 $$
 \begin{array}{|l|c|c|r|}
@@ -160,7 +160,7 @@ $$
 
 4.19 Shown below is a byte-addressible memory consisting of eight locations, and its associated MAR and MDR. Both MAR and MDR consist of ﬂip-ﬂops that are latched at the start of each clock cycle based on the values on their corresponding input lines. A memory read is initiated every cycle, and the data is available by the end of that cycle.
 
-<img src="../../assets/learning/computing-systems/ch04-ex19.png" width="75%">
+<img src="/static/assets/learning/computing-systems/ch04-ex19.png" width="75%">
 
 $$
 \begin{array}{r|c}

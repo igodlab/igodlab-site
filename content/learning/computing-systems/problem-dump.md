@@ -106,7 +106,7 @@ $$
 
 - 3.2 Replace the missing parts in the following circuit with either a wire or no wire to give the output OUT a logical value of 0 when the input IN is a logical 1.
 
-<img src="../../assets/learning/computing-systems/ch03-ex02.png" width="25%">
+<img src="/static/assets/learning/computing-systems/ch03-ex02.png" width="25%">
 
 *Ans.-*
 
@@ -114,7 +114,7 @@ $$
 
 - 3.4 Replace the missing parts in the following circuit with either a wire or no wire to give the output C a logical value of 1. Describe a set of inputs that give the output C a logical value of 0. Replace the missing parts with wires or no wires corresponding to that set of inputs.
 
-<img src="../../assets/learning/computing-systems/ch03-ex04.png" width="35%">
+<img src="/static/assets/learning/computing-systems/ch03-ex04.png" width="35%">
 
 *Ans.-*
 
@@ -122,7 +122,7 @@ $$
 
 - 3.6 For the transistor-level circuit in Figure 3.38, fill in the truth table. What is Z in terms of A and B?
 
-<img src="../../assets/learning/computing-systems/ch03-ex06.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch03-ex06.png" width="60%">
 
 *Ans.-*
 
@@ -138,7 +138,7 @@ $$
 
 - 3.8 The transistor-level circuit below implements the logic equation given below. Label the inputs to all the transistors.
 
-<img src="../../assets/learning/computing-systems/ch03-ex08.png" width="35%">
+<img src="/static/assets/learning/computing-systems/ch03-ex08.png" width="35%">
 
 *Ans.-*
 
@@ -146,7 +146,7 @@ $$
 
 - 3.10 For what values of A, B, C, D, E, and F will the output of the six-input AND gate be 1?
 
-<img src="../../assets/learning/computing-systems/ch03-ex10.png" width="35%">
+<img src="/static/assets/learning/computing-systems/ch03-ex10.png" width="35%">
 
 *Ans.-*
 
@@ -154,7 +154,7 @@ $$
 
 - 3.12 A function is described by the truth table shown on the left. Your job: Complete the logic implementation shown on the right by adding the appropriate connections.
 
-<img src="../../assets/learning/computing-systems/ch03-ex12.png" width="75%">
+<img src="/static/assets/learning/computing-systems/ch03-ex12.png" width="75%">
 
 *Ans.-* 
 
@@ -162,7 +162,7 @@ $$
 
 - 3.14 The following logic circuits consist of two exclusive-OR gates. Construct the output truth table.
 
-<img src="../../assets/learning/computing-systems/ch03-ex14.png" width="40%">
+<img src="/static/assets/learning/computing-systems/ch03-ex14.png" width="40%">
 
 *Ans.-*
 $$
@@ -272,7 +272,7 @@ $$
     - a. Figure 3.42 shows a logic circuit that appears in many of today’s processors. Each of the boxes is a full-adder circuit. What does the value on the wire $X$ do? That is, what is the diﬀerence in the output of this circuit if $X = 0$ vs. if $X = 1$?
     - b. Construct a logic diagram that implements an adder/subtractor. That is, the logic circuit will compute $A + B$ or $A - B$ depending on the value of $X$. Hint: Use the logic diagram of Figure 3.42 as a building block.
 
-<img src="../../assets/learning/computing-systems/ch03-ex30.png" width="80%">
+<img src="/static/assets/learning/computing-systems/ch03-ex30.png" width="80%">
 
 *Ans.-*
 
@@ -280,7 +280,7 @@ $$
 
 - 3.32 Recall that the adder was built with individual “**slices**” that produced a sum bit and a carry-out bit based on the two operand bits $A$ and $B$ and the carry-in bit. We called such an element a full adder. Suppose we have a 3-to-8 decoder and two 6-input OR gates, as shown below. Can we connect them so that we have a full adder? If so, please do. (Hint: If an input to an OR gate is not needed, we can simply put an input 0 on it and it will have no eﬀect on anything. For example, see the following figure.)
 
-<img src="../../assets/learning/computing-systems/ch03-ex32.png" width="50%">
+<img src="/static/assets/learning/computing-systems/ch03-ex32.png" width="50%">
 
 *Ans.-*
 
@@ -303,7 +303,7 @@ $$
     - b. Implement $G, E$, and $L$ using AND, OR, and NOT gates. 
     - c. Using the one-bit comparator as a basic building block, construct a four-bit equality checker such that output EQUAL is `1` if $A30 = B30$, `0` otherwise.
 
-<img src="../../assets/learning/computing-systems/ch03-ex36.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch03-ex36.png" width="60%">
 
 *Ans.-*
 
@@ -332,7 +332,7 @@ $$
     - b. What is the addressability?
     - c. What is the data at address 2?
 
-<img src="../../assets/learning/computing-systems/ch03-ex40.png" width="100%">
+<img src="/static/assets/learning/computing-systems/ch03-ex40.png" width="100%">
 
 *Ans.-*
 
@@ -370,7 +370,7 @@ $$
 
 - 3.52 A student decided to design a latch as shown below. For what values of $A$ and $B$ will the latch remain in the quiescent state (i.e., its output will not change)?
 
-<img src="../../assets/learning/computing-systems/ch03-ex52.png" width="30%">
+<img src="/static/assets/learning/computing-systems/ch03-ex52.png" width="30%">
 
 *Ans.-*
 
@@ -378,7 +378,7 @@ $$
 
 - 3.54 An 8-to-1 mux (shown below) outputs one of the eight sources, $A, B, C, D, E, F, G, H$ depending on $S[2:0]$, as shown. Note the value of $S[2:0]$ corresponding to each source is shown just below the input to the mux. For example, when $S[2:0] = 001$, $B$ is provided to the output.
 
-<img src="../../assets/learning/computing-systems/ch03-ex54.png" width="50%">
+<img src="/static/assets/learning/computing-systems/ch03-ex54.png" width="50%">
 
 We can implement an 8-to-1 mux with a logic circuit of 2-to-1 muxes, as shown below. In this case, the 0 and 1 below the two inputs to each mux correspond to the value of the select line that will cause that input to be provided to the output of that mux.
 
@@ -386,7 +386,7 @@ We can implement an 8-to-1 mux with a logic circuit of 2-to-1 muxes, as shown be
     - a. Label the select line of each mux, according to whether it is $S[2], S[1]$, or $S[0]$.
     - b. Label the remaining six sources to the 2-to-1 mux circuit, so the circuit behaves exactly like the 8-to-1 mux shown above.
 
-<img src="../../assets/learning/computing-systems/ch03-ex54b.png" width="40%">
+<img src="/static/assets/learning/computing-systems/ch03-ex54b.png" width="40%">
 
 *Ans.-*
 
@@ -394,7 +394,7 @@ We can implement an 8-to-1 mux with a logic circuit of 2-to-1 muxes, as shown be
 
 - 3.56 Shown below is the partially completed state diagram of a finite state machine that takes an input string of H (heads) and T (tails) and produces an output of 1 every time the string `HTHH` occurs.
 
-<img src="../../assets/learning/computing-systems/ch03-ex56.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch03-ex56.png" width="60%">
 
 For example: 
 ```
@@ -415,7 +415,7 @@ Your job: Complete both specifications. That is, all transistors will have their
 
 Note that this is not a problematic circuit. For every input combination, the output is either connected to ground (i.e., $\text{OUT=0}$) or to the positive end of the battery (i.e., $\text{OUT=1}$).
 
-<img src="../../assets/learning/computing-systems/ch03-ex58.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch03-ex58.png" width="60%">
 
 *Ans.-*
 
@@ -438,7 +438,7 @@ $$
 
 - 3.60 A finite state machine is connected to a 23 -by-2-bit memory as shown below:
 
-<img src="../../assets/learning/computing-systems/ch03-ex60.png" width="50%">
+<img src="/static/assets/learning/computing-systems/ch03-ex60.png" width="50%">
 
 The contents of the memory is shown below to the left. The next state transition table is shown below to the right.
 
@@ -464,7 +464,7 @@ $$
     - a. Complete the following table.
     - b. What will the state of the FSM be just before the end of cycle 100? Why?
 
-<img src="../../assets/learning/computing-systems/ch03-ex60a.png" width="30%">
+<img src="/static/assets/learning/computing-systems/ch03-ex60a.png" width="30%">
 
 *Ans.-*
 
@@ -475,7 +475,7 @@ $$
     - b. There are six inputs: $c, e, m, \overline{c}, \overline{e}, \overline{m}.$ $c, e, m$ refer to you receiving an assignment. $\overline{c}, \overline{e}, \overline{m}$ refer to you completing an assignment. Draw the transition arc for each state/input pair. For example, if you had previously only had an unfinished assignment in math and you received an assignment in computing, you would transition from state M to state CM, as shown below.
     - c. The output of each state is your behavior, 1 if you are working on an assignment, 0 if you are procrastinating. Label the outputs of each state.
 
-<img src="../../assets/learning/computing-systems/ch03-ex62.png" width="50%">
+<img src="/static/assets/learning/computing-systems/ch03-ex62.png" width="50%">
 
 *Ans.-*
 
@@ -559,7 +559,7 @@ $$
 
 4.18 The $2^2$-by-3 bit memory discussed in class is accessed during five consecutive clock cycles. The table below shows the values of the two-bit address, one-bit write enable, and three-bit data-in signals during each access.
 
-<img src="../../assets/learning/computing-systems/ch04-ex18.png" width="75%">
+<img src="/static/assets/learning/computing-systems/ch04-ex18.png" width="75%">
 
 Your job: Fill in the value stored in each memory cell and the three data-out lines just before the end of the fifth cycle. Assume initially that all 12 memory cells store the value 1. In the figure below, each question mark (?) indicates a value that you need to fill in.
 

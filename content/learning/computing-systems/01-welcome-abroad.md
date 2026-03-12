@@ -30,11 +30,11 @@ Idea 2 states that when using a computer to solve a problem we first describe it
     - b. The average of the four input numbers $w, x, y,$ and $z$
     - c. $a^2 + 2ab + b^2$ (Can you do it with one add box and one multiply box?)
 
-<img src="../../assets/learning/computing-systems/ch01-ex05.png" width="75%">
+<img src="/static/assets/learning/computing-systems/ch01-ex05.png" width="75%">
 
 *Ans.-* 
 
-<img src="../../assets/learning/computing-systems/ch01-ex05-sol.png" width="75%">
+<img src="/static/assets/learning/computing-systems/ch01-ex05-sol.png" width="75%">
 
 ---
 - **1.6** Write a statement in a natural language, and offer two different interpretations of that statement.
@@ -166,7 +166,7 @@ Idea 2 states that when using a computer to solve a problem we first describe it
 
 - **1.20** The levels of transformation in Figure 1.9 are often referred to as levels of abstraction. Is that a reasonable characterization? If yes, give an example. If no, why not?
 
-<img src="../../assets/learning/computing-systems/ch01-ex20.png" width="50%">
+<img src="/static/assets/learning/computing-systems/ch01-ex20.png" width="50%">
 
 *Ans.-* Yes it is a reasonable characterization. We can refer to Problem 1.19 where we worked out all these translation steps. An example would be trying to sort a list of guests' surnames for an event in alphabetical order. 
 

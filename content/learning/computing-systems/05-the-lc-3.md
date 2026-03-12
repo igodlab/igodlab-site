@@ -329,13 +329,13 @@ $$
     - The only way these skips can occur is when instruction `0x3002` $\texttt{R4 <- R5 }\wedge\texttt{ R6 = 0x0000}$. 
     - Which, since R5 is a constant and R6 acts as a permutating mask (see Figure C) we deduce that R5 must have EXACTLY 5 non-zero values in any of its 8 leftmost digits.
 
-<img src="../../assets/learning/computing-systems/ch05-ex33-sol.png" width="80%">
+<img src="/static/assets/learning/computing-systems/ch05-ex33-sol.png" width="80%">
 
 ---
 
 5.35 Using the overall data path in Figure 5.18, identify the elements that implement the ADD instruction of Figure 5.5.
 
-<img src="../../assets/learning/computing-systems/ch05-ex35-sol.png" width="80%">
+<img src="/static/assets/learning/computing-systems/ch05-ex35-sol.png" width="80%">
 
 *Ans.-* Figure 5.5 implements the $\texttt{ADD R1, R4, \#-2}$ instruction. It requires the folloing elements (red color in Figure 5.18): 
 - `REG FILE (SR1 OUT)`: Outputs R4 value to the ALU (source register)
@@ -392,7 +392,7 @@ $$
     - a. What information does $Y$ provide?
     - b. The signal $X$ is the control signal that gates the gated D latch. Is there an error in the logic that produces $X$?
 
-<img src="../../assets/learning/computing-systems/ch05-ex41.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch05-ex41.png" width="60%">
 
 *Ans.-* 
 - a. Ausming the Write Enable (WE) is ON then $Y$ is the P Condition Code $\boxed{N}\boxed{Z}\boxed{P}$. More specifically $Y=1$ means that the 16-bit number fed by the globbal bus is positive & non-zero only if the `AND` produces 1. Unwrapping this: `OR=1` if $\texttt{bits[14:0]}\neq 000\;0000\;0000\;0000$ and `NOT=1` if $\texttt{bit[15]}=0$.
@@ -438,7 +438,7 @@ Why does the microarchitecture put the contents of the PC into the MAR? Why does
 
 - 5.47 The following diagram describes a $2^2$ by 16-bit memory. Each of the four muxes has four-bit input sources and a four-bit output, and each four-bit source is the output of a single four-bit memory cell.
 
-<img src="../../assets/learning/computing-systems/ch05-ex47.png" width="75%">
+<img src="/static/assets/learning/computing-systems/ch05-ex47.png" width="75%">
 
 - a. Unfortunately, the memory was wired by a student, and he got the inputs to some of the muxes mixed up. That is, instead of the four bits from a memory cell going to the correct four-bit input of the mux, the four bits all went to one of the other four-bit sources of that mux. The result was, as you can imagine, a mess. To figure out the mix-up in the wiring, the following sequence of memory accesses was performed: 
 $$
@@ -456,7 +456,7 @@ $$
 $$
 Note: On a write, MDR is loaded before the access. On a read, MDR is loaded as a result of the access. Your job is to identify the mix-up in the wiring. Show which memory cells were wired to which mux inputs by filling in their corresponding addresses in the blanks provided. Note that one address has already been supplied for you.
 
-<img src="../../assets/learning/computing-systems/ch05-ex47a-sol.png" width="100%">
+<img src="/static/assets/learning/computing-systems/ch05-ex47a-sol.png" width="100%">
 
 - b. After rewiring the muxes correctly and initializing all memory cells to $\texttt{xF}$, the following sequence of accesses was performed. Note that some of the information about each access has been left out. Your job: Fill in the blanks. Show the contents of the memory cells by putting the hex digit that is stored in each after all the accesses have been performed.
 $$
@@ -476,7 +476,7 @@ $$
 $$
 Show the contents of the memory cells by putting the hex digit that is stored in each after all the accesses have been performed.
 
-<img src="../../assets/learning/computing-systems/ch05-ex47b-sol.png" width="45%">
+<img src="/static/assets/learning/computing-systems/ch05-ex47b-sol.png" width="45%">
 
 
 *Ans.-*
@@ -518,9 +518,9 @@ For the data path, fill in the value in register A.
 
 *Ans.-*
 
-<img src="../../assets/learning/computing-systems/ch05-ex51.png" width="80%">
+<img src="/static/assets/learning/computing-systems/ch05-ex51.png" width="80%">
 
-<img src="../../assets/learning/computing-systems/ch05-ex51-datapath.png" width="80%">
+<img src="/static/assets/learning/computing-systems/ch05-ex51-datapath.png" width="80%">
 
 ---
 
@@ -532,7 +532,7 @@ For the data path, fill in the value in register A.
 
 *Ans.-*
 
-<img src="../../assets/learning/computing-systems/ch05-ex53.png" width="75%">
+<img src="/static/assets/learning/computing-systems/ch05-ex53.png" width="75%">
 
 ---
 
@@ -584,7 +584,7 @@ $$
     - 2. Where does the control signal of this mux come from? Be specific!
     - 3. What opcodes use this input to the MARMUX?
 
-<img src="../../assets/learning/computing-systems/ch05-ex57.png" width="90%">
+<img src="/static/assets/learning/computing-systems/ch05-ex57.png" width="90%">
 
 *Ans.-*
 
@@ -620,7 +620,7 @@ Your job: Fill in the missing entries in the table. You only need to fill in the
 
 *Ans.-*
 
-<img src="../../assets/learning/computing-systems/ch05-ex61.png" width="100%">
+<img src="/static/assets/learning/computing-systems/ch05-ex61.png" width="100%">
 
 ---
 

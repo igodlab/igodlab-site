@@ -25,7 +25,7 @@ $$
 
 - 3.5 Complete a truth table for the transistor-level circuit in Figure 3.37.
 
-<img src="../../assets/learning/computing-systems/ch03-ex05.png" width="50%">
+<img src="/static/assets/learning/computing-systems/ch03-ex05.png" width="50%">
 
 *Ans.-* We can quickly fill some outputs considering that if voltage on C's P-type gate is 1 then the circuit above OUT is open so 0. Also if the N-types A and B are supplied with voltage 1 our circuit is grounded
 $$
@@ -47,7 +47,7 @@ $$
 
 - 3.7 The following circuit has a major ﬂaw. Can you identify it? Hint: Evaluate the circuit for all sets of inputs.
 
-<img src="../../assets/learning/computing-systems/ch03-ex07.png" width="35%">
+<img src="/static/assets/learning/computing-systems/ch03-ex07.png" width="35%">
 
 *Ans.-* The circuit breaks the complementary rule ie. two parallel P-type transistors must be connected to their N-type transistors in series and vice versa. This causes that for opposing $A,B$ input states we get a *short circuit* and has a useless undetermined $V_{\text{OUT}}$ voltage as we can see in the truth table.
 $$
@@ -65,7 +65,7 @@ $$
 
 - 3.9 What does the following transistor circuit do?
 
-<img src="../../assets/learning/computing-systems/ch03-ex09.png" width="50%">
+<img src="/static/assets/learning/computing-systems/ch03-ex09.png" width="50%">
 
 *Ans.-* When $A=0$ the circuit is inactive but when $A=1$ we have short circuit on the left causing $V_{\text{OUT}}$ to be undetermined.
 
@@ -73,7 +73,7 @@ $$
 
 - 3.11 A student knew that an inverter contained one P-type transistor and one N-type transistor, but he wired them up wrong, as shown below.
 
-<img src="../../assets/learning/computing-systems/ch03-ex11.png" width="35%">
+<img src="/static/assets/learning/computing-systems/ch03-ex11.png" width="35%">
 
 What is the value of Out when $A = 0$?
 What is the value of Out when $A = 1$?
@@ -84,7 +84,7 @@ What is the value of Out when $A = 1$?
 
 - 3.13 The following logic diagram produces the logical value OUT.
 
-<img src="../../assets/learning/computing-systems/ch03-ex13.png" width="40%">
+<img src="/static/assets/learning/computing-systems/ch03-ex13.png" width="40%">
 
 What does the value 0 or 1 for OUT signify?
 
@@ -123,11 +123,11 @@ $$
 
 - a. 
 
-<img src="../../assets/learning/computing-systems/ch03-ex17a-sol.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch03-ex17a-sol.png" width="60%">
 
 - b.
 
-<img src="../../assets/learning/computing-systems/ch03-ex17b-sol.png" width="100%">
+<img src="/static/assets/learning/computing-systems/ch03-ex17b-sol.png" width="100%">
 
 
 ---
@@ -188,13 +188,13 @@ $$
 
 - b. Recall that in a *Programmable Array Logic* (PRL) the implementation algorithm is simply to connect the output of an AND gate to the input of an OR gate if the corresponding row of the turth table produces an output `1` for that column. So in our big NAND circuit below, 15 out of the 16 AND gate outputs should be connected to the OR gate except for the $A=B=C=D=1$ case (top AND gate) which responsible for the only `0` output.
 
-<img src="../../assets/learning/computing-systems/ch03-ex23b-sol.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch03-ex23b-sol.png" width="60%">
 
 ---
 
 - 3.25 Logic circuit 1 in Figure 3.39 has inputs $A, B, C$. Logic circuit 2 in Figure 3.40 has inputs $A$ and $B$. Both logic circuits have an output $D$. There is a fundamental difference between the behavioral characteristics of these two circuits. What is it? Hint: What happens when the voltage at input $A$ goes from `0` to `1` in both circuits?
 
-<img src="../../assets/learning/computing-systems/ch03-ex25.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch03-ex25.png" width="60%">
 
 *Ans.-* Logic circuit 1 is a **mux** where $A$ acts as the select line . Whereas logic circuit 2 is simply an **R-S Latch** where $A$ sets ($B$ resets) the value of the latch-$D$ to `1` (`0`). Analyzing the case of the hint: *What happens when* $A:0\rightarrow 1$? - In circuit 1 the line selects `D = C` when `A = 0` and `D = B` when `A = 1`. In circuit 2 switching $A$ from `0` to `1` just sets and 'locks' the latch to `1`. 
 
@@ -208,7 +208,7 @@ $$
 
 - 3.29 Given the logic circuit in Figure 3.41, fill in the truth table for the output value $Z$.
 
-<img src="../../assets/learning/computing-systems/ch03-ex29.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch03-ex29.png" width="60%">
 
 *Ans.-*
 
@@ -235,7 +235,7 @@ $$
     - c. What is the propagation delay for the four-bit adder shown in Figure 3.16?
     - d. What if the four-bit adder were extended to 32 bits?
 
-<img src="../../assets/learning/computing-systems/ch03-ex31.png" width="100%">
+<img src="/static/assets/learning/computing-systems/ch03-ex31.png" width="100%">
 
 *Ans.-* The key notion to identify the propagation delay is the wording: "*LARGEST number of logic gates through which ANY of the inputs MUST propagate*".
 - a. Figure 3.12: $3$ gate delays
@@ -251,7 +251,7 @@ $$
     - b. If the select line S is switched from a logical `0` to `1`, what will the output be?
     - c. Is this logic circuit a storage element?
 
-<img src="../../assets/learning/computing-systems/ch03-ex33.png" width="35%">
+<img src="/static/assets/learning/computing-systems/ch03-ex33.png" width="35%">
 
 *Ans.-* 
 - a. When `S = 0` and `A = 1` the top AND gate yields `1` which ensures that we'll get `Z = 1` after passing through the OR gate. Whereas, if `S = A = 0` nothing survives the AND gates and the output is `Z = 0`
@@ -277,7 +277,7 @@ $$
     - b. To change the number of entries in the memory from 4 to 60, how many address lines would be needed? What would the addressability of the memory be after this change was made?
     - c. Suppose the minimum width (in bits) of the program counter (the program counter is a special register within a CPU, and we will discuss it in detail in Chapter 4) is the minimum number of bits needed to address all 60 locations in our memory from part b. How many additional memory locations could be added to this memory without having to alter the width of the program counter?
 
-<img src="../../assets/learning/computing-systems/ch03-ex21.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch03-ex21.png" width="60%">
 
 *Ans.-* Quick recap about Figure 3.21. It shows an $n$-bit machine ($n=2$) with *addressability* of $x$-bits ($x=3$). We have an **address space/unique memory locations** of $2^n=4$ where each location stores 3-bit-digit numbers. Thus we see a memory array of $2^2\times 3$ in the figure. To specify the memory rows we need **address bits** $A[\text{high}:\text{low}]$ which basically acts as a *select line* for a specific memory location ie. a complete $(D[\text{high}]+1)$-digit row in the figure that we can read/write from. Address bits accomplish this by passing through a decoder (a unique mask for each bit-input combination of $A$) which results in `1` ONLY for the selected memory location/row and `0` elsewhere. Then, the line $A$ is:
 
@@ -308,7 +308,7 @@ $$
 
 *Ans.-* 
 
-<img src="../../assets/learning/computing-systems/ch03-ex45-sol.png" width="100%">
+<img src="/static/assets/learning/computing-systems/ch03-ex45-sol.png" width="100%">
 
 ---
 
@@ -322,7 +322,7 @@ $$
     - a. Complete the rest of the following table.
     - b. Draw the state diagram for the truth table of part a.
 
-<img src="../../assets/learning/computing-systems/ch03-ex49.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch03-ex49.png" width="60%">
 
 *Ans.-*
 
@@ -344,7 +344,7 @@ $$
 
 - b.
 
-<img src="../../assets/learning/computing-systems/ch03-ex49b-sol.png" width="50%">
+<img src="/static/assets/learning/computing-systems/ch03-ex49b-sol.png" width="50%">
 
 ---
 
@@ -356,17 +356,17 @@ $$
 
 - 3.53 The master/slave ﬂip-ﬂop we introduced in the chapter is shown below. Note that the input value is visible at the output after the clock transitions from 0 to 1.
 
-<img src="../../assets/learning/computing-systems/ch03-ex53a.png" width="40%">
+<img src="/static/assets/learning/computing-systems/ch03-ex53a.png" width="40%">
 
 Shown below is a circuit constructed with three of these ﬂip-ﬂops.
 
-<img src="../../assets/learning/computing-systems/ch03-ex53b.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch03-ex53b.png" width="60%">
 
 Fill in the entries for D2, D1, D0 for each of clock cycles shown. In ten words or less, what is this circuit doing?
 
 *Ans.-* The circuit is counting down.
 
-<img src="../../assets/learning/computing-systems/ch03-ex53-sol.png" width="60%">
+<img src="/static/assets/learning/computing-systems/ch03-ex53-sol.png" width="60%">
 
 ---
 
@@ -374,7 +374,7 @@ Fill in the entries for D2, D1, D0 for each of clock cycles shown. In ten words 
     - a. Construct the truth tables for $Y$ and $Z$.
     - b. Implement the two logic functions $Y$ and $Z$ described above using ONLY the logic circuits provided below: a 3-to-8 decoder and two OR gates. That is, draw the wires from the outputs of the decoder to the inputs of the OR gates as necessary to do the job. You can assume you have as many inputs to each OR gate as you find necessary.
 
-<img src="../../assets/learning/computing-systems/ch03-ex55.png" width="75%">
+<img src="/static/assets/learning/computing-systems/ch03-ex55.png" width="75%">
 
 *Ans.-*
 - a.
@@ -401,7 +401,7 @@ Note that the states are labeled `00`, `01`, `10`, and `11` and the output of ea
 
 *Ans.-*
 
-<img src="../../assets/learning/computing-systems/ch03-ex57-sol.png" width="75%">
+<img src="/static/assets/learning/computing-systems/ch03-ex57-sol.png" width="75%">
 
 $$
 \begin{array}{ccc|ccc}
@@ -454,7 +454,7 @@ $$
 $$
 But it is a first step!
 
-<img src="../../assets/learning/computing-systems/ch03-ex59.png" width="75%">
+<img src="/static/assets/learning/computing-systems/ch03-ex59.png" width="75%">
 
 *Ans.-*
 
@@ -462,7 +462,7 @@ But it is a first step!
 
 - 3.61 The logic diagram shown below is a finite state machine.
 
-<img src="../../assets/learning/computing-systems/ch03-ex61.png" width="40%">
+<img src="/static/assets/learning/computing-systems/ch03-ex61.png" width="40%">
 
 -
     - a. Construct the truth table for the combinational logic.
@@ -487,7 +487,7 @@ $$
 
 - b.
 
-<img src="../../assets/learning/computing-systems/ch03-ex61b-sol.png" width="50%">
+<img src="/static/assets/learning/computing-systems/ch03-ex61b-sol.png" width="50%">
 
 --- 
 

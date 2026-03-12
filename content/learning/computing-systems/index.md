@@ -3,9 +3,8 @@ title: Computing Systems
 date: 2025-09-28
 ---
 
-<img src="../assets/learning/probml/probml_book2.jpg" width="50%">
+<img src="/static/assets/learning/computing-systems/computer-systems-programmers-perspective-cover.png" width="50%">
 
-My personal notes of [Probabilistic Machine Learning Advanced Topics](https://probml.github.io/pml-book/book2.html) by Kevin P. Murphy.  These are a synthesized lecture-style notes of the latest version (2025) of the book. Additionally, **I became a small contributor** providing corrections to an older version which now has taken effect! 
+Getting into low-level programming and filling the gaps of knowledge between programs and machine-level execution. Check my notes and solutions to selected parts of [Computer Systems: A Programmer's Perspective 3rd edition](https://csapp.cs.cmu.edu/) and [Introduction to Computing Systems: From Bits & Gates to C/C++ & Beyond 3rd edition](https://www.mheducation.com/highered/product/introduction-to-computing-systems-from-bits-and-gates-to-c-c%2B%2B-and-beyond-patt.html?viewOption=student)
 
-Some of my PRs: [#296](https://github.com/probml/pml2-book/issues/296), [#292](https://github.com/probml/pml2-book/issues/292), [#282](https://github.com/probml/pml2-book/issues/282)
 

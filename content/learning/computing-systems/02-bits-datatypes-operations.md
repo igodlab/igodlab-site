@@ -523,9 +523,19 @@ $$
 > [!important] IEEE 754 - 32-bit floating point representation
 > We can represent a floating number with less precision digits but greater range if we normalize it as
 > 
-> $N = (-1)^S \times 1.\texttt{fraction}\times 2^{\texttt{exponent}-127}, \quad\quad 1\leq\texttt{exponent}\leq 254$
+> $$
+> N = (-1)^S \times 1.\texttt{fraction}\times 2^{\texttt{exponent}-127}, \quad\quad 1\leq\texttt{exponent}\leq 254
+> $$
 > 
 > where
+> $$
+> \begin{array}{|c|c|c|}
+> \text{1-bit} & \text{8-bits} & \text{23-bits} \\
+> \hline
+> S & \texttt{exponent} & \texttt{mantissa} \\
+> \hline
+> \end{array}
+> $$
 > - $S$ needs one bit for the sign 
 > - $\texttt{fraction}\text{ or }\texttt{mantissa}$ takes 23 unisgned bits for precision
 > - $\texttt{exponent}$ takes 8 unsigned bits for the range (excluding `0 = 0000 0000` and `255 = 1111 1111` which are reserved for *subnormal numbers* and $\pm$infinity $(-1)^S \infty$, respectively)
@@ -560,7 +570,7 @@ $$
 > 
 
 - a. $11.11 = 1\cdot 2^1 + 1\cdot 2^0 + 1\cdot 2^{-1} + 1\cdot 2^{-2} = 1.111 \times 2^1 \rightarrow$ `0 10000000 11100000000000000000000`
-- b. $-55.359375 = -110111.010111 = 1.10111010111 \times 2^{5} \rightarrow$ `1 10000100 10111010111000000000000`
+- b. $-55.359375 = -110111.010111 = -1.10111010111 \times 2^{5} \rightarrow$ `1 10000100 10111010111000000000000`
 - c. $3.1415927 = 11.0010010000111111011011 \rightarrow$ `0 10000000 10010010000111111011011`
 - d. $64000 = 1111101000000000.0 = 1.111101 \times 2^{15} \rightarrow$ `0 10001110 11110100000000000000000`
 
