@@ -552,9 +552,13 @@ $$
 > 
 > $N_{\text{smallest}} = 1.00000000000000000000000_2\times 2^{-126} = 2^{-126} \quad (\sim 1.1755_{10} \times 10^{-38}\texttt{ decimal})$
 > 
+> ---
+> 
 > If we divert out of normalization we can squeeze in more representations ie. **subnormal numbers**
 > 
-> $N^{\text{subnorm}} = (0.\texttt{fraction}\times 2^{0000\,0000_2 - 126_{10}})$ 
+> $$
+> N^{\text{subnorm}} = 0.\texttt{fraction}\times 2^{0000\,0000_2 - 126_{10}}
+> $$
 >
 > gives us the ability to represent numbers with magnitudes smaller than $2^{-126}$ but larger than 0. Note that the deduction for the exponent is forced to be $-126$ rather than $-127$ for consistency. $\texttt{exponent}=0000\,0000$ is more like a cue that let us know that the number is subnormal. The range is:
 > 

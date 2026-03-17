@@ -8,7 +8,7 @@ date: 2026-02-03
 # 2. Representing and Manipulating Information
 
 - Computers store and manipulate bits and thats the only thing they handle. This chapter is all about how can we represent and compute meaningful operations with bits
-- Basically we can encode many meanings in a bit-system, we'll see how. Basically we have to explore
+- Basically we can encode many meanings in a bit-system, we'll explore
     - Encoding values to represent elements of various mathematical sets
     - Encoding instructions to perform many procedures eg. arithmetic operations, machine-level instructions, input/output
 
@@ -17,18 +17,23 @@ date: 2026-02-03
 - A computer's word size $w$ determines the default byte-sizes of many datatypes. Whereas other datatypes have either smaller (`char, short, int`) or larger (eg. `int64_t` forcing a 64-bit number in a 32-bit machine) byte-size requirements 
 - There are many different ways of encoding a binary value $\vec{x}=[x_{w-1},x_{w-2}\ldots,x_0]$ (where the vector elements come to represent positional bits rather than dimensional values)
     - Notably $x_{w-1}=0(1)$ indicates if a number is positive (negative) in many representations, thus is called the *sign bit or most significant bit (MSB)* 
-> [!Note] *Two's-Complement* is the dominant representation
+
+> [!Important] *Two's-Complement* is the dominant representation
 > Below I show the formal conversion functions with its ranges. Though I find easier to memorize it by their symmetry/asymmetry characteristics. Check the second table showing the full representation values for a 4-bit number.
 >
-> *Unsigned* - represents positive numbers starting at zero. *Signed* - represents increasing (decreasing) positive $x_{w-1}=0$ (negative $x_{w-1}=1$) integers until it reaches its largest (smallest) value possible. *One's-complement* - symmetric with sign inversion wrt sign bit change. *Two's-complement* asymmetric, similar to one's comp. but with one negative number larger and w/o $-0$ thus is shifted by $|\text{TMin}|=|\text{TMax}|+1$
+> The intuition for each representaiton is basically:
+> - *Unsigned* - represents positive numbers starting at zero
+> - *Signed* - represents increasing (decreasing) positive $x_{w-1}=0$ (negative $x_{w-1}=1$) integers until it reaches its largest (smallest) value possible
+> - *One's-complement* - symmetric with sign inversion wrt sign bit change
+> - *Two's-complement* asymmetric, similar to one's comp. but with one negative number larger and w/o $-0$ thus is shifted by $\lvert\text{TMin}\rvert=\lvert\text{TMax}\rvert+1$
 
 $$
 \begin{array}{|c|l|l|}
 \hline
 \textbf{Encoding (X)} & \textbf{Function (B2X)} & \textbf{Range } \{0,1\}^w\rightarrow\{\text{XMin}_w,\ldots\text{XMax}_w \} \\
 \hline
-\textbf{Unsigned} & \text{B2U}_w(\vec{x}) = \sum_{i=0}^{w-1}x_i\cdot 2^i & \text{UMin}_w=\sum_{i=0}^{w-1}0\cdot 2^i,\quad\text{UMax}_w=\sum_{i=0}^{w-1}1\cdot2^i \\
-\textbf{(bijective)} & & \rightarrow \{0,\ldots, 2^{w}-1\} \\
+\text{Unsigned} & \text{B2U}_w(\vec{x}) = \sum_{i=0}^{w-1}x_i\cdot 2^i & \text{UMin}_w=\sum_{i=0}^{w-1}0\cdot 2^i,\quad\text{UMax}_w=\sum_{i=0}^{w-1}1\cdot2^i \\
+\text{(bijective)} & & \rightarrow \{0,\ldots, 2^{w}-1\} \\
  \hline
 \text{Signed} & \text{B2S}_w(\vec{x}) = (-1)^{x_{w-1}}\cdot\left(\sum_{i=0}^{w-2}x_i\cdot 2^i\right) & \text{SMin}_w=(-1)^1\cdot\left(\sum_{i=0}^{w-2}1\cdot 2^i\right),\quad\text{SMax}_w=(-1)^0\cdot\left(\sum_{i=0}^{w-2}1\cdot 2^i\right) \\
 \text{(surjective)} & & \rightarrow \{-2^{w-1}+1,\ldots, 2^{w-1}-1\} \\
@@ -61,14 +66,155 @@ $$
 1100 & 12 & -4 & \mathbf{-4} & -3 \\
 1101 & 13 & -5 & \mathbf{-3} & -2 \\
 1110 & 14 & -6 & \mathbf{-2} & -1 \\
-1111 & 15 & -7 & \mathbf{-1} & -0 \\
+1111 & 15 & -7 & \mathbf{-1} & -0 
 \end{array}
 $$
 
-- *C Promotion rules* - states that when either operand is unsigned then the other operand is implicitely cast to unsigned.
-- **Sign extension** is basically padding a binary value to the left to increase its bit-size but keeping the value unchanged
-    - *Unsigned*: simply pads with zeros to the left ie. $\vec{u}=[{\color{#04a5e5}0,\ldots,0},u_{w-1},u_0]$
-    - *Two's-complement*: pads with the same value as the sign bit $\vec{x} = [{\color{#04a5e5}x_{w-1},\ldots,x_{w-1},},x_{w-1},x_{w-2},\ldots,x_0]$
+- Naturally there are conversion functions that allow us to go from one representation to another (w/o passing through binary)
+    - **Two's-complement to unsigned** - for $x\in \text{TMin}_w \leq x \leq \text{TMax}_w$
+    $$
+    \text{T2U}_w(x) = 
+    \begin{cases}
+    x + 2^w, & x < 0 \\
+    x, & x \geq 0
+    \end{cases}
+    $$
+    - **Unsigned to Two's-complement** - for $u\in0\leq u \leq \text{UMax}_w$
+    $$
+    \text{U2T}_w(u) = 
+    \begin{cases}
+    u, & u \leq \text{TMax}_w \\
+    u - 2^w, & u > \text{TMax}_w
+    \end{cases}
+    $$
+
+
+> [!Important] Computers only manipulate bits
+> 
+> The key thing to understand is that values, operands, instructions and math that our programs manipulate and run are all sequences of bits. It is our job to understand how computers interpret these bits for us to avoid errors!
+> 
+> Writing correct programs involve a holistic understanding of how programs will instruct the computer to handle bits. For instance, the same sequence of bits can mean: an *operand instruction* or a *floating point value* of a bunch of *characters*. Thus, we must be aware that the language-compiler can command the correct way of treating bits according to our program's purpose. 
+
+- In the spirit of exemplifying that *"bits are the same we simply instruct how to interpret them"* we have some techniques for shortening or enlarging them
+    - **Sign extension** is basically padding a binary value to the left to increase its bit-size but keeping the value unchanged
+        - *Unsigned*: simply pads with zeros to the left ie. $\vec{u}=[{\color{#04a5e5}0,\ldots,0},u_{w-1},u_0]$
+        - *Two's-complement*: pads with the same value as the sign bit $\vec{x} = [{\color{#04a5e5}x_{w-1},\ldots,x_{w-1},},x_{w-1},x_{w-2},\ldots,x_0]$
+    - **Truncating numbers** of $w$-bits to $k$-bits ($w>k$) is accomplished by dropping the high order $(w-k)$-bits. Truncation occurs when casting is applied to a value
+
+### 2.3 Integer Arithmetic
+
+There are a few caveats to understand binary arithmetic. For instance since our values are represented by finite $w$-bit numbers we must deal with **overflow**
+
+- **Unsigned addition** for arguments $x,y$, where $0\leq x,y \leq 2^w - 1$ their sum is in range $0 \leq x + y \leq 2^{w+1}-2$
+$$
+x +_w^U y = 
+\begin{cases}
+x + y, & x + y \leq \text{UMax}_w & \text{(Normal)} \\
+x + y - 2^w, & \text{UMax}_w < x + y < 2^{w+1} & \text{(Overflow)}
+\end{cases}
+$$
+
+
+- **Unsigned negation** is obtained by negating a binary number with the operator 
+$$
+-_w^U x = 
+\begin{cases}
+x, & x=0 \\ 
+2^w - x, & x > 0 
+\end{cases}
+$$
+
+- **Unsigned multiplication** will be in the range $0 \leq x\cdot y \leq (2^w - 1)^2$ and is determined by 
+$$
+x\ast_w^U  y = (x\cdot y)\mod 2^w
+$$  
+
+- **Two's-complement addition** given the integers $x,y$ in range $-2^{w-1}\leq x,y \leq 2^{w-1}-1$ their sum is in range $-2^w \leq x+y \leq 2^w - 2$
+$$
+x +_w^T y = 
+\begin{cases}
+x + y - 2^w, & \text{TMax}_w < x+y & \text{(Positive overflow)} \\
+x + y, & \text{TMin}_w\leq x + y \leq \text{TMax}_w & \text{(Normal)} \\
+x + y + 2^w, & x + y < \text{TMin}_w & \text{(Negative overflow)}
+\end{cases}
+$$
+
+- **Two-s-complement negation** 
+$$
+-_w^Tx =
+\begin{cases}
+\text{TMin}_w, & x = \text{TMin}_w \\
+-x, & x > \text{TMin}_w
+\end{cases}
+$$
+
+- **Two's-complement multiplication**: ranges between $-2^{w-1}\cdot(2^{w-1}-1)\leq x\cdot y \leq -2^{w-1}\cdot (-2^{w-1})$
+$$
+\ast_w^T = \text{U2T}_w\left((x\cdot y) \mod 2^w\right)
+$$
+
+---
+
+- **Multiplying by a constant**: let's begin with multiplication by powers of 2 and then generalize to arbitrary constants
+    - **Multiplication by a power of 2**: let $\vec{x}=[x_{w-1},x_{w-2},\ldots,x_0]$ be an unsigned integer. Then $\forall k \in 0 \leq k < w$, the $(w+k)$-bit unsigned representation of $x\cdot 2^k$ is given by $[x_{w-1},x_{w-2},\ldots,x_0,{\color{#04a5e5}0,\ldots,0}]$ (where $\vec{x}$ is padded with $k$ zeros to the right)
+    - **Unsigned multiplication by a power of 2**: the expression $\texttt{x << k}$ yields the value $x\ast_w^U 2^k$
+    - **Two's-complement multiplication by a power of 2**: likewise $\texttt{x << k}$ yields $x\ast_w^T 2^k$
+
+- **Division **
+
+### 2.4 Floating Point
+
+- **IEEE 754 - 32-bit floating point representation** - We can represent a floating number with less precision digits but greater range if we normalize it as
+
+$$
+N = (-1)^S \times 1.\texttt{fraction}\times 2^{\texttt{exponent}-127}, \quad\quad 1\leq\texttt{exponent}\leq 254
+$$
+
+$$
+\begin{array}{|c|c|c|}
+\text{1-bit} & \text{8-bits} & \text{23-bits} \\
+\hline
+S & \texttt{exponent} & \texttt{mantissa} \\
+\hline
+\end{array}
+$$
+- where
+    - $S$ needs one bit for the sign 
+    - $\texttt{fraction}\text{ or }\texttt{mantissa}$ takes 23 unisgned bits for precision
+    - $\texttt{exponent}$ takes 8 unsigned bits for the range (excluding `0 = 0000 0000` and `255 = 1111 1111` which are reserved for *subnormal numbers* and $\pm$infinity $(-1)^S \infty$, respectively)
+
+- The largest and smallest number that can be represented in normalized form are:
+
+$$
+\begin{align*}
+N_{\text{largest}} &= 1.11111111111111111111111_2\times 2^{127}\sim 2 \times 2^{127} \sim 2^{128} \quad\text{(good approx. bad precision)} \\
+&= (1\cdot 2^0 + 1\cdot 2^{-1} + 1\cdot 2^{-2} + \ldots + 1\cdot 2^{-23}) \times 2^{127} \\
+&= (2-2^{-23}) \times 2^{127} = 2^{128}-2^{104} \quad(\sim 3.4028_{10} \times 10^{38} \texttt{ decimal})
+\end{align*}
+$$
+
+$N_{\text{smallest}} = 1.00000000000000000000000_2\times 2^{-126} = 2^{-126} \quad (\sim 1.1755_{10} \times 10^{-38}\texttt{ decimal})$
+
+---
+
+- **Subnormal numbers** - If we divert out of normalization we can squeeze in more representations
+
+$$
+N^{\text{subnorm}} = 0.\texttt{fraction}\times 2^{0000\,0000_2 - 126_{10}}
+$$
+
+gives us the ability to represent numbers with magnitudes smaller than $2^{-126}$ but larger than 0. Note that the deduction for the exponent is forced to be $-126$ rather than $-127$ for consistency. $\texttt{exponent}=0000\,0000$ is more like a cue that let us know that the number is subnormal. The range is:
+
+$$
+\begin{align*}
+N^{\text{subnorm}}_{\text{largest}} &= 0.11111111111111111111111_2 \times 2^{-126} \\
+&= (1\cdot 2^{-1} + 1\cdot 2^{-2} + \ldots + 1\cdot 2^{-23}) \times 2^{-126} \\
+&= (1-2^{-23}) \times 2^{-126} = 2^{-126}-2^{-149} \quad (\sim 1.1755_{10} \times 10^{-38}\texttt{ decimal}) \\
+N^{\text{subnorm}}_{\text{smallest}} &= 0.00000000000000000000001_2 \times 2^{-126} \\
+&= 2^{-149} \quad (\sim 1.4013_{10} \times 10^{-45}\texttt{ decimal})
+\end{align*}
+$$
+
 
 # 3. Machine-Level Representation of Programs
 
