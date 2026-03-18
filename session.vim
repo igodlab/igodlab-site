@@ -13,9 +13,9 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +140 ~/Documents/igodlab-site/content/learning/computing-systems/11-csapp-part1.md
-badd +6 ~/Documents/igodlab-site/content/learning/computing-systems/05-the-lc-3.md
-badd +36 ~/Documents/igodlab-site/content/learning/computing-systems/02-bits-datatypes-operations.md
+badd +176 ~/Documents/igodlab-site/content/learning/computing-systems/11-csapp-part1.md
+badd +523 ~/Documents/igodlab-site/content/learning/computing-systems/02-bits-datatypes-operations.md
+badd +40 ~/Documents/igodlab-site/content/learning/cuda/02-heterogeneus-data-parallel-computing.md
 argglobal
 %argdel
 set stal=2
@@ -23,6 +23,59 @@ tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabrewind
 edit ~/Documents/igodlab-site/content/learning/computing-systems/11-csapp-part1.md
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 133 + 87) / 174)
+exe 'vert 2resize ' . ((&columns * 40 + 87) / 174)
+argglobal
+setlocal foldmethod=manual
+setlocal foldexpr=0
+setlocal foldmarker={{{,}}}
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldenable
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 176 - ((18 * winheight(0) + 18) / 36)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 176
+normal! 0
+wincmd w
+argglobal
+enew
+file neo-tree\ filesystem\ \[1]
+balt ~/Documents/igodlab-site/content/learning/computing-systems/11-csapp-part1.md
+setlocal foldmethod=manual
+setlocal foldexpr=0
+setlocal foldmarker={{{,}}}
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldenable
+wincmd w
+exe 'vert 1resize ' . ((&columns * 133 + 87) / 174)
+exe 'vert 2resize ' . ((&columns * 40 + 87) / 174)
+tabnext
+edit ~/Documents/igodlab-site/content/learning/computing-systems/02-bits-datatypes-operations.md
 wincmd t
 let s:save_winminheight = &winminheight
 let s:save_winminwidth = &winminwidth
@@ -41,14 +94,14 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 140 - ((22 * winheight(0) + 18) / 36)
+let s:l = 523 - ((16 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 140
-normal! 093|
+keepjumps 523
+normal! 0
 tabnext
-edit ~/Documents/igodlab-site/content/learning/computing-systems/05-the-lc-3.md
+edit ~/Documents/igodlab-site/content/learning/cuda/02-heterogeneus-data-parallel-computing.md
 wincmd t
 let s:save_winminheight = &winminheight
 let s:save_winminwidth = &winminwidth
@@ -68,38 +121,11 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 6 - ((5 * winheight(0) + 18) / 36)
+let s:l = 40 - ((0 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 6
-normal! 065|
-tabnext
-edit ~/Documents/igodlab-site/content/learning/computing-systems/02-bits-datatypes-operations.md
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt ~/Documents/igodlab-site/content/learning/computing-systems/05-the-lc-3.md
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 523 - ((16 * winheight(0) + 18) / 36)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 523
+keepjumps 40
 normal! 0
 tabnext 1
 set stal=1

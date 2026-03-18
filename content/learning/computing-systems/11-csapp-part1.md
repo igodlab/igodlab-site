@@ -8,7 +8,7 @@ date: 2026-02-03
 # 2. Representing and Manipulating Information
 
 - Computers store and manipulate bits and thats the only thing they handle. This chapter is all about how can we represent and compute meaningful operations with bits
-- Basically we can encode many meanings in a bit-system, we'll explore
+- Basically we can encode many meanings in a bit-system, we'll explore:
     - Encoding values to represent elements of various mathematical sets
     - Encoding instructions to perform many procedures eg. arithmetic operations, machine-level instructions, input/output
 
@@ -97,8 +97,8 @@ $$
 
 - In the spirit of exemplifying that *"bits are the same we simply instruct how to interpret them"* we have some techniques for shortening or enlarging them
     - **Sign extension** is basically padding a binary value to the left to increase its bit-size but keeping the value unchanged
-        - *Unsigned*: simply pads with zeros to the left ie. $\vec{u}=[{\color{#04a5e5}0,\ldots,0},u_{w-1},u_0]$
-        - *Two's-complement*: pads with the same value as the sign bit $\vec{x} = [{\color{#04a5e5}x_{w-1},\ldots,x_{w-1},},x_{w-1},x_{w-2},\ldots,x_0]$
+        - *Unsigned* -  simply pads with zeros to the left ie. $\vec{u}=[{\color{#04a5e5}0,\ldots,0},u_{w-1},u_0]$
+        - *Two's-complement* - pads with the same value as the sign bit $\vec{x} = [{\color{#04a5e5}x_{w-1},\ldots,x_{w-1},},x_{w-1},x_{w-2},\ldots,x_0]$
     - **Truncating numbers** of $w$-bits to $k$-bits ($w>k$) is accomplished by dropping the high order $(w-k)$-bits. Truncation occurs when casting is applied to a value
 
 ### 2.3 Integer Arithmetic
@@ -148,19 +148,23 @@ $$
 \end{cases}
 $$
 
-- **Two's-complement multiplication**: ranges between $-2^{w-1}\cdot(2^{w-1}-1)\leq x\cdot y \leq -2^{w-1}\cdot (-2^{w-1})$
+- **Two's-complement multiplication** - ranges between $-2^{w-1}\cdot(2^{w-1}-1)\leq x\cdot y \leq -2^{w-1}\cdot (-2^{w-1})$
 $$
 \ast_w^T = \text{U2T}_w\left((x\cdot y) \mod 2^w\right)
 $$
 
 ---
 
-- **Multiplying by a constant**: let's begin with multiplication by powers of 2 and then generalize to arbitrary constants
-    - **Multiplication by a power of 2**: let $\vec{x}=[x_{w-1},x_{w-2},\ldots,x_0]$ be an unsigned integer. Then $\forall k \in 0 \leq k < w$, the $(w+k)$-bit unsigned representation of $x\cdot 2^k$ is given by $[x_{w-1},x_{w-2},\ldots,x_0,{\color{#04a5e5}0,\ldots,0}]$ (where $\vec{x}$ is padded with $k$ zeros to the right)
-    - **Unsigned multiplication by a power of 2**: the expression $\texttt{x << k}$ yields the value $x\ast_w^U 2^k$
-    - **Two's-complement multiplication by a power of 2**: likewise $\texttt{x << k}$ yields $x\ast_w^T 2^k$
+- **Multiplying by a constant** - let's begin with multiplication by powers of 2 and then generalize to arbitrary constants
+    - **Multiplication by a power of 2** - let $\vec{x}=[x_{w-1},x_{w-2},\ldots,x_0]$ be an unsigned integer. Then $\forall k \in 0 \leq k < w$, the $(w+k)$-bit unsigned representation of $x\cdot 2^k$ is given by $[x_{w-1},x_{w-2},\ldots,x_0,{\color{#04a5e5}0,\ldots,0}]$ (where $\vec{x}$ is padded with $k$ zeros to the right)
+    - **Unsigned multiplication by a power of 2** - the expression $\texttt{x << k}$ yields the value $x\ast_w^U 2^k$
+    - **Two's-complement multiplication by a power of 2** - likewise $\texttt{x << k}$ yields $x\ast_w^T 2^k$
 
-- **Division **
+- **Division** - uses the left-shift operator as oppossed to multiplication's right-shift. The other difference is that division always rounds the result towards zero for which we'll use the *floor/(ceil)* notation for a rounded down (up) value. With that in mind:
+    - **Unsigned division by a power of 2** - for unsigned values $\vec{x},k$ such that $0\leq k \leq w$ the expression $\texttt{x >> k}$ yields $\lfloor x/2^k \rfloor$
+    - **Two's complement division by a power of 2** - for the two's-complement values $\vec{x}$ and unsigned $k$ such that $0\leq k < w$ there's two sub-cases:
+        - *rounding down* - the expression $\texttt{x >> k}$ (*arithmetic* right shift) yields $\lfloor x/2^k\rfloor$
+        - *rounding up* - the expression $\texttt{(x + (1 << k) - 1) >> k}$ (*arithmetic* right shift) yields $\lceil x/2^k\rceil$
 
 ### 2.4 Floating Point
 
