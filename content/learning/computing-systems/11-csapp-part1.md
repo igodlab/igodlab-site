@@ -156,70 +156,81 @@ $$
 ---
 
 - **Multiplying by a constant** - let's begin with multiplication by powers of 2 and then generalize to arbitrary constants
-    - **Multiplication by a power of 2** - let $\vec{x}=[x_{w-1},x_{w-2},\ldots,x_0]$ be an unsigned integer. Then $\forall k \in 0 \leq k < w$, the $(w+k)$-bit unsigned representation of $x\cdot 2^k$ is given by $[x_{w-1},x_{w-2},\ldots,x_0,{\color{#04a5e5}0,\ldots,0}]$ (where $\vec{x}$ is padded with $k$ zeros to the right)
-    - **Unsigned multiplication by a power of 2** - the expression $\texttt{x << k}$ yields the value $x\ast_w^U 2^k$
-    - **Two's-complement multiplication by a power of 2** - likewise $\texttt{x << k}$ yields $x\ast_w^T 2^k$
+    - **Multiplication by a power of 2** - let $\vec{x}=[x_{w-1},x_{w-2},\ldots,x_0]$ be an unsigned integer. Then $\forall k \in 0 \leq k < w$, the $(w+k)$-bit unsigned representation of $x\cdot 2^k$ is given by $[x_{w-1-k},x_{w-2-k},\ldots,x_0,{\color{#04a5e5}0,\ldots,0}]$
+        - where $x$ is padded with $k$ zeros to the right irrespective if we're dealing with signed or unsigned values because padding is the same for left-shift
+    - **Unsigned multiplication by a power of 2** - the expression `x << k` yields the value $x\ast_w^U 2^k$
+    - **Two's-complement multiplication by a power of 2** - likewise `x << k` yields $x\ast_w^T 2^k$
+    - > [!Note] Multiplying by an arbitrary constant
+      > The compiler finds ways for efficiently multiplying by arbitrary constants making use of patterns eg. decomposing a multiplication into left shifts and sums.
 
-- **Division** - uses the left-shift operator as oppossed to multiplication's right-shift. The other difference is that division always rounds the result towards zero for which we'll use the *floor/(ceil)* notation for a rounded down (up) value. With that in mind:
-    - **Unsigned division by a power of 2** - for unsigned values $\vec{x},k$ such that $0\leq k \leq w$ the expression $\texttt{x >> k}$ yields $\lfloor x/2^k \rfloor$
-    - **Two's complement division by a power of 2** - for the two's-complement values $\vec{x}$ and unsigned $k$ such that $0\leq k < w$ there's two sub-cases:
-        - *rounding down* - the expression $\texttt{x >> k}$ (*arithmetic* right shift) yields $\lfloor x/2^k\rfloor$
-        - *rounding up* - the expression $\texttt{(x + (1 << k) - 1) >> k}$ (*arithmetic* right shift) yields $\lceil x/2^k\rceil$
+- **Division** - uses the right-shift operator as oppossed to multiplication's left-shift. The other difference is that division always rounds the result towards zero for which we'll use the *floor* $\lfloor x\rfloor$/ *ceil* $\lceil x\rceil$ notation to indicaterounding down or up, respectively. With that in mind:
+    - **Unsigned division by a power of 2** - for unsigned values $u,k$ such that $0\leq k \leq w$ the **logical right shift** `u >> k` yields $\lfloor u/2^k \rfloor$ thus performing the bit-shift: $[{\color{#04a5e5}0,\ldots,0,}u_{w-1},u_{w-2},\ldots,u_k]$
+    - **Two's complement division by a power of 2** - for the two's-complement values $x$ and unsigned $k$ such that $0\leq k < w$ yields $x/2^k$, performing the bit-shift: $[{\color{#04a5e5}x_{w-1},\ldots,x_{w-1},}x_{w-1},x_{w-2},\ldots,x_k]$ with two sub-cases for rounding:
+        - *rounding down* - the **arithmetic right shift** `x >> k` yields $\lfloor x/2^k\rfloor$
+        - *rounding up* - the **arithemtic right shift** `(x + (1 << k) - 1) >> k` yields $\lceil x/2^k\rceil$
 
 ### 2.4 Floating Point
 
-- **IEEE 754 - 32-bit floating point representation** - We can represent a floating number with less precision digits but greater range if we normalize it as
+- We can represent floating numbers using a digit notation with weights:
+$$
+b=\sum_{i=-n}^m b_i\times 2^i
+$$
 
-$$
-N = (-1)^S \times 1.\texttt{fraction}\times 2^{\texttt{exponent}-127}, \quad\quad 1\leq\texttt{exponent}\leq 254
-$$
-
-$$
-\begin{array}{|c|c|c|}
-\text{1-bit} & \text{8-bits} & \text{23-bits} \\
-\hline
-S & \texttt{exponent} & \texttt{mantissa} \\
-\hline
-\end{array}
-$$
-- where
-    - $S$ needs one bit for the sign 
-    - $\texttt{fraction}\text{ or }\texttt{mantissa}$ takes 23 unisgned bits for precision
-    - $\texttt{exponent}$ takes 8 unsigned bits for the range (excluding `0 = 0000 0000` and `255 = 1111 1111` which are reserved for *subnormal numbers* and $\pm$infinity $(-1)^S \infty$, respectively)
-
-- The largest and smallest number that can be represented in normalized form are:
+- **IEEE 754 Floating-Point Representation** - express a floating value $V=(-1)^s\times M \times 2^E$ with less precision digits but greater range using **normalized** and **denormalized** conventions:
 
 $$
 \begin{align*}
-N_{\text{largest}} &= 1.11111111111111111111111_2\times 2^{127}\sim 2 \times 2^{127} \sim 2^{128} \quad\text{(good approx. bad precision)} \\
+N^{\text{norm}} &= (-1)^s \times 1.\texttt{fraction}_n\times 2^{\texttt{exponent}_k - \text{bias}_k} \\
+N^{\text{denorm}} &= (-1)^s \times 0.\texttt{fraction}_n\times 2^{00\cdots 0 -\text{bias}_k}
+\end{align*} \\
+$$
+$$
+\begin{array}{c||c|c|c|}
+ \text{precision} & \leftarrow s\rightarrow & \leftarrow\texttt{exponent}_k\rightarrow & \leftarrow\texttt{fraction}_n\rightarrow \\
+\hline
+\hline
+\text{single (32-bit)} & \text{1-bit} & \text{8-bits} & \text{23-bits} \\
+\text{double (64-bit)} & \text{1-bit} & \text{11-bits} & \text{52-bits} 
+\end{array}
+$$
+
+- where
+    - $s$: encodes the sign 
+    - $M=0/1.\texttt{fraction}$: is the $\texttt{fraction}_n\text{ or }\texttt{mantissa}_n$ part which takes $n$ unisgned bits for precision after the floating point
+    - $E=\texttt{exponent}_k - \text{bias}_k$: takes $k$ unsigned bits for the range, where ($1\leq \texttt{exponent}_k\leq 2^k - 2$ and $\text{bias}_k = 2^{k-1}-1)$
+        - excluding $\texttt{exponent}_k = 00\cdots 0$ and $11\cdots 1$ which are reserved for *denormalized numbers* and $\pm$infinity $(-1)^s \infty$, respectively see Fig 2.33)
+        - *Denormalized* convention allows to squeeze in more values around zero
+        - > [!Note] Why is a *bias* needed in the exponent?
+          > 
+          > Because that way we have a smooth bit incremet transition from zero to denormalized to normal to infinity values as seen in Fig 2.36
+
+<img src="/static/assets/learning/computing-systems/Fig2_33.png" width="65%">
+
+- The largest and smallest numbers that can be represented for a single precision number is:
+
+$$
+\begin{align*}
+N^{\text{norm}}_{\text{smallest}} &= 1.00000000000000000000000_2\times 2^{-126} && (1.1755 \times 10^{-38}\text{ decimal}) \\
+N^{\text{norm}}_{\text{largest}} &= 1.11111111111111111111111_2\times 2^{127} \\
 &= (1\cdot 2^0 + 1\cdot 2^{-1} + 1\cdot 2^{-2} + \ldots + 1\cdot 2^{-23}) \times 2^{127} \\
-&= (2-2^{-23}) \times 2^{127} = 2^{128}-2^{104} \quad(\sim 3.4028_{10} \times 10^{38} \texttt{ decimal})
+&= (2-\epsilon) \times 2^{127} && (3.4028 \times 10^{38} \text{ decimal}) \\
+\hline
+N^{\text{denorm}}_{\text{smallest}} &= 0.00000000000000000000001_2 \times 2^{-126} \\
+&= \epsilon \times 2^{-126} && (1.4013 \times 10^{-45}\text{ decimal}) \\
+N^{\text{denorm}}_{\text{largest}} &= 0.11111111111111111111111_2 \times 2^{-126} \\
+&= (1\cdot 2^{-1} + 1\cdot 2^{-2} + \ldots + 1\cdot 2^{-23}) \times 2^{-126} \\
+&= (1-\epsilon) \times 2^{-126} && (1.1755 \times 10^{-38}\text{ decimal}) \\
 \end{align*}
 $$
 
-$N_{\text{smallest}} = 1.00000000000000000000000_2\times 2^{-126} = 2^{-126} \quad (\sim 1.1755_{10} \times 10^{-38}\texttt{ decimal})$
+<img src="/static/assets/learning/computing-systems/Fig2_36.png" width="85%">
 
 ---
 
-- **Subnormal numbers** - If we divert out of normalization we can squeeze in more representations
+- **Rounding** - since floating numbers live unevenly along the $\mathbb{R}$ axis we must bake-in a mechanism to round to the closest IEEE floating number
 
-$$
-N^{\text{subnorm}} = 0.\texttt{fraction}\times 2^{0000\,0000_2 - 126_{10}}
-$$
-
-gives us the ability to represent numbers with magnitudes smaller than $2^{-126}$ but larger than 0. Note that the deduction for the exponent is forced to be $-126$ rather than $-127$ for consistency. $\texttt{exponent}=0000\,0000$ is more like a cue that let us know that the number is subnormal. The range is:
-
-$$
-\begin{align*}
-N^{\text{subnorm}}_{\text{largest}} &= 0.11111111111111111111111_2 \times 2^{-126} \\
-&= (1\cdot 2^{-1} + 1\cdot 2^{-2} + \ldots + 1\cdot 2^{-23}) \times 2^{-126} \\
-&= (1-2^{-23}) \times 2^{-126} = 2^{-126}-2^{-149} \quad (\sim 1.1755_{10} \times 10^{-38}\texttt{ decimal}) \\
-N^{\text{subnorm}}_{\text{smallest}} &= 0.00000000000000000000001_2 \times 2^{-126} \\
-&= 2^{-149} \quad (\sim 1.4013_{10} \times 10^{-45}\texttt{ decimal})
-\end{align*}
-$$
+# 6. The Memory Hierarchy
 
 
-# 3. Machine-Level Representation of Programs
 
 
