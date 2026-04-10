@@ -25,7 +25,7 @@ date: 2025-07-16
 <img src="/static/assets/learning/probml/ch0247-injective-surjective.png" width="60%">
 
 ### 2.5.2 Monte Carlo Approximation
-- It is often expensive to compute the Jacobian mat so we use Monte Carlo: based on samples $\boldsymbol{x}^s\sim p(\boldsymbol{x})$ compute $\boldsymbol{y}^s\sim f(\boldsymbol{x}^s)$ and then construct an empirical pdf $p(\boldsymbol{y})$ 
+- It is often expensive to compute the Jacobian matrix so we use Monte Carlo: based on samples $\boldsymbol{x}^s\sim p(\boldsymbol{x})$ compute $\boldsymbol{y}^s\sim f(\boldsymbol{x}^s)$ and then construct an empirical pdf $p(\boldsymbol{y})$ 
 
 ### 2.5.3 Probability Integral Transform (PIT)
 - Basically is a transformation of any pdf to a uniform dist (uses cdf), it is useful because we can define unbiased samples 

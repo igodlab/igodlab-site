@@ -14,7 +14,7 @@ else
   set shortmess=aoO
 endif
 badd +1 ~/Documents/igodlab-site/content/learning/computing-systems/11-csapp-part1.md
-badd +1 ~/Documents/igodlab-site/content/learning/computing-systems/02-bits-datatypes-operations.md
+badd +23 ~/Documents/igodlab-site/content/learning/cuda/02-heterogeneus-data-parallel-computing.md
 argglobal
 %argdel
 set stal=2
@@ -39,14 +39,14 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 18) / 36)
+let s:l = 1 - ((0 * winheight(0) + 15) / 31)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
 tabnext
-edit ~/Documents/igodlab-site/content/learning/computing-systems/02-bits-datatypes-operations.md
+edit ~/Documents/igodlab-site/content/learning/cuda/02-heterogeneus-data-parallel-computing.md
 wincmd t
 let s:save_winminheight = &winminheight
 let s:save_winminwidth = &winminwidth
@@ -55,7 +55,6 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 argglobal
-balt ~/Documents/igodlab-site/content/learning/computing-systems/11-csapp-part1.md
 setlocal foldmethod=manual
 setlocal foldexpr=0
 setlocal foldmarker={{{,}}}
@@ -63,16 +62,16 @@ setlocal foldignore=#
 setlocal foldlevel=0
 setlocal foldminlines=1
 setlocal foldnestmax=20
-setlocal foldenable
+setlocal nofoldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 18) / 36)
+let s:l = 27 - ((25 * winheight(0) + 15) / 31)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
+keepjumps 27
 normal! 0
-tabnext 1
+tabnext 2
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf

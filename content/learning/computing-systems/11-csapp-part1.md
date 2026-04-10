@@ -139,6 +139,12 @@ x + y + 2^w, & x + y < \text{TMin}_w & \text{(Negative overflow)}
 \end{cases}
 $$
 
+> [!Note] Detecting Overflow
+> - **Unsigned**: let $s=x +_w^U y$, where $0\leq x,y \leq \text{UMax}_w$. Then $s$ overflows iif $s<x$ (or equivalently $s<y$)
+> - **Two's-complement**: let $s=x +_w^T y$, where $\text{TMin}_w\leq x,y \leq \text{TMax}_w$ then $s$ exhibits:
+>   - *positive overflow* iif $x>0\text{ and } y>0\text{ but }s\leq 0$ 
+>   - *negative overflow* iif $x<0\text{ and }y<0\text{ but }s\leq 0$
+
 - **Two-s-complement negation** 
 $$
 -_w^Tx =
@@ -189,8 +195,9 @@ $$
  \text{precision} & \leftarrow s\rightarrow & \leftarrow\texttt{exponent}_k\rightarrow & \leftarrow\texttt{fraction}_n\rightarrow \\
 \hline
 \hline
+\text{double (64-bit)} & \text{1-bit} & \text{11-bits} & \text{52-bits} \\
 \text{single (32-bit)} & \text{1-bit} & \text{8-bits} & \text{23-bits} \\
-\text{double (64-bit)} & \text{1-bit} & \text{11-bits} & \text{52-bits} 
+\text{half (16-bit)} & \text{1-bit} & \text{5-bits} & \text{10-bits} \\
 \end{array}
 $$
 
@@ -231,6 +238,7 @@ $$
 
 # 6. The Memory Hierarchy
 
+- Real numbers $\mathbb{R}$
 
 
 
