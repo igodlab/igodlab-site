@@ -4,6 +4,7 @@ date: 2026-02-03
 ---
 
 # 1. A Tour of Computer Systems
+- CSAPP 3rd American Edition [@bryant2016computer]
 
 # 2. Representing and Manipulating Information
 
@@ -239,6 +240,4 @@ $$
 # 6. The Memory Hierarchy
 
 - Real numbers $\mathbb{R}$
-
-
 
