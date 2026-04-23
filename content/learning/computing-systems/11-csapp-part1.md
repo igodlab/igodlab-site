@@ -99,7 +99,7 @@ $$
 - In the spirit of exemplifying that *"bits are the same we simply instruct how to interpret them"* we have some techniques for shortening or enlarging them
     - **Sign extension** is basically padding a binary value to the left to increase its bit-size but keeping the value unchanged
         - *Unsigned* -  simply pads with zeros to the left ie. $\vec{u}=[{\color{#04a5e5}0,\ldots,0},u_{w-1},u_0]$
-        - *Two's-complement* - pads with the same value as the sign bit $\vec{x} = [{\color{#04a5e5}x_{w-1},\ldots,x_{w-1},},x_{w-1},x_{w-2},\ldots,x_0]$
+        - *Two's-complement* - pads with the same value as the sign bit $\vec{x} = [{\color{#04a5e5}x_{w-1},\ldots,x_{w-1}},x_{w-1},x_{w-2},\ldots,x_0]$
     - **Truncating numbers** of $w$-bits to $k$-bits ($w>k$) is accomplished by dropping the high order $(w-k)$-bits. Truncation occurs when casting is applied to a value
 
 ### 2.3 Integer Arithmetic
@@ -205,7 +205,7 @@ $$
 - where
     - $s$: encodes the sign 
     - $M=0/1.\texttt{fraction}$: is the $\texttt{fraction}_n\text{ or }\texttt{mantissa}_n$ part which takes $n$ unisgned bits for precision after the floating point
-    - $E=\texttt{exponent}_k - \text{bias}_k$: takes $k$ unsigned bits for the range, where ($1\leq \texttt{exponent}_k\leq 2^k - 2$ and $\text{bias}_k = 2^{k-1}-1)$
+    - $E=\texttt{exponent}_k - \text{bias}_k$: takes $k$ unsigned bits for the range (where $1\leq \texttt{exponent}_k\leq 2^k - 2$ and $\text{bias}_k = 2^{k-1}-1)$
         - excluding $\texttt{exponent}_k = 00\cdots 0$ and $11\cdots 1$ which are reserved for *denormalized numbers* and $\pm$infinity $(-1)^s \infty$, respectively see Fig 2.33)
         - *Denormalized* convention allows to squeeze in more values around zero
         - > [!Note] Why is a *bias* needed in the exponent?
@@ -237,7 +237,55 @@ $$
 
 - **Rounding** - since floating numbers live unevenly along the $\mathbb{R}$ axis we must bake-in a mechanism to round to the closest IEEE floating number
 
+# 3. Machine-Level Representation of Programs
+
+### 3.2 Program Encodings
+
+- The compilation process requires a series of program translations (translated by other programs) to hit and run in physical hardware eg. gcc C compilation of two hypothetical `p1.c` & `p2.c` programs: `$ gcc -Og p1.c p2.c -o p`
+
+    - 1. C *preprocessor* expands the source code to include `#include` commands and expand `#define` macros
+    - 2. The *compiler* generates assembly code versions of the source files `p1.s` & `p2.s`
+    - 3. The *assembler* converts assembly code `*.s` into binary *object-code* files `p1.o` & `p2.o`
+        - Object-code is one form of machine code ie. contains binary representations of the instructions but addresses of global values aren't filled in yet
+    - 4. The *linker* merges these object-code files `*.o` along with code implementing library functions eg. `printf` and generates the final *executable file* `p` (specified by th `-o` gcc flag)
+$$
+\boxed{\texttt{mstore.c}} 
+\begin{cases}
+\xrightarrow[\text{generate assembly}]{\texttt{gcc -Og -S mstore.c}} \boxed{\texttt{mstore.s}}  \\
+\\
+\xrightarrow[\text{compile \& assemble}]{\texttt{gcc -Og -c mstore.c}} \boxed{\texttt{mstore.o}} \xrightarrow[\text{dissassemble}]{\texttt{objdump -d mstore}} \boxed{\text{from object-code to assembly-like}} \\
+\\
+\xrightarrow[\text{compile}]{\texttt{gcc -Og mstore.c -o prog}}\boxed{\texttt{prog}\text{ (executable)}}
+\end{cases}
+$$
+
+<img src="/static/assets/learning/computing-systems/mstore-compilation-process.png" width="100%">
+
+
+- Amongst the various abstractions that computer systems juggle with two are most notable for machine-level programming
+    - 1. The format and behavior of a machine-level program is defined by the **Instruction Set Architecture (ISA)**. Which defines the processor state, format of the instructions and the effect that these will have on the state eg. x86-64 each instruction is executed in sequence
+    - 2. Memory addresses used by a machine-level program are **virtual addresses** ie. an apparently large byte-addressable array that in actuality involves a combination of many hardware memories and OS software
+
+- Hidden parts of the processor state (due to abstraction) but worth to mention are:
+    - **Program counter (PC)** address in memory of the next instruction to be executed (called $\texttt{\%rip}$ in x86-64)
+    - Integer **register file** contains 16 named locations storing 64-bit values each 
+        - All names start with $\texttt{\%r}$ (since the x86-64 extension) from $\texttt{\%rax}$ to $\texttt{\%rbp}$ plus new registers $\texttt{\%r8 - \%r15}$ 
+    - **Condition code registers** hold status information about the most recently executed arithmetic or logical instruction (used to implement conditional changes in the control or data flow)
+    - A set of **vector registers** can each hold one or more floating-point values
+
+### 3.4 Accessing Information
+
+
+
+# 4. Processor Architecture
+
+
+
+# 5. Optimizing Program Performance
+
+
+
 # 6. The Memory Hierarchy
 
 - Real numbers $\mathbb{R}$
-
+Solving the quadratic and taking the attention-dominated regime gives $T^\ast \approx \sqrt{P_{\text{active}} \cdot \text{MI} / (2 n_h d L)}$. $\square$
