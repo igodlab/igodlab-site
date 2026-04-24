@@ -241,21 +241,21 @@ $$
 
 ### 3.2 Program Encodings
 
-- The compilation process requires a series of program translations (translated by other programs) to hit and run in physical hardware eg. gcc C compilation of two hypothetical `p1.c` & `p2.c` programs: `$ gcc -Og p1.c p2.c -o p`
+- The compilation process requires a series of program translations (translated by other programs) to hit and run in physical hardware eg. gcc C compilation of two hypothetical programs: `$ gcc -Og mstore.c main.c -o prog`
 
     - 1. C *preprocessor* expands the source code to include `#include` commands and expand `#define` macros
-    - 2. The *compiler* generates assembly code versions of the source files `p1.s` & `p2.s`
-    - 3. The *assembler* converts assembly code `*.s` into binary *object-code* files `p1.o` & `p2.o`
+    - 2. The *compiler* generates assembly code versions of the source files `mstore.s` & `main.s`
+    - 3. The *assembler* converts assembly code `*.s` into binary *object-code* files `mstore.o` & `main.o`
         - Object-code is one form of machine code ie. contains binary representations of the instructions but addresses of global values aren't filled in yet
-    - 4. The *linker* merges these object-code files `*.o` along with code implementing library functions eg. `printf` and generates the final *executable file* `p` (specified by th `-o` gcc flag)
+    - 4. The *linker* merges these object-code files `*.o` along with code implementing library functions eg. `printf` and generates the final *executable file* `prog` (specified by th `-o` gcc flag)
 $$
-\boxed{\texttt{mstore.c}} 
+\boxed{\texttt{mstore.c}}
 \begin{cases}
 \xrightarrow[\text{generate assembly}]{\texttt{gcc -Og -S mstore.c}} \boxed{\texttt{mstore.s}}  \\
 \\
 \xrightarrow[\text{compile \& assemble}]{\texttt{gcc -Og -c mstore.c}} \boxed{\texttt{mstore.o}} \xrightarrow[\text{dissassemble}]{\texttt{objdump -d mstore}} \boxed{\text{from object-code to assembly-like}} \\
 \\
-\xrightarrow[\text{compile}]{\texttt{gcc -Og mstore.c -o prog}}\boxed{\texttt{prog}\text{ (executable)}}
+\xrightarrow[\text{compile (linker invoked)}]{\texttt{gcc -Og mstore.c main.c -o prog}}\boxed{\texttt{prog}\text{ (executable)}}
 \end{cases}
 $$
 
@@ -275,10 +275,26 @@ $$
 
 ### 3.4 Accessing Information
 
+- Program instructions translate to simple instructions (in assebmly-level abstraction) for reading and writing from/to memory 
+    - Fig 3.3 shows some operand forms to access references to registers and memory
+    - There are many variants of the ${\footnotesize\texttt{MOV}}$ operator we can use (eg. $\footnotesize\texttt{movabsq}$ moves absolute quad word; $\footnotesize\texttt{movzbw}$ moves zero-extended byte to quad word ; $\footnotesize\texttt{movslq}$ move sign-extended double word to quad word)
 
 
-# 4. Processor Architecture
+<img src="/static/assets/learning/computing-systems/csapp-Fig3-3.png" width="70%">
 
+### 3.6 Control
+
+- A set of instructions that break the sequential/linear flow:
+$$
+\begin{array}{c|ll}
+\textbf{Condition Code (CC)} & \textbf{Flag name} & \text{The most recent operation..} \\
+\hline
+\texttt{CF} & \textit{Carry flag} & \text{..generated a carry out of the most significant bit. Used to detect overflow for unsigned operations} \\
+\texttt{ZF} & \textit{Zero flag} & \text{..yielded zero} \\
+\texttt{SF} & \textit{Sign flag} & \text{..yielded a negative value} \\
+\texttt{OF} & \textit{Overflow flag} & \text{..caused a two's-complement overflow-either negative or positive}
+\end{array}
+$$
 
 
 # 5. Optimizing Program Performance
