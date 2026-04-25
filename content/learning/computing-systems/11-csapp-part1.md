@@ -212,7 +212,7 @@ $$
           > 
           > Because that way we have a smooth bit incremet transition from zero to denormalized to normal to infinity values as seen in Fig 2.36
 
-<img src="/static/assets/learning/computing-systems/Fig2_33.png" width="65%">
+<img src="/static/assets/learning/computing-systems/Fig2-33.png" width="65%">
 
 - The largest and smallest numbers that can be represented for a single precision number is:
 
@@ -231,7 +231,7 @@ N^{\text{denorm}}_{\text{largest}} &= 0.11111111111111111111111_2 \times 2^{-126
 \end{align*}
 $$
 
-<img src="/static/assets/learning/computing-systems/Fig2_36.png" width="85%">
+<img src="/static/assets/learning/computing-systems/Fig2-36.png" width="85%">
 
 ---
 
@@ -280,7 +280,7 @@ $$
     - There are many variants of the ${\footnotesize\texttt{MOV}}$ operator we can use (eg. $\footnotesize\texttt{movabsq}$ moves absolute quad word; $\footnotesize\texttt{movzbw}$ moves zero-extended byte to quad word ; $\footnotesize\texttt{movslq}$ move sign-extended double word to quad word)
 
 
-<img src="/static/assets/learning/computing-systems/csapp-Fig3-3.png" width="70%">
+<img src="/static/assets/learning/computing-systems/Fig3-3.png" width="70%">
 
 ### 3.6 Control
 
