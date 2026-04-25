@@ -284,12 +284,13 @@ $$
 
 ### 3.6 Control
 
-- A set of instructions that break the sequential/linear flow:
+- A set of instructions that break the sequential/linear flow are **Condition Codes (CC)**:
 $$
-\begin{array}{c|ll}
-\textbf{Condition Code (CC)} & \textbf{Flag name} & \text{The most recent operation..} \\
+\begin{array}{c|l|l}
+\textbf{CC} & \textbf{Flag name} & \text{The most recent operation..} \\
 \hline
-\texttt{CF} & \textit{Carry flag} & \text{..generated a carry out of the most significant bit. Used to detect overflow for unsigned operations} \\
+\texttt{CF} & \textit{Carry flag} & \text{..generated a carry out of the most significant bit. Used to detect} \\
+& & \text{overflow for unsigned operations} \\
 \texttt{ZF} & \textit{Zero flag} & \text{..yielded zero} \\
 \texttt{SF} & \textit{Sign flag} & \text{..yielded a negative value} \\
 \texttt{OF} & \textit{Overflow flag} & \text{..caused a two's-complement overflow-either negative or positive}
@@ -299,7 +300,10 @@ $$
 
 # 5. Optimizing Program Performance
 
-
+- The core goal is to write *correct* programs and second to that is to make them run *fast*. For this purposes we must:
+    - select an appropriate set of alorithms and data structures
+    - write source code that the compiler can efficiently optimize (we need to understand the capabilities and limitations of optimizing compilers)
+    - consider parallelism ie. divide tasks that can be computed in parallel (Chapter 12 is dedicated to this)
 
 # 6. The Memory Hierarchy
 
