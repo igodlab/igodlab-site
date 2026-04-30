@@ -304,6 +304,34 @@ $$
     - select an appropriate set of alorithms and data structures
     - write source code that the compiler can efficiently optimize (we need to understand the capabilities and limitations of optimizing compilers)
     - consider parallelism ie. divide tasks that can be computed in parallel (Chapter 12 is dedicated to this)
+- Before optimizing a program we must be aware of the trade-offs between a program's implementation difficulty & maintainance and execution speed
+- The main conisderations for maximizing a program's performance:
+    - Eliminate unnecessary work eg. eliminating unnecessary function calls, conditional tests and memory references
+    - Knowledge of the model of the target machine (like a *data-flow*) ie. enables tunning for max speed plus enables a second step in program optimization **instruction-level parallelism** (executing multiple instructions simultaneously)
+    - Use of performance-metric tools like code **profilers** (used for large programs)
+    - *Code optimization is not a linear process!* - small changes can cause major changes in performance and some promising techniques prove ineffective 
+        - There's actually a fair ammount of trial-and-error involved. Performance can depend on many detailed features of the processor design for which we have relatively little documentation or understanding. This is another reason to try a number of different variations and combinations of techniques. 
+        - > One useful strategy is to do only as much rewriting of a program as is required to get it to the point where the compiler can then generate efficient code
+        - > Reading assembly code is a great strategy to understand the compiler and how its generated code will run ie. identifying performance-reducing attributes such as excessive memory references and poor use of registers
+
+### 5.1 Capabilities and Limitations of Optimizing Compilers
+- Referring to the previous two points we should aspire to modify source code in an attempt to coax the compiler into generating efficient code ie. further optimizations like simplifying expressions
+    - To get these benefits from the compiler we must write unambiguous code that avoids *memory aliasing*
+        - **Memory aliasing** occurs when two or more pointers share the same pointee which can cause undesired mutation (catastrophic!)
+        - If the code is ambiguious (as in the code block below) then the compiler assumes the worst case scenario and doesn't carry on with optimizations to keep our programs running (safe from aliasing)
+        ```c
+        void twiddle1(long *xp, long *yp) {
+          *xp += *yp;
+          *xp += *yp;
+        }
+
+        void twiddle2(long *xp, long *yp) {
+          *xp += 2 * *yp;
+        }
+        ```
+
+### 5.2 Expressing Program Performance
+- We introduce a metric to measure program performance ie. **cycles per element (CPE)**
 
 # 6. The Memory Hierarchy
 
