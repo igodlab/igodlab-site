@@ -13,9 +13,66 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +274 ~/Documents/igodlab-site/content/learning/computing-systems/11-csapp-part1.md
+badd +47 ~/Documents/igodlab-site/content/learning/pmpp/pmpp-part1.md
+badd +1 ~/Documents/igodlab-site/content/learning/computing-systems/11-csapp-part1.md
 argglobal
 %argdel
+set stal=2
+tabnew +setlocal\ bufhidden=wipe
+tabrewind
+edit ~/Documents/igodlab-site/content/learning/pmpp/pmpp-part1.md
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 133 + 87) / 174)
+exe 'vert 2resize ' . ((&columns * 40 + 87) / 174)
+argglobal
+balt ~/Documents/igodlab-site/content/learning/computing-systems/11-csapp-part1.md
+setlocal foldmethod=manual
+setlocal foldexpr=0
+setlocal foldmarker={{{,}}}
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal nofoldenable
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 47 - ((8 * winheight(0) + 17) / 34)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 47
+normal! 02|
+wincmd w
+argglobal
+enew
+file neo-tree\ filesystem\ \[1]
+setlocal foldmethod=manual
+setlocal foldexpr=0
+setlocal foldmarker={{{,}}}
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldenable
+wincmd w
+exe 'vert 1resize ' . ((&columns * 133 + 87) / 174)
+exe 'vert 2resize ' . ((&columns * 40 + 87) / 174)
+tabnext
 edit ~/Documents/igodlab-site/content/learning/computing-systems/11-csapp-part1.md
 wincmd t
 let s:save_winminheight = &winminheight
@@ -25,6 +82,7 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 argglobal
+balt ~/Documents/igodlab-site/content/learning/pmpp/pmpp-part1.md
 setlocal foldmethod=manual
 setlocal foldexpr=0
 setlocal foldmarker={{{,}}}
@@ -35,13 +93,14 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 274 - ((20 * winheight(0) + 19) / 38)
+let s:l = 17 - ((16 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 274
-normal! 083|
+keepjumps 17
+normal! 0
 tabnext 1
+set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
