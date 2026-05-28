@@ -170,7 +170,7 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 > 
 > The generalized notation for addressing a R-rank tensor element with dimensions $T\in\mathbb{R}^{d_{R-1} \times \cdots \times d_1 \times d_0}$ (*slow←fast*) is via its indexes $T_{i_{R-1},\ldots,i_1,i_0}$ (*slow←fast*), respectively.
 > 
-> The generalized stride $s_k=\prod_{j=0}^{k-1}d_j$ is needed to compute the index in a row-major flattened tensor: $\text{flat(index)}=\sum_{r=0}^{R-1}i_rs_r$. For example:
+> The generalized stride $s_0=1,\; s_{r>0}=\prod_{k=0}^{r-1}d_k$ is needed to compute the index in a row-major flattened tensor: $\text{flat(index)}=\sum_{r=0}^{R-1}i_rs_r$. For example:
 > - 3D tensor $T\in\mathbb{R}^{d_2\times d_1\times d_0}$ element $T_{i_2,i_1,i_0}$ as row-major $T_{i_0 + i_1\times d_0 + i_2\times(d_0\times d_1)}$
 > - 4D tensor $T\in\mathbb{R}^{d_3\times d_2\times d_1\times d_0}$ element $T_{i_3,i_2,i_1,i_0}$ as row-major $T_{i_0 + i_1\times d_0 + i_2\times(d_0\times d_1) + i_3\times(d_0\times d_1\times d_2)}$
 > 
@@ -184,3 +184,13 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 > | $i_3\in[0, d_3-1]$ (dim-3) | $l\in[0,q-1]$ (sample) | $n\in[0,N-1]$ (batch)    | NA | 
 
 
+## 4. Compute architecture and scheduling
+
+### 4.5 Control divergence
+- **Warp** - group of 32 threads (with continuous `threadIdx`s from 0 to 31)
+- *Control flow* - refers to the flow of threads along a path traced by control instructions. When threads in a warp take different control paths (eg. conditionals for boundary conditions) are said to exhibit *control divergence*
+    - Performance impact of control divergence can be measured in percentage terms as divergent-warps/total-warps-in-grid
+    - Different phases of thread execution do not necessarily have to be processed sequentially, this is known as *independent thread scheduling* (introduced in Volta's V100 architecture)
+    - Warp-level barrier sync API `__syncwarp()`
+
+### 4.6 Warp scheduling and latency tolerance
