@@ -160,3 +160,27 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 - A CUDA C kernel function specifies all the code that will be executed by all threads during a parallel phase.
     - CUDA C programming is an instance of the programming style standard **single-program multiple-data (SPMD)** ([Atallah, 1998](https://en.wikipedia.org/wiki/Single_program,_multiple_data))
 - The workflows goes as follows: i) a host code executes a kernel instruction which ii) launches
+
+## 3. Multidimensional grids and data
+
+> [!IMPORTANT] 
+> **Notation for R-rank tensors**
+> 
+> We will follow the subscript notation for a R-rank covariant tensor that expresses indexes from <mark>*right-to-left* (from *fast-to-slow varying index*)</mark>. Moreover, we'll be consistent in **both** CUDA code notation and mathematical expressions!
+> 
+> The generalized notation for addressing a R-rank tensor element with dimensions $T\in\mathbb{R}^{d_{R-1} \times \cdots \times d_1 \times d_0}$ (*slow←fast*) is via its indexes $T_{i_{R-1},\ldots,i_1,i_0}$ (*slow←fast*), respectively.
+> 
+> The generalized stride $s_k=\prod_{j=0}^{k-1}d_j$ is needed to compute the index in a row-major flattened tensor: $\text{flat(index)}=\sum_{r=0}^{R-1}i_rs_r$. For example:
+> - 3D tensor $T\in\mathbb{R}^{d_2\times d_1\times d_0}$ element $T_{i_2,i_1,i_0}$ as row-major $T_{i_0 + i_1\times d_0 + i_2\times(d_0\times d_1)}$
+> - 4D tensor $T\in\mathbb{R}^{d_3\times d_2\times d_1\times d_0}$ element $T_{i_3,i_2,i_1,i_0}$ as row-major $T_{i_0 + i_1\times d_0 + i_2\times(d_0\times d_1) + i_3\times(d_0\times d_1\times d_2)}$
+> 
+> Throughout the book we'll use variations of symbols depending on what kind of variables we're dealing with so here is a useful table (up to 4-rank tensors):
+>
+> | Mathematical<br>genearlized | Unspecific | Deep Learning | CUDA `threads` | 
+> | :--- | :--- | :--- | :--- |
+> | $i_0\in[0, d_0-1]$ (dim-0) | $i\in[0,m-1]$ (cols)   | $c\in[0,C-1]$ (channels) | `threadIdx.x` (block-width)  |
+> | $i_1\in[0, d_1-1]$ (dim-1) | $j\in[0,n-1]$ (rows)   | $w\in[0,W-1]$ (width)    | `threadIdx.y` (block-height) |
+> | $i_2\in[0, d_2-1]$ (dim-2) | $k\in[0,p-1]$ (depth)  | $h\in[0,H-1]$ (height)   | `threadIdx.z` (block-depth)  |
+> | $i_3\in[0, d_3-1]$ (dim-3) | $l\in[0,q-1]$ (sample) | $n\in[0,N-1]$ (batch)    | NA | 
+
+
