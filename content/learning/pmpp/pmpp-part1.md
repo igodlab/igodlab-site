@@ -186,11 +186,34 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 
 ## 4. Compute architecture and scheduling
 
+### 4.4 Warps and SIMD hardware
+
+- *Warp* - group of 32 threads (with continuous `threadIdx`s from 0 to 31)
+    - The 32 thread indexes of warp $n$ are within the range $[32n, 32(n+1)-1]$
+- *Single Instruction Multiple Data (SIMD)* capable hardware allow to process parallel data ie. GPU 
+
 ### 4.5 Control divergence
-- **Warp** - group of 32 threads (with continuous `threadIdx`s from 0 to 31)
 - *Control flow* - refers to the flow of threads along a path traced by control instructions. When threads in a warp take different control paths (eg. conditionals for boundary conditions) are said to exhibit *control divergence*
-    - Performance impact of control divergence can be measured in percentage terms as divergent-warps/total-warps-in-grid
+    - Performance impact of control divergence can be measured in percentage terms as $\text{divergent-warps}/\text{total-warps-in-grid}$
     - Different phases of thread execution do not necessarily have to be processed sequentially, this is known as *independent thread scheduling* (introduced in Volta's V100 architecture)
     - Warp-level barrier sync API `__syncwarp()`
 
 ### 4.6 Warp scheduling and latency tolerance
+- An SM can execute a limited number of 128 threads (4 warps) at a given clock cycle. However, a single SM can be issued up to 2048 threads simultaneously (16x more than it can handle per clock-cycle). We'll break this down:
+    - One thread per streaming processor per clock cycle (128 streaming processors in an SM can issue 128 concurrent instructions/clock-cycle).
+
+### 4.7 Resource partitioning and aoccupancy
+- *Occupancy* is the $\frac{\text{number-of-threads}/\text{SM}}{\text{max-number-of-threads}/\text{SM}}$ ratio
+
+## 5. Memory architecture and data locality
+
+### 5.1 Memory bandwidth as a performance limiter
+
+- Define main metrics (both are hardware limits, not guarantees): 
+    - *Peak computational throughput* - specifies the limit on how many arithmetic operations the hardware can perform per unit of time ie. FLOPS (different limits for different datatypes)
+    - *Peak memory bandwidth* - specifies the limit on how many bytes of data the hardware can access from a particular memory structure per unit of time ie B/s (hardware has different limits for different memory structures)
+- A kernel is said to be *compute-bound* (*memory-bound*) if its performance is limited by the computational throughput (limited by memory bandwidth) of the hardware.
+    - *Compute-to-global-memory-access ratio* (also called arithmetic intensity or **computational intensity**) - $\frac{\text{FLOPS}}{\text{B/s}}=\frac{\text{FLOP}}{B}$ when its a big (small) value means compute-bound (memory-bound).
+        - eg. H100 GPU has a threshold of $\frac{66.9 \text{ TFLOPS}}{3.35\text{ TB}/s} = 20\frac{FLOP}{B}$ 
+
+<img src="static/assets/learning/pmpp/roofline-model.png" width="50%">

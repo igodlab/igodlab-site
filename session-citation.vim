@@ -1,35 +1,19 @@
 let SessionLoad = 1
 let s:so_save = &g:so | let s:siso_save = &g:siso | setg so=0 siso=0 | setl so=-1 siso=-1
 let v:this_session=expand("<sfile>:p")
+doautoall SessionLoadPre
 silent only
 silent tabonly
-cd ~/Documents/A/igodlab/quartz
+cd ~/Documents/igodlab-site
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 let s:shortmess_save = &shortmess
-if &shortmess =~ 'A'
-  set shortmess=aoOA
-else
-  set shortmess=aoO
-endif
-badd +150 ~/Documents/A/igodlab/quartz/content/learning/blockchain/02-cryptographic-primitives.md
-badd +5 ~/Documents/A/igodlab/quartz/quartz/plugins/transformers/citations.ts
-badd +1 .bibliography.bib
-badd +1 ~/Documents/A/igodlab/quartz/quartz/plugins/transformers/links.ts
-badd +426 ~/Documents/A/igodlab/quartz/quartz/components/svg.tsx
-badd +15 ~/Documents/A/igodlab/quartz/quartz/components/renderPage.tsx
-badd +2 ~/Documents/A/aarnphm.github.io/quartz/components/renderPage.tsx
-badd +0 ~/Documents/A/igodlab/quartz/quartz/components/types.ts
+set shortmess+=aoO
+badd +212 ~/Documents/igodlab-site/content/learning/pmpp/pmpp-part1.md
 argglobal
 %argdel
-set stal=2
-tabnew +setlocal\ bufhidden=wipe
-tabnew +setlocal\ bufhidden=wipe
-tabnew +setlocal\ bufhidden=wipe
-tabnew +setlocal\ bufhidden=wipe
-tabrewind
-edit ~/Documents/A/igodlab/quartz/quartz/plugins/transformers/citations.ts
+edit ~/Documents/igodlab-site/content/learning/pmpp/pmpp-part1.md
 wincmd t
 let s:save_winminheight = &winminheight
 let s:save_winminwidth = &winminwidth
@@ -38,7 +22,6 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 argglobal
-balt ~/Documents/A/igodlab/quartz/content/learning/blockchain/02-cryptographic-primitives.md
 setlocal foldmethod=manual
 setlocal foldexpr=0
 setlocal foldmarker={{{,}}}
@@ -49,157 +32,13 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 5 - ((4 * winheight(0) + 18) / 36)
+let s:l = 212 - ((27 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 5
-normal! 0
-tabnext
-edit ~/Documents/A/igodlab/quartz/quartz/plugins/transformers/links.ts
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt ~/Documents/A/igodlab/quartz/quartz/plugins/transformers/citations.ts
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 18) / 36)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
-tabnext
-edit ~/Documents/A/igodlab/quartz/quartz/components/types.ts
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-wincmd =
-argglobal
-balt ~/Documents/A/igodlab/quartz/quartz/components/renderPage.tsx
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 21 - ((20 * winheight(0) + 18) / 36)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 21
-normal! 013|
-wincmd w
-argglobal
-if bufexists(fnamemodify("~/Documents/A/aarnphm.github.io/quartz/components/renderPage.tsx", ":p")) | buffer ~/Documents/A/aarnphm.github.io/quartz/components/renderPage.tsx | else | edit ~/Documents/A/aarnphm.github.io/quartz/components/renderPage.tsx | endif
-if &buftype ==# 'terminal'
-  silent file ~/Documents/A/aarnphm.github.io/quartz/components/renderPage.tsx
-endif
-balt ~/Documents/A/igodlab/quartz/quartz/components/renderPage.tsx
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 758 - ((32 * winheight(0) + 18) / 36)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 758
-normal! 014|
-wincmd w
-wincmd =
-tabnext
-edit ~/Documents/A/igodlab/quartz/quartz/components/svg.tsx
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt ~/Documents/A/igodlab/quartz/quartz/plugins/transformers/links.ts
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 425 - ((31 * winheight(0) + 18) / 36)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 425
-normal! 0
-tabnext
-edit .bibliography.bib
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt ~/Documents/A/igodlab/quartz/quartz/plugins/transformers/citations.ts
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 18) / 36)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
-tabnext 3
-set stal=1
+keepjumps 212
+normal! 063|
+tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
@@ -214,6 +53,7 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :
