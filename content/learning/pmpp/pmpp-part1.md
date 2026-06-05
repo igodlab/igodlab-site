@@ -202,7 +202,7 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 - An SM can execute a limited number of 128 threads (4 warps) at a given clock cycle. However, a single SM can be issued up to 2048 threads simultaneously (16x more than it can handle per clock-cycle). We'll break this down:
     - One thread per streaming processor per clock cycle (128 streaming processors in an SM can issue 128 concurrent instructions/clock-cycle).
 
-### 4.7 Resource partitioning and aoccupancy
+### 4.7 Resource partitioning and occupancy
 - *Occupancy* is the $\frac{\text{number-of-threads}/\text{SM}}{\text{max-number-of-threads}/\text{SM}}$ ratio
 
 ## 5. Memory architecture and data locality
