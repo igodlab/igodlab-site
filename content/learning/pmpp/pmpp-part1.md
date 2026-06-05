@@ -217,3 +217,17 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
         - eg. H100 GPU has a threshold of $\frac{66.9 \text{ TFLOPS}}{3.35\text{ TB}/s} = 20\frac{FLOP}{B}$ 
 
 <img src="static/assets/learning/pmpp/roofline-model.png" width="50%">
+
+### 5.2 Memory CUDA types
+
+- *Distributed shared memory* - threads in the same thread block cluster can access the shared memory of any block in the cluster. 
+
+| Variable declaration | Memory | Scope | Lifetime |
+| :--- | :--- | :--- | :--- | 
+| Automatic **scalar** variables | register | thread | grid | 
+| Automatic **array** variable | local | thread | grid | 
+| `__global__ __shared__ int SharedVar` | shared | block | grid | 
+| `__device__ int GlobalVar;` | global | grid | application | 
+| `__device__ __constant__ int ConstVar;` | constant | grid | application | 
+
+
