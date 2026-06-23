@@ -163,8 +163,7 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 
 ## 3. Multidimensional grids and data
 
-> [!IMPORTANT] 
-> **Notation for R-rank tensors**
+> [!IMPORTANT] Notation for R-rank tensors
 > 
 > We will follow the subscript notation for a R-rank covariant tensor that expresses indexes from <mark>*right-to-left* (from *fast-to-slow varying index*)</mark>. Moreover, we'll be consistent in **both** CUDA code notation and mathematical expressions!
 > 
@@ -218,16 +217,61 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 
 <img src="static/assets/learning/pmpp/roofline-model.png" width="50%">
 
-### 5.2 Memory CUDA types
+### 5.2 CUDA memory types
 
 - *Distributed shared memory* - threads in the same thread block cluster can access the shared memory of any block in the cluster. 
 
 | Variable declaration | Memory | Scope | Lifetime |
 | :--- | :--- | :--- | :--- | 
 | Automatic **scalar** variables | register | thread | grid | 
-| Automatic **array** variable | local | thread | grid | 
+| Automatic **array** variables | local | thread | grid | 
 | `__global__ __shared__ int SharedVar` | shared | block | grid | 
 | `__device__ int GlobalVar;` | global | grid | application | 
 | `__device__ __constant__ int ConstVar;` | constant | grid | application | 
 
+
+<img src="static/assets/learning/pmpp/ch05-vonNeuman-CPU-GPU.png" width="100%">
+
+### Tiling for reduced memory traffic
+
+> [!IMPORTANT] Notation for indexing threads.
+> 
+> $$
+> \begin{array}{r|l}
+> \textbf{Math} & \textbf{Code} \\
+> \hline
+> (z^\prime,y^\prime,x^\prime) & \texttt{threadIdx(.z, .y, .x)} \\
+> (b_{z}, b_{y}, b_{x}) & \texttt{blockIdx(.z, .y, .x)} \\
+> (d_{z}^b, d_{y}^b, d_{x}^b) & \texttt{blockDim(.z, .y, .x)} \\
+> (d_{z}^g, d_{y}^g, d_{x}^g) & \texttt{gridDim(.z, .y, .x)} \\
+> (d_{z}^\square, d_{y}^\square, d_{x}^\square) & \texttt{TILEz, TILEy, TILEx} \\
+> \end{array}
+> $$
+> 
+> Lets introduce absolute indexes and relative indexes, the latter are noted with a prime. Relative indexes reset for every block eg. warp 0 has threads 0-31 in block $(b_y,b_x)=(1,0)$ and warp 2 in the same block has the same indexes for its threads 0-31. However, the block index differs.
+> 
+> <img src="static/assets/learning/pmpp/ch05-absolute-relative-indexes.png" width="40%">
+> 
+> $$
+> \color{#4c4f69}
+> \begin{pmatrix}
+> x \\
+> y \\
+> z
+> \end{pmatrix} = 
+> \begin{pmatrix}
+> x^\prime + b_{x}d^b_{x} \\
+> y^\prime + b_{y}d^b_{y} \\
+> z^\prime + b_{z}d^b_{z}
+> \end{pmatrix}
+> $$
+
+
+- **Tiling** is a cooperative loading technique that helps reducing memory-bandwidth by a significant factor (equal to the tile dimension). Basically by loading values that will be reused by many threads from global memory to `__shared__` memory so that all such threads have them within scope.
+- Lets showcase memory-bandwidth reduction in the canonical matmul example $\mathbf{P}=\mathbf{M}\mathbf{N}$ where $\mathbf{M}\in\mathbb{R}^{d_1\times \tilde{d}},\, \mathbf{N}\in\mathbb{N}^{\tilde{d}\times d_0}$ thus $\mathbf{P}\in\mathbb{R}^{d_1\times d_0}$. The way we can use cooperative loading to shared memory is:
+    - By defining two tiles: one for matrix $\mathbf{M}$ and another for matrix $\mathbf{N}$ which we'll call $\mathbf{M}^\square,\, \mathbf{N}^\square$ each of dimensions $d^\square \times d^\square$, respectively.
+
+<img src="static/assets/learning/pmpp/ch05-tiling.png" width="50%">
+
+<img src="static/assets/learning/pmpp/ch05-cooperative-loading.png" width="75%">
 
