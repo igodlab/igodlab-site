@@ -6,10 +6,10 @@ date: 2024-11-13
 ## 6.1 Transactions - Blocks
 - Some attributes that differentiate and give security to different components are summarized in Table.6.1
 
-<img src="../assets/learning/blockchain/ch061-txs-blocks.png" width="75%">
+<img src="/static/assets/learning/blockchain/ch061-txs-blocks.png" width="75%">
 
 ## 6.2 Safety, Revisited
-- So far we've built a protocol that is safe against *collision attacks, forgery, double spending txs, witholding blocks & adversary forks*. But we can spot another vulnerability in the *read query* functionality of a Ledger - nodes/parties $P_1,P_2$ may not report the exact Ledger version at all times. We'll demand more safety propositions we want to accopmlish 
+- So far we've built a protocol that is safe against *collision attacks, forgery, double spending txs, witholding blocks & adversary forks*. But we can spot another vulnerability in the *read query* functionality of a Ledger - nodes/parties $P_1,P_2$ may not report the exact Ledger version at all times. We'll demand more safety propositions we want to accomplish 
 - We'd like both Ledgers to be exactly the same, so they should report the same element/$\text{tx}$ at position $i$ at time $r_1$: $L_{r_1}^{P_1}[i]=L_{r_1}^{P_2}[i]$, this may fail due to either of the two scenarios below: 
     - *(1) Ledger read query when broadcasting hasn't traversed the whole network yet* - $P_1,P_2$ will report different Ledgers if either one is still catching up to update the latest block while its traversing the network (within $\Delta$ time)
         - **Definition 21** (Ledger Safety). *A protocol is safe if it holds that for any two parties $P_1,P_2$ and any two times $r_1,r_2$, it holds that either $L_{r_1}^{P_1}\preccurlyeq L_{r_2}^{P_2}\vee L_{r_2}^{P_2}\preccurlyeq L_{r_1}^{P_1}$*
@@ -24,8 +24,8 @@ date: 2024-11-13
 - **Trade-off**: *blockchain performance & security* - An example of parameterizing the network for perfomance is finding the sweet spot for optimizing *honest convergence opportunities* w/o sacrificing block produciton rate (see Fig.6.4)
     - While every successful PoW query is an HC opportunity, at low *block-production rate* $f=npq$, queries are so rare that HC is rare as well. Whereas at high $f$ we have more forked competing queries & we don't allow the network to have sufficient time to resolve forks
     
-<img src="../assets/learning/blockchain/ch063-honest-convergence.png" width="75%">
-<img src="../assets/learning/blockchain/ch063-density-convergence-opportunity.png" width="75%">
+<img src="/static/assets/learning/blockchain/ch063-honest-convergence.png" width="75%">
+<img src="/static/assets/learning/blockchain/ch063-density-convergence-opportunity.png" width="75%">
 
 ## 6.4 Common Prefix
 - We've stated that forks are temporary and short-lived, but how short? Looping back to the problem of invoking the *read-query* functionality of the Ledger how short should we consider forks to be to then make Ledgers report a chopped chain
@@ -64,7 +64,7 @@ date: 2024-11-13
         - *(2)* **Fan-out:** *$\mathcal{A}$ can coordinate to use all her speed in one racing lane* - (Fig.6.8) If honest majority assumption holds, we are guaranteed to have higher density of honest successful queries $X$. However, this is doesnt guarnatee that they can win the *Nakamoto Race* because their queries could be split in honest forks. So what actually matters is comparing **honest convergence** opportunities $Y$ against **$\mathcal{A}$ successful queries** $Z$
         - *In our analogy* - honest nodes have more speed capacity $X$ but it is allocated in different racing lanes / forks, and effectively none of them $Y$ moves faster than $\mathcal{A}$ (who uses all her speed capacity $Z$ in a coordinated fashion)
     
-<img src="../assets/learning/blockchain/ch065-nakamoto-race.png" width="75%">
+<img src="/static/assets/learning/blockchain/ch065-nakamoto-race.png" width="75%">
     
 ## 6.6 The Fan Out
 - Fan-out is when situation (2) plays out in [[learning/blockchain/06-chain-virtues.md#6.5-the-nakamoto-race|Sec.6.5]]. Despite honest nodes having larger mining power (which translates into more speed capacity) it is allocated in a non-coordinated way, contributing to fragmented speed accross many 'racing lanes' / honest forks. Whereas $\mathcal{A}$ is a pueptmaster who can control all her minions to allocate all mining power on the corrupted fork and, w/ less combined mining power, can still BEAT the honest nodes in the *Nakamoto Race*

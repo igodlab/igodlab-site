@@ -22,10 +22,10 @@ date: 2025-07-16
 \frac{\partial x_n}{\partial y_1} & \cdots & \frac{\partial x_n}{\partial y_n}
 \end{array}\right]$
 
-<img src="../assets/learning/probml/ch0247-injective-surjective.png" width="60%">
+<img src="/static/assets/learning/probml/ch0247-injective-surjective.png" width="60%">
 
 ### 2.5.2 Monte Carlo Approximation
-- It is often expensive to compute the Jacobian mat so we use Monte Carlo: based on samples $\boldsymbol{x}^s\sim p(\boldsymbol{x})$ compute $\boldsymbol{y}^s\sim f(\boldsymbol{x}^s)$ and then construct an empirical pdf $p(\boldsymbol{y})$ 
+- It is often expensive to compute the Jacobian matrix so we use Monte Carlo: based on samples $\boldsymbol{x}^s\sim p(\boldsymbol{x})$ compute $\boldsymbol{y}^s\sim f(\boldsymbol{x}^s)$ and then construct an empirical pdf $p(\boldsymbol{y})$ 
 
 ### 2.5.3 Probability Integral Transform (PIT)
 - Basically is a transformation of any pdf to a uniform dist (uses cdf), it is useful because we can define unbiased samples 
@@ -130,7 +130,7 @@ balance equations wrt distribution $\pi$, then $\pi$ is a stationary distributio
 - Determining if the samples come from the same dist is called **two-sample test**, our metric of dissimilarity is the *divergence metric* $D(P,Q)$. We can also use this to assess the *goodness of a fit*, taking one dist as the empirical one and the other as the produced by the model
 - In general these metrics are based either on $P-Q$ or $P/Q$ as we can see in sections 2.7.1.1 to 2.7.1.4
 
-<img src="../assets/learning/probml/ch02734-divergences.png" width="75%">
+<img src="/static/assets/learning/probml/ch02734-divergences.png" width="75%">
 
 ### 2.7.1 $f$-divergence
 - compares density ratios: $D_f(P||Q) = \int q(\boldsymbol{x}) f\left(\frac{p(\boldsymbol{x})}{q(\boldsymbol{x})}\right)dx$
