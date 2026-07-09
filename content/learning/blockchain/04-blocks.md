@@ -25,7 +25,7 @@ date: 2024-10-14
     - *Idea 3*.- Reject double spends within time $u\geq\Delta$, after $u$ accept first transaction seen $\rightarrow$ still easy for $\mathcal{A}$ to break consensus, she just has to spam Charlie with $\text{tx}_2^\prime$ within $u$ and $\Delta$ and spam Dave with $\text{tx}_2^\prime$ after $u$ but within $\Delta$, the former rejects both double spends & the latter just takes $\text{tx}_2$  as it came first
 - The double spending problem is not trivial so we'll spend the next many sections accumulating weapons to tackle it
 
-<img src="../assets/learning/blockchain/ch043-simple-ideas.png" width="100%">
+<img src="/static/assets/learning/blockchain/ch043-simple-ideas.png" width="100%">
 
 ## 4.4 Ledgers
 - Since honest parties receive transactions in different order we can demand them to construct & report a **Ledger** which orders transactions sequentially
@@ -34,7 +34,7 @@ date: 2024-10-14
     - *(i) The Full Node*: a piece of code identically executed by all honest parties and is in charge of **peer discovery** & **gossiping** messages. Moreover, it exposes two functionalities *read* & *write* which returns the Ledger of transactions & accepts, broadcasts and gossips new transactions, respectively
     - *(ii) The Wallet*: is the intermediary element between a human user and the full node, it can invoke *read* & *write* functionalities from the full node
     
-<img src="../assets/learning/blockchain/ch044-ledgers.png" width="60%">
+<img src="/static/assets/learning/blockchain/ch044-ledgers.png" width="60%">
 
 - The following definitinos are ideals (but poses a dilemma):
     - **Definition 14** (Ledger). *A ledger of an honest party $P$ reported at time $r$, denoted $L^P_r$ is a finite sequence of transactions returned wen the honest party $P$ invokes the read functionality of its honest protocol $\Pi$*

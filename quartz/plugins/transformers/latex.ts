@@ -10,15 +10,21 @@ import { Options as MathjaxOptions } from "rehype-mathjax/svg"
 import { Options as TypstOptions } from "@myriaddreamin/rehype-typst"
 
 interface Options {
-  renderEngine: "katex" | "mathjax" | "typst"
+  renderEngine: "katex" | "mathjax" // | "typst"
   customMacros: MacroType
   katexOptions: Omit<KatexOptions, "macros" | "output">
   mathJaxOptions: Omit<MathjaxOptions, "macros">
   typstOptions: TypstOptions
 }
 
+// interface MacroType {
+//   [key: string]: string
+// }
+
+// mathjax macros
+export type Args = boolean | number | string | null
 interface MacroType {
-  [key: string]: string
+  [key: string]: string | Args[]
 }
 
 export const Latex: QuartzTransformerPlugin<Partial<Options>> = (opts) => {
@@ -34,15 +40,24 @@ export const Latex: QuartzTransformerPlugin<Partial<Options>> = (opts) => {
         case "katex": {
           return [[rehypeKatex, { output: "html", macros, ...(opts?.katexOptions ?? {}) }]]
         }
-        case "typst": {
-          return [[rehypeTypst, opts?.typstOptions ?? {}]]
-        }
-        // case "mathjax": {
-        //   return [[rehypeMathjax, { macros, ...(opts?.mathJaxOptions ?? {}) }]]
+        // case "typst": {
+        //   return [[rehypeTypst, opts?.typstOptions ?? {}]]
         // }
-        default: {
-          return [[rehypeKatex, { output: "htmlAndMathml", macros, ...(opts?.katexOptions ?? {}) }]]
-          // return [[rehypeMathjax, { macros, ...(opts?.mathJaxOptions ?? {}) }]]
+        default: 
+          // return [[rehypeKatex, { output: "htmlAndMathml", macros, ...(opts?.katexOptions ?? {}) }]]
+        case "mathjax": { 
+          return [
+            [
+              rehypeMathjax,
+              {
+                ...(opts?.mathJaxOptions ?? {}),
+                tex: {
+                  ...(opts?.mathJaxOptions?.tex ?? {}),
+                  macros,
+                },
+              },
+            ],
+          ]
         }
       }
     },
@@ -50,7 +65,7 @@ export const Latex: QuartzTransformerPlugin<Partial<Options>> = (opts) => {
       switch (engine) {
         case "katex":
           return {
-            css: [{ content: "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" }],
+          css: [{ content: "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" }],
             js: [
               {
                 // fix copy behaviour: https://github.com/KaTeX/KaTeX/blob/main/contrib/copy-tex/README.md

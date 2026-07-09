@@ -52,7 +52,7 @@ $$
     - *Replay Attack* - If we don't add a **nonce** (a $256$-bit integer) to the Account model then an attacker can take advantage of re-submitting transactions w/o a unique label identifier
 - A side by side comparison is shown below in Fig.9.7
 
-<img src="../assets/learning/blockchain/ch091-utxo-account-comparisson.png" width="75%">
+<img src="/static/assets/learning/blockchain/ch091-utxo-account-comparisson.png" width="75%">
 
 ## 7.2 State Machine Replication (SMR)
 - Since blockchains are a distributed replicated database, where each node has its own copy and applies database updates via local state machine transitions. The goal of SMR is that each node runs the same set of state transitions accross the network & in the same order so that there is consensus on the global state machine
@@ -80,7 +80,7 @@ $$
     - which are used to check MT correctness:
         - $\forall D, \forall j,\;\operatorname{verify}(h_\epsilon, D[j], j, \pi)\begin{cases}\text{true, if valid} \\ \text{false, otherwise}\end{cases}$
     
-<img src="../assets/learning/blockchain/ch0932-merkle-tree.png" width="90%">
+<img src="/static/assets/learning/blockchain/ch0932-merkle-tree.png" width="90%">
 
 ### 7.3.3 Security of Merkle Trees
 - MT-security means that if the client outputs $\operatorname{verify}(h_\epsilon, d=D[j], j, \pi)=\text{true}$ after verifying the received data chunk $D[j]$ and proof, then the received data $d$ must be the same data $D$ that was originally stored

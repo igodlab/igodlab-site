@@ -53,7 +53,7 @@ date: 2025-08-13
     - and at the bottom layer we use whatever appropriate model fits the case eg. normal: $p(\boldsymbol{x},\boldsymbol{z}_1,\boldsymbol{\theta})=\prod_{d=1}^{D}\mathcal{N}\left(x_d\mid\boldsymbol{w}_{1,d,\mu}^{\top}\boldsymbol{z}_1, \exp(\boldsymbol{w}_{1,d,\sigma}^{\top}\boldsymbol{z}_1)\right)$
 - Fig.4.3b adds direct connections between hidden layers, called **Deep Autoregressive Network (DARN)** combining ideas from latent var modeling and autoregressive modeling
 
-<img src="../assets/learning/probml/ch04222-sigmoid-belief-nets.png" width="80%">
+<img src="/static/assets/learning/probml/ch04222-sigmoid-belief-nets.png" width="80%">
 
 ### 4.2.3 Gaussian Bayes nets
 - When all layer transfers are linears, the joint dist for $i$-th node is: $p(x_i\mid\boldsymbol{x}_{\text{par}(i)})=\mathcal{N}(x_i\mid\mu_i+\boldsymbol{w}_i^{\top}\boldsymbol{x}_{\text{par}(i)},\sigma_i^2)$
@@ -82,7 +82,7 @@ date: 2025-08-13
 - After at least one of these verify we can write the **global Markov property**: $X_A\perp X_B\mid X_C$ $\Leftrightarrow$ $A$ is d-separated from $B$ given observed $C$
 - Rules are nicely portrayed in Fig.4.4 and Fig.4.5 below
 
-<img src='../assets/learning/probml/ch0424-bayes-ball-rules.png' width='85%'>
+<img src='/static/assets/learning/probml/ch0424-bayes-ball-rules.png' width='85%'>
 
 
 #### 4.2.4.2 Explaining away (Berkon's paradox)
@@ -133,7 +133,7 @@ date: 2025-08-13
 - Lets explore the example of a supervised generative classifier (Fig.4.9) 
     - where we have $N$ obervations (shaded nodes). We observe both: i) labels $\boldsymbol{y}$ that condition ii) $\boldsymbol{x}$'s classification and all data is complete! Additionally the global params G are: $\boldsymbol{\theta}_x$ and $\boldsymbol{\theta}_y$
 
-<img src='../assets/learning/probml/ch0427-dpgm-example.png' width='80%'>
+<img src='/static/assets/learning/probml/ch0427-dpgm-example.png' width='80%'>
 
 - Following the CI properties from the graph we can write the joint dist (factorizing the corresponding CI nodes): $p(\boldsymbol{\theta},\mathcal{D})=p(\boldsymbol{\theta}_x)p(\boldsymbol{\theta}_y)\left[\prod_{n}^{N}p(y_n\mid\boldsymbol{\theta}_y)p(\boldsymbol{x}_{n}\mid\boldsymbol{\theta}_x, y_n) \right]=\ldots=\left[p(\boldsymbol{\theta}_y)p(\mathcal{D}_y\mid\boldsymbol{\theta}_y)\right]\left[p(\boldsymbol{\theta}_x)p(\mathcal{D}_x\mid\boldsymbol{\theta}_x)\right]$
     - where $D_y=\{y_n\}_{n=1}^{N}$ ($D_x=\{\boldsymbol{x}_{n},y_n\}_{n=1}^{N}$) are the observations for the $2N$ nodes $y$ ($\boldsymbol{x}$)
@@ -189,7 +189,7 @@ date: 2025-08-13
 ### 4.2.8 Plate notation
 - To simplify the visual picture we can use *plate notation* (See Fig.4.11)
 
-<img src='../assets/learning/probml/ch0428-plate-notation.png' width='80%'>
+<img src='/static/assets/learning/probml/ch0428-plate-notation.png' width='80%'>
 
 - to reinstate whats on Fig.4.11 we can write $N$ nodes/observables $\mathcal{D}=\{\boldsymbol{x}_{1},\ldots,\boldsymbol{x}_{N}\}$ all depending on the param $\theta$:
     - as being drawn from: $\boldsymbol{x}_{n}\sim p(\boldsymbol{x}\mid\boldsymbol{\theta})$
@@ -197,7 +197,7 @@ date: 2025-08-13
     - assuming iid we can write the likelihood as: $p(\mathcal{D}\mid\boldsymbol{\theta})=\prod_{n=1}^{N}p(\boldsymbol{x}_{n}\mid\boldsymbol{\theta})$
 - Other vefry illustrative exmples include Fig.4.12 and Fig.4.13 below
 
-<img src='../assets/learning/probml/ch0428-plate-notation2.png' width='80%'>
+<img src='/static/assets/learning/probml/ch0428-plate-notation2.png' width='80%'>
 
 
 #### 4.2.8.1 Example: factor analysis
@@ -301,7 +301,7 @@ date: 2025-08-13
     - strictly speaking this is NOT a belief net, thus a more correct name is **Deep Boltzmann Network** (also abbrv. DBN)
     - DBNs were important in old DL days, but now are OBSOLETE. They've been replaced by ReLUs, Adam optimizers
     
-<img src='../assets/learning/probml/ch04334-deep-boltzmann-nets.png' width='80%'>
+<img src='/static/assets/learning/probml/ch04334-deep-boltzmann-nets.png' width='80%'>
     
 ### 4.3.4 Maximum entropy models
 - Are probailistic models used to estimate a dist based on incomplete info and are based on the principle of *maximum entropy*: the best candidate model is the one that maximizes the entropy subject to our prior knowledge
@@ -357,7 +357,7 @@ date: 2025-08-13
         - *Markov Blankets* - smallest set of nodes that render a node $t$ CI from all other nodes: $t\perp\nu\diagdown \text{cl}(t)\mid\text{mb}(t)$, where $\nu=\{1,\ldots,N_G\}$: set of all nodes, $\text{cl}(t)= \text{mb}(t)\bigcup \{t\}$: closure of node $t$
     - **(P) Pairwise Markov property** - derived easily from (L), two nodes are CI given the rest if theres no link between them: $s\perp t\diagdown\nu\{s,t\}\Leftrightarrow G_{st}=0$, where $G_{st}=0$: no edge between $s$ & $t$
     
-<img src='../assets/learning/probml/ch04361-ci-properties-upgm.png' width='60%'>
+<img src='/static/assets/learning/probml/ch04361-ci-properties-upgm.png' width='60%'>
     
 #### 4.3.6.2 An undirected alternative to d-separation
 - We've seen how much easier is to identify CI in UPGMs in contrast to DPGMs because we don't have to worry about directionality (ie. no rolling Bayes ball needed)
@@ -446,7 +446,7 @@ date: 2025-08-13
         - even better - letting the GNN graph "roll", treating it as a feedforward net allows to use gradient methods and not depend on partition func $Z$
 
 #### 4.4.2.2 Deformable parts model
-- Deals w/ the challenge of locating position of (detected) objects in ../assets/learning/probml
+- Deals w/ the challenge of locating position of (detected) objects in /static/assets/learning/probml
     - *Sliding window* techniques (basically using binary classifiers asking if object X is present in each image and then finding its location based on sliding) perform POORLY when ../assets/learning/probml are deformable or occluted eg. bodies in different positions, objects in movement... CNNs are a lot better at this (Sec.16.3.2)
     - a workaround w/ CRFs is to detect each deformable part eg. body parts and enforce spatial coherence between the parts: $p(\boldsymbol{y}\mid\boldsymbol{x})=\frac{1}{Z(\boldsymbol{\theta})}\left[\prod_{i}p(y_i\mid f_i(\boldsymbol{x})\right]\left[\prod_{(i,j)\in E}\psi(y_i,y_j\mid\boldsymbol{x})\right]$, where
         - potential between nodes representing deformable parts $i,j$ are tunned by the penalty distance: $\psi(y_i,y_j\mid\boldsymbol{x})=\exp(-d(y_i,y_j))$

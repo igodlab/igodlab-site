@@ -11,7 +11,7 @@ export default (() => {
         <section className="hero-section">
           <div className="profile-section">
             <div className="profile-photo">
-              <img src="/assets/homesite/igodlab-site-colombia.jpeg" alt="Ignacio Calderon de la Barca"/>
+              <img src="/static/assets/homesite/igodlab-site-colombia.jpeg" alt="Ignacio Calderon de la Barca"/>
             </div>
             <div className="social-links">
               <a href="mailto:igodlab@gmail.com" className="social-link" title="Email">
@@ -58,7 +58,7 @@ export default (() => {
           <div className="timeline-item work">
             <div className="timeline-years">2024 - present</div>
             <div className="timeline-logo">
-              <img src="/assets/homesite/wbl-logo.png" alt="Wolfram Blockchain Labs"/>
+              <img src="/static/assets/homesite/wbl-logo.png" alt="Wolfram Blockchain Labs"/>
             </div>
             <div className="timeline-content">
               <h3>Content Strategist</h3>
@@ -71,7 +71,7 @@ export default (() => {
           <div className="timeline-item work">
             <div className="timeline-years">2022 - 2024</div>
             <div className="timeline-logo">
-              <img src="/assets/homesite/iohk-logo.png" alt="Input Output Global"/>
+              <img src="/static/assets/homesite/iohk-logo.png" alt="Input Output Global"/>
             </div>
             <div className="timeline-content">
               <h3>Developer Relations</h3>
@@ -84,7 +84,7 @@ export default (() => {
           <div className="timeline-item work">
             <div className="timeline-years">2020 - 2021</div>
             <div className="timeline-logo">
-              <img src="/assets/homesite/iohk-logo.png" alt="Input Output Global"/>
+              <img src="/static/assets/homesite/iohk-logo.png" alt="Input Output Global"/>
             </div>
             <div className="timeline-content">
               <h3>Software Test Engineer</h3>
@@ -97,7 +97,7 @@ export default (() => {
           <div className="timeline-item education">
             <div className="timeline-years">2018 - 2020</div>
             <div className="timeline-logo">
-              <img src="/assets/homesite/SFU_block_colour_rgb.png" alt="Simon Fraser University"/>
+              <img src="/static/assets/homesite/SFU_block_colour_rgb.png" alt="Simon Fraser University"/>
             </div>
             <div className="timeline-content">
               <h3>Research Assistant Physics</h3>
