@@ -1,6 +1,6 @@
 ---
 title: 1. Fundamental concepts
-date: 2025-10-26
+date: 2026-01-26
 
 ---
 
@@ -161,7 +161,7 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
     - CUDA C programming is an instance of the programming style standard **single-program multiple-data (SPMD)** ([Atallah, 1998](https://en.wikipedia.org/wiki/Single_program,_multiple_data))
 - The workflows goes as follows: i) a host code executes a kernel instruction which ii) launches
 
-## 3. Multidimensional grids and data
+# 3. Multidimensional grids and data
 
 > [!IMPORTANT] Notation for R-rank tensors
 > 
@@ -183,7 +183,7 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 > | $i_3\in[0, d_3-1]$ (dim-3) | $l\in[0,q-1]$ (sample) | $n\in[0,N-1]$ (batch)    | NA | 
 
 
-## 4. Compute architecture and scheduling
+# 4. Compute architecture and scheduling
 
 ### 4.4 Warps and SIMD hardware
 
@@ -204,7 +204,7 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 ### 4.7 Resource partitioning and occupancy
 - *Occupancy* is the $\frac{\text{number-of-threads}/\text{SM}}{\text{max-number-of-threads}/\text{SM}}$ ratio
 
-## 5. Memory architecture and data locality
+# 5. Memory architecture and data locality
 
 ### 5.1 Memory bandwidth as a performance limiter
 
@@ -212,8 +212,8 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
     - *Peak computational throughput* - specifies the limit on how many arithmetic operations the hardware can perform per unit of time ie. FLOPS (different limits for different datatypes)
     - *Peak memory bandwidth* - specifies the limit on how many bytes of data the hardware can access from a particular memory structure per unit of time ie B/s (hardware has different limits for different memory structures)
 - A kernel is said to be *compute-bound* (*memory-bound*) if its performance is limited by the computational throughput (limited by memory bandwidth) of the hardware.
-    - *Compute-to-global-memory-access ratio* (also called arithmetic intensity or **computational intensity**) - $\frac{\text{FLOPS}}{\text{B/s}}=\frac{\text{FLOP}}{B}$ when its a big (small) value means compute-bound (memory-bound).
-        - eg. H100 GPU has a threshold of $\frac{66.9 \text{ TFLOPS}}{3.35\text{ TB}/s} = 20\frac{FLOP}{B}$ 
+    - *Compute-to-global-memory-access ratio* (also called arithmetic intensity or **computational intensity**) - $\frac{\text{FLOP}{\bcancel S}}{\text{B}/{\bcancel s}}=\frac{\text{FLOP}}{\text{B}}$ when its a big (small) value means compute-bound (memory-bound).
+        - eg. H100 GPU has a threshold of $\frac{66.9 \text{ TFLOPS}}{3.35\text{ TB}/s} = 20\frac{\text{FLOP}}{\text{B}}$ 
 
 <img src="static/assets/learning/pmpp/roofline-model.png" width="50%">
 
@@ -232,7 +232,7 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 
 <img src="static/assets/learning/pmpp/ch05-vonNeuman-CPU-GPU.png" width="100%">
 
-### Tiling for reduced memory traffic
+### 5.3 Tiling for reduced memory traffic
 
 > [!IMPORTANT] Notation for indexing threads.
 > 
@@ -253,7 +253,6 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 > <img src="static/assets/learning/pmpp/ch05-absolute-relative-indexes.png" width="40%">
 > 
 > $$
-> \color{#4c4f69}
 > \begin{pmatrix}
 > x \\
 > y \\
@@ -273,5 +272,35 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 
 <img src="static/assets/learning/pmpp/ch05-tiling.png" width="50%">
 
+- For the sake of simplicity we'll consider the case where the block dimension is the same as tile dimension ie. $(d^b_y, d^b_x)=(d^\square, d^\square)$. 
+    - Cooperative loading is efficiently carried out in $h$ phases which range between $0\leq h < d^\square$ and loads each tile elements
+
+    $$
+    \begin{align*}
+    M^\square_{y^\prime,x^\prime} = & M_{y,x^\prime +hd^\square} \\
+    N^\square_{y^\prime,x^\prime}= & N_{y^\prime+hd^\square,x} 
+    \end{align*}
+    $$
+
+which in written in row-major notation are
+
+$$
+\begin{align*}
+M_{y,x^\prime +hd^\square} = & M_{y \tilde{d} + x^\prime +hd^\square} \\
+N_{y^\prime+hd^\square,x} = & N_{(y^\prime+hd^\square)d_{0} + x} \\
+=& N_{y^\prime d_{0} +hd^\square d_{0} + x}
+\end{align*}
+$$
+
 <img src="static/assets/learning/pmpp/ch05-cooperative-loading.png" width="75%">
+
+So in tiled matmul the output-matrix elements are computed with the generalized formula:
+
+$$
+P_{y,x}=\sum_{h=0}^{\left\lceil \tilde{d}/d^{\square}\right\rceil}\left(\sum_{k=0}^{d^{\square}-1}M^{\square}_{y^\prime,k}N^{\square}_{k,x^\prime}\right)
+$$
+
+# 6. Performance considerations
+
+- CUDA devices employ a technique that allows programmers to achieve high global memory access efficiency by organizing memory accesses of threads into favorable patterns.
 
