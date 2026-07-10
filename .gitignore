@@ -9,3 +9,7 @@ tsconfig.tsbuildinfo
 private/
 .replit
 replit.nix
+
+# ignore computing systems learning & projects
+content/learning/computing-systems/
+content/projects/
