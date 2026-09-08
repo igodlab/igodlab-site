@@ -6,24 +6,24 @@ date: 2026-01-26
 
 # 1. Introduction
 
-- One of the main ageless goals in Computer Science is to accelerate computing power ie. make processors go brrr
-- The history of this battle goes back to the XX century where the first processor designs relied on a *Central Processing Unit (CPU)* hardware component that is capable of executing programs step by step (the [von Newmann et. al 1972](https://ieeexplore.ieee.org/abstract/document/238389) design based on a program counter for sequential program execution aka. *thread*). The story highlights go as follows:
-    - **Single Microprocessor age** - progressively increased clock speeds of a single CPU (1980s-1990s). Brought GFLOPS (TFLOPS) to desktops (data centers)
-    - **Megahertz wars** - reached a barrier trying to increase clock freq (<2003) due to heat dissipation and energy supply limits
-    - **Concurrency revolution** - overcame the limit ([Sutter and Larus, >2005](https://dl.acm.org/doi/10.1145/1095408.1095421)) with *multi processor cores* where *parallel* programs execute multiple threads cooperatively to get the work done faster
+- An ageless goal in Computer Science is to compute more with less energy, colloquially we say increse computing power ie. make processors go brrr
+- The history of this battle goes back to the XX century with the first processor designs based on the Von Neumann model [@von1993first] (systems capable of executing programs step by step based on a program counter for sequential program execution). The story highlights go as follows:
+    - **Single Microprocessor age [1980-2003]** - progressively increased clock speeds of a single CPU. Brought GFLOPS (TFLOPS) to desktops (data centers)
+    - **Megahertz wars [>2003]** - reached a barrier trying to increase clock frequency due to heat dissipation and energy supply limits. Semiconductors development branched into two trajectories *multi-core & many-thread* (see 1.1)
+    - **Concurrency revolution [>2005]** - overcame the limit with *multi processor cores* where *parallel* programs execute multiple threads cooperatively to get the work done faster [@sutter2005software]
     - **Inception of GPUs** - invention of a different architecture that is throughput-oriented (2006) to be combined with CPUs. Very impractical to use because the way of giving it instructions was through API-like General Purpose programming of GPU (GPGPU)
-    - **[NVIDIA, 2007](https://dl.acm.org/doi/10.1145/1095408.1095421) gives birth to CUDA** - Market demand in gaming justified the commercial developement of GPUs (2007). NVIDIA's innovation was to build a silicon interface which serves the requests of *Compute Unified Architecture (CUDA)* programs, so GPGPUs wouldn't talk to the graphic interface at all
+    - **[CUDA, 2007](https://dl.acm.org/doi/10.1145/1095408.1095421) gives birth to CUDA** - Market demand in gaming justified the commercial developement of GPUs (2007). NVIDIA's innovation was to build a silicon interface which serves the requests of *Compute Unified Architecture (CUDA)* programs, so GPGPUs wouldn't talk to the graphic interface at all
 
 ### 1.1 Heterogeneous parallel computing
 
-- The industry settled on two non mutually-exclusive trajectories for designing microprocessors ([Hwu et al., 2008](https://www.scopus.com/pages/publications/49549087268)):
+- The industry settled on two non mutually-exclusive trajectories for designing microprocessors [@4584454]:
     - *Multicore trajectory* - seeks to maintain the execution speed of sequential programs while moving to multiple cores (eg. Intel's 24 *out-of-order* multicore supporting the full $\times 86$ instruction set. Or the ARM Ampere w/ 128 multicore)
     - *Many-thread trajectory* - focuses on execution throughput of parallel applications (eg. NVIDIA's Hopper H100 GPU w/ many 100k threads executing *in-order* pipelines)
 - GPUs excel at floating-point operations, being capable of $\sim 30$ ($\sim 230$) times more throughput than CPUs at double-precision (single-precision)
     - eg. peak throughput of the H100 is 34.7 TFLOPS (64-bit double-precision), 67 TFLOPS (32-bit single-precision), 1979 TFLOPS (16-bit half-precision) whereas a server grade CPU of the same generation is onlt a few TFLOPS
 - More and more applications developers have moved parts of their applications to run on GPUs due to the advantageous throughput gap. The philosophy that holds is "when there is more work to do, there is more opportunity to divide the work among cooperating parallel workers ie. *threads*"
     - The peak performance gap exists due to the differences in design where CPUs are optimized for latency. Whereas GPUs are optimized for throughput
-    - It is more expensive to reduce latency than increase throughput.
+    - It is more expensive to reduce latency than increase throughput in terms of power and chip area
 - *Heterogeneus parallel computing* refers to non-homogeneus computing components ie. CPU-GPU (also field-programmable arrays for networking applications as well) and parallel refers to multicore parallel programs
 
 ### 1.2 Why more speed or parallelism
@@ -185,6 +185,10 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 
 # 4. Compute architecture and scheduling
 
+### 4.1 Architecture of a modern GPU
+- On a high level a modern GPU is organized into an array of **streaming multiprocessors (SMs)** and each has many **sreaming processors/cuda-cores**
+    - Since the Hopper architecture, SMs are grouped into **GPU Processing Clusters (GPCs)** eg. Hopper H100 GPU has 132 SMs, 128 processors each (16896 processors in the entire H100) and 8 GPCs (actually 7 GPCs plus 12 SMs ungrouped Nvidia doesn't disclose why)
+
 ### 4.4 Warps and SIMD hardware
 
 - *Warp* - group of 32 threads (with continuous `threadIdx`s from 0 to 31)
@@ -231,6 +235,16 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 
 
 <img src="static/assets/learning/pmpp/ch05-vonNeuman-CPU-GPU.png" width="100%">
+
+| Memory | on/off-chip | Scope | # cycles |
+|---|---|---|
+| Registers       | on-chip | per-thread | \~1 cycle |
+| Shared Memory   | on-chip | per-block | \~20–40 cycles |
+| Constant Cache  | on-chip | per-SM | \~1 cycle (uniform access only) |
+| L1/L2 Cache     | on-chip/near | whole GPU | \~28–100 cycles |
+| Global Memory   | off-chip HBM3 | whole GPU | \~400–800 cycles |
+| Local Memory    | off-chip HBM3 (spill area| | per-thread | \~400–800 cycles |
+| Constant Memory | off-chip HBM3 (read-only region) | whole-GPU (read only) |   \~400–800 cycles uncached |
 
 ### 5.3 Tiling for reduced memory traffic
 
