@@ -41,7 +41,7 @@ date: 2026-01-26
     - The speedup that is achievable by a parallel computing system over a serial computing system depends on the portion of the application that can be parallelized. Given by [Amdahl's law](https://en.wikipedia.org/wiki/Amdahl's_law): $\text{Speedup}_\text{overall}=\frac{1}{(1 - t_{\text{optimized}}) + \frac{t_{\text{optimized}}}{\text{Speedup}_{\text{optimized}}}}$
         -  eg. if a program's parallelizable part is $30\%$ a $100\times$ speedup of it would result is no more than $\frac{1}{(1 - 0.3) + \frac{0.3}{100}}=1.42\times$
         - see plotly Figure for a bigger picture of Amdahl law
-    - Speedup doesn't depend only on *parallelizable optimization* but aslo on how fast we data can be accessed and written to the memory *bandwidth limitations*
+    - *Bandwidth limitations* - Speedup doesn't depend only on *parallelizable optimization* but aslo on how fast data can be accessed and written to memory
         - the trick is to bypass memory limitations by applying transformations to utilize GPU memories to reduce number of accesses to the DRAM
 
 <img src="/static/assets/learning/pmpp/ch013-amdahl-law.png" width="50%">
@@ -76,7 +76,7 @@ date: 2026-01-26
 
 ### 1.6 Overarching goals
 - To teach how to *program massively parallel processors* w/o extreme depth of hardware knowledge and rather build just basic intuitive understanding
-- Wince the core focus is to develop high-performant code we need to remap our thinking for programming with parallelization patterns in mind
+- While the core focus is to develop high-performant code we need to remap our thinking for programming with parallelization patterns in mind
 
 # 2. Hetereogeneous data parallel computing
 
@@ -186,11 +186,26 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 # 4. Compute architecture and scheduling
 
 ### 4.1 Architecture of a modern GPU
-- On a high level a modern GPU is organized into an array of **streaming multiprocessors (SMs)** and each has many **sreaming processors/cuda-cores**
+- On a high level a modern GPU is organized into an array of **streaming multiprocessors (SMs)** and each has many **streaming processors/cuda-cores**
     - Since the Hopper architecture, SMs are grouped into **GPU Processing Clusters (GPCs)** eg. Hopper H100 GPU has 132 SMs, 128 processors each (16896 processors in the entire H100) and 8 GPCs (actually 7 GPCs plus 12 SMs ungrouped Nvidia doesn't disclose why)
+
+### 4.2 Thread block scheduling
+- When a kernel is called the CUDA runtime system launches a grid of threads that run the code. For such threads to get executed in a parallel maner there is a hierarchichal mechanism of grouping them
+    - *Thread-blocks* are groups of threads in multiples of a **warp** (ie. 32 threads)
+        - Block-by-block assignemnt ensures that all threads in a block execute in the same SM
+        - Furthermore it enables special interactions between such threads like block-wide *synchronization-barrier* and data exchange through a low-latency on-chip per-SM SRAM *shared memory*
+        - Hopper architecture introduced an optional hierarchy named *thread block cluster* which also enables special interactions among thread-blocks within the same GPC like a GPC-wide syncrhonization and access to GPC SM's shared memory from a *distributed shared memory* abstraction
+    - *Thread-block scheduler* - assigns a number of blocks to each SM for simultaneous execution and orchestrates a larger list of blocks waiting for their turn after other thread-blocks are done
+
+### 4.3 Synchronization and transparent scalability
+-  The `__syncthreads()` *intrinsic function* has all threads in a block within its scope and holds the program at that specific location until all block-threads arrive at that point
+    - Latter on we'll see other hierarchies of sync-barriers with different scopes eg. cluster-wide & grid-wide syncronization which are part of the **Cooperative Groups API**
+- **Deadlock** - most notable incorrect use of barrier-sync. Happens when some thread(s) might wait forever for other threads to arrive at an impossible barrier eg. if `__syncthreads()` is placed on a conditional
+    - > To avoid deadlocks the runtime system secures resources in the same SM for all threads in a thread-block to eventually arrive at the barrier
 
 ### 4.4 Warps and SIMD hardware
 
+- Hopper architecture introduced new features [@luo2025dissectingnvidiahopperarchitecture]
 - *Warp* - group of 32 threads (with continuous `threadIdx`s from 0 to 31)
     - The 32 thread indexes of warp $n$ are within the range $[32n, 32(n+1)-1]$
 - *Single Instruction Multiple Data (SIMD)* capable hardware allow to process parallel data ie. GPU 

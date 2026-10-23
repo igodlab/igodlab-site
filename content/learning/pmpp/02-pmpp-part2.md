@@ -19,10 +19,10 @@ $$
 $$
 
 - where $\nabla^2 = \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2} + \frac{\partial^2}{\partial z^2}$ is the **Laplacian** and provides a notion of curvature. To solve it numerically we need to discretize each derivative:
-    - time derivative: $$ \frac{\partial u}{\partial t}\approx \frac{U^{(t+1)}_{k,j,i}-U^{(t)}_{k,j,i}}{\Delta t} $$
-    - Laplacian (showing only x): $$ \frac{\partial^2 u}{\partial x^2}\approx \frac{U^{(t)}_{k,j,i+1} - 2U^{(t)}_{k,j,i} + U^{(t)}_{k,j,i-1}}{2\Delta x^2} $$
+    - time derivative (forward difference for time): $$ \frac{\partial u}{\partial t}\approx \frac{U^{(t+1)}_{k,j,i}-U^{(t)}_{k,j,i}}{\Delta t} $$
+    - Laplacian (central difference, only showing x): $$ \frac{\partial^2 u}{\partial x^2}\approx \frac{U^{(t)}_{k,j,i+1} - 2U^{(t)}_{k,j,i} + U^{(t)}_{k,j,i-1}}{\Delta x^2} $$
 
-- Knowing the *thermal diffusivity* $\alpha\equiv \frac{\kappa}{c_p \rho}$, where the constants are material-specific *thermal conductivity* $\kappa$, *heat capacity* $c_p$ and *mass density* $\rho$; we can define the following constants $C_x=\alpha\frac{\Delta t}{2\Delta x^2},\, C_y=\alpha\frac{\Delta t}{2\Delta y^2},\, C_z=\alpha\frac{\Delta t}{2\Delta z^2}$. So the final numerical equation looks like:
+- Knowing the *thermal diffusivity* $\alpha\equiv \frac{\kappa}{c_p \rho}$, where the constants are material-specific *thermal conductivity* $\kappa$, *heat capacity* $c_p$ and *mass density* $\rho$; we can define the following constants $C_x=\alpha\frac{\Delta t}{\Delta x^2},\, C_y=\alpha\frac{\Delta t}{\Delta y^2},\, C_z=\alpha\frac{\Delta t}{\Delta z^2}$. So the final numerical equation looks like:
 
 $$
 \begin{align*}
