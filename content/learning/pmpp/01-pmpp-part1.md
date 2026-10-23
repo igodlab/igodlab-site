@@ -84,7 +84,12 @@ date: 2026-01-26
 
 - *Data parallelism* - refers to the phenomenon in which different parts of the dataset can be computed independently
 - We'll work alongside an example to elaborate on this topic. Lets consider image manipulation, where we handle millions to trillions of pixels
-    - eg. to convert a colored image to grayscale we need to compute the luminosity to the three channel matrices: $L=0.21r+0.72g+0.07b$, for all $N-1$ pixels: $O[0]=L(I[0](r,g,b)),\ldots, O[N-1]=L(I[N-1](r,g,b))$
+    - eg. to convert a colored image input $\mathbf{I}\in\mathbb{R}^{\text{height x width x channel}}$ to a grayscaled image output $\mathbf{O}\in\mathbb{R}^{\text{height x width}}$ we need to compute the luminosity to the three channel matrices $L(\vec{I}(r,g,b))=0.21r+0.72g+0.07b$, for all $N-1$ pixels: 
+
+    $$
+    \mathbf{O}=\left[O_0, \ldots, O_{N-1} \right]=\left[L(\vec{I}_0(r,g,b)),\ldots, L(\vec{I}_{N-1}(r,g,b)) \right]
+    $$
+
 - > **Task Parallelism vs Data Parallelism** - in general, the former is the main source of scalability but not the only type of paralellism. The latter also gives room for sqeezing parallelizable performance and a nice detail is the larger the application, the larger the independent tasks present
 
 ###  2.2 CUDA C++ program structure
@@ -194,20 +199,30 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
     - *Thread-blocks* are groups of threads in multiples of a **warp** (ie. 32 threads)
         - Block-by-block assignemnt ensures that all threads in a block execute in the same SM
         - Furthermore it enables special interactions between such threads like block-wide *synchronization-barrier* and data exchange through a low-latency on-chip per-SM SRAM *shared memory*
-        - Hopper architecture introduced an optional hierarchy named *thread block cluster* which also enables special interactions among thread-blocks within the same GPC like a GPC-wide syncrhonization and access to GPC SM's shared memory from a *distributed shared memory* abstraction
+        - Hopper architecture introduced an optional hierarchy named *thread block cluster* which also enables special interactions among thread-blocks within the same GPC like a GPC-wide syncrhonization and access to GPC SM's shared memory from a *distributed `__shared__` memory* abstraction
     - *Thread-block scheduler* - assigns a number of blocks to each SM for simultaneous execution and orchestrates a larger list of blocks waiting for their turn after other thread-blocks are done
 
 ### 4.3 Synchronization and transparent scalability
 -  The `__syncthreads()` *intrinsic function* has all threads in a block within its scope and holds the program at that specific location until all block-threads arrive at that point
     - Latter on we'll see other hierarchies of sync-barriers with different scopes eg. cluster-wide & grid-wide syncronization which are part of the **Cooperative Groups API**
-- **Deadlock** - most notable incorrect use of barrier-sync. Happens when some thread(s) might wait forever for other threads to arrive at an impossible barrier eg. if `__syncthreads()` is placed on a conditional
-    - > To avoid deadlocks the runtime system secures resources in the same SM for all threads in a thread-block to eventually arrive at the barrier
+- **Deadlock** - most notable inappropriate use of barrier-sync. Happens when some thread(s) might wait forever for other threads to arrive at an impossible barrier eg. if `__syncthreads()` is placed on a conditional branch other threads will never reach it
+    - To avoid deadlocks the runtime system secures resources in the same SM for all threads in a thread-block to eventually arrive at the barrier
+      
+    - The other part of the responsibility is on the programmer to avoid `__syncthreads()` bad practices and ensure close-time thread execution proximity in the code logic
+- > Limiting the barrier-sync scope to thread-blocks (plus the above practices) allows the CUDA run-time system to execute blocks in any order
+  > 
+  > Depending on system resources it is genearlly desirable to execute large **waves** (number of thread-blocks that execute simultaneously) and large **number of waves** (ratio of grid-dim/wave)
+    - Aim for an integer number of waves to avoid the *tail effect* eg. a hypothetical 660 blocks grid runs on a GPU that can execute 264 blocks simultaneously it'll have 2.5 waves. The first two waves will execute fully then the last one is heavily underutilizing GPU resources with w/ 50% of the tail wave
+    - **Transparent scalability** - accounts for target hardware specs and resources pre-calculating the efficient parameters like the ones mentioned in this section
 
 ### 4.4 Warps and SIMD hardware
 
-- Hopper architecture introduced new features [@luo2025dissectingnvidiahopperarchitecture]
-- *Warp* - group of 32 threads (with continuous `threadIdx`s from 0 to 31)
-    - The 32 thread indexes of warp $n$ are within the range $[32n, 32(n+1)-1]$
+- We've described how threads in a block have special ways of interacting and how the *thread-scheduler* can order execution of any block due to the block-wide sync-barrier scope
+- Similarly we'll describe what happens at the thread level
+    - The *thread scheduler* is a hardware implementation concept and may vary from generation-to-generation. Hopper architecture introduced new features [@luo2025dissectingnvidiahopperarchitecture]
+    - The latest concensus is that it groups **32 threads** into a **warp** for simultaneous execution
+        - The 32 `threadIdx`s of the $n$-th warp are within the range $[32n, 32(n+1)-1]$. Warp at tail will be padded with inactive threads
+        - For a 3-D block indices are flattened in *row-major* convention $\texttt{threadIdx(.z, .y, .x)}$ from right$\leftarrow$left (fast$\leftarrow$ slow varying index)
 - *Single Instruction Multiple Data (SIMD)* capable hardware allow to process parallel data ie. GPU 
 
 ### 4.5 Control divergence
